@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "DNS",
+        "repositoryURL": "https://github.com/Bouke/DNS",
+        "state": {
+          "branch": null,
+          "revision": "78bbd1589890a90b202d11d5f9e1297050cf0eb2",
+          "version": "1.2.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
