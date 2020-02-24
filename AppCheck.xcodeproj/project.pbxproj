@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,29 +12,45 @@
 		541AC5DD2399498A00A769D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5DB2399498A00A769D7 /* Main.storyboard */; };
 		541AC5DF2399498B00A769D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5DE2399498B00A769D7 /* Assets.xcassets */; };
 		541AC5E22399498B00A769D7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5E02399498B00A769D7 /* LaunchScreen.storyboard */; };
-		541AC5EB2399499A00A769D7 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 541AC5EA2399499A00A769D7 /* NetworkExtension.framework */; };
-		5433233423ECD3F5007C8052 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 541AC5EA2399499A00A769D7 /* NetworkExtension.framework */; };
-		548B1F8B23D3374F005B047C /* DNSProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548B1F8A23D3374F005B047C /* DNSProxyProvider.swift */; };
-		548B1F9023D3374F005B047C /* GlassDNS.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 548B1F8823D3374F005B047C /* GlassDNS.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		543CDB2023EEE61900B7F323 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543CDB1F23EEE61900B7F323 /* PacketTunnelProvider.swift */; };
+		543CDB2523EEE61900B7F323 /* GlassVPN.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 543CDB1D23EEE61900B7F323 /* GlassVPN.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		546063D023FC2565008F505A /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B723FC254C008F505A /* CocoaAsyncSocket.framework */; };
+		546063D123FC2565008F505A /* CocoaAsyncSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B723FC254C008F505A /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		546063D223FC2565008F505A /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B523FC254B008F505A /* CocoaLumberjack.framework */; };
+		546063D323FC2565008F505A /* CocoaLumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B523FC254B008F505A /* CocoaLumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		546063D423FC2565008F505A /* CocoaLumberjackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B423FC254B008F505A /* CocoaLumberjackSwift.framework */; };
+		546063D523FC2565008F505A /* CocoaLumberjackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B423FC254B008F505A /* CocoaLumberjackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		546063D623FC2565008F505A /* lwip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B623FC254B008F505A /* lwip.framework */; };
+		546063D723FC2565008F505A /* lwip.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B623FC254B008F505A /* lwip.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		546063D823FC2565008F505A /* MMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B923FC254C008F505A /* MMDB.framework */; };
+		546063D923FC2565008F505A /* MMDB.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B923FC254C008F505A /* MMDB.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		546063DA23FC2565008F505A /* NEKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B223FC254B008F505A /* NEKit.framework */; };
+		546063DB23FC2565008F505A /* NEKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B223FC254B008F505A /* NEKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		546063DC23FC2565008F505A /* Resolver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063BA23FC254C008F505A /* Resolver.framework */; };
+		546063DD23FC2565008F505A /* Resolver.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063BA23FC254C008F505A /* Resolver.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		546063DE23FC2565008F505A /* Sodium.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B123FC254B008F505A /* Sodium.framework */; };
+		546063DF23FC2565008F505A /* Sodium.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B123FC254B008F505A /* Sodium.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		546063E023FC2565008F505A /* tun2socks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B323FC254B008F505A /* tun2socks.framework */; };
+		546063E123FC2565008F505A /* tun2socks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B323FC254B008F505A /* tun2socks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		546063E223FC2565008F505A /* Yaml.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B823FC254C008F505A /* Yaml.framework */; };
+		546063E323FC2565008F505A /* Yaml.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B823FC254C008F505A /* Yaml.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		546063E523FEFAFE008F505A /* SQDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7562223D7B2DC008F0C41 /* SQDB.swift */; };
 		54953E3323DC752E0054345C /* SQDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7562223D7B2DC008F0C41 /* SQDB.swift */; };
-		54953E3423DC752F0054345C /* SQDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7562223D7B2DC008F0C41 /* SQDB.swift */; };
-		54953E5F23DEBE840054345C /* TVCApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E5E23DEBE840054345C /* TVCApps.swift */; };
-		54953E6123E0D69A0054345C /* TVCRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6023E0D69A0054345C /* TVCRequests.swift */; };
-		54953E6F23E44CD00054345C /* TVCRequestDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6E23E44CD00054345C /* TVCRequestDetails.swift */; };
+		54953E5F23DEBE840054345C /* TVCDomains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E5E23DEBE840054345C /* TVCDomains.swift */; };
+		54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6023E0D69A0054345C /* TVCHosts.swift */; };
+		54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6E23E44CD00054345C /* TVCHostDetails.swift */; };
 		54953E7123E473F10054345C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 54953E7023E473F10054345C /* Settings.bundle */; };
-		54B7560123D4EFDC008F0C41 /* DNS in Frameworks */ = {isa = PBXBuildFile; productRef = 54B7560023D4EFDC008F0C41 /* DNS */; };
-		54B7560323D4F5BC008F0C41 /* DNS in Frameworks */ = {isa = PBXBuildFile; productRef = 54B7560223D4F5BC008F0C41 /* DNS */; };
 		54C056DB23E9E36E00214A3F /* AppInfoType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C056DA23E9E36E00214A3F /* AppInfoType.swift */; };
 		54C056DD23E9EEF700214A3F /* BundleIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C056DC23E9EEF700214A3F /* BundleIcon.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		548B1F8E23D3374F005B047C /* PBXContainerItemProxy */ = {
+		543CDB2323EEE61900B7F323 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 541AC5CC2399498A00A769D7 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 548B1F8723D3374F005B047C;
-			remoteInfo = DNS;
+			remoteGlobalIDString = 543CDB1C23EEE61900B7F323;
+			remoteInfo = GlassVPN;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -45,9 +61,29 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				548B1F9023D3374F005B047C /* GlassDNS.appex in Embed App Extensions */,
+				543CDB2523EEE61900B7F323 /* GlassVPN.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		546063E423FC2565008F505A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				546063D923FC2565008F505A /* MMDB.framework in Embed Frameworks */,
+				546063D323FC2565008F505A /* CocoaLumberjack.framework in Embed Frameworks */,
+				546063D123FC2565008F505A /* CocoaAsyncSocket.framework in Embed Frameworks */,
+				546063D723FC2565008F505A /* lwip.framework in Embed Frameworks */,
+				546063E123FC2565008F505A /* tun2socks.framework in Embed Frameworks */,
+				546063E323FC2565008F505A /* Yaml.framework in Embed Frameworks */,
+				546063DD23FC2565008F505A /* Resolver.framework in Embed Frameworks */,
+				546063DF23FC2565008F505A /* Sodium.framework in Embed Frameworks */,
+				546063DB23FC2565008F505A /* NEKit.framework in Embed Frameworks */,
+				546063D523FC2565008F505A /* CocoaLumberjackSwift.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -61,14 +97,24 @@
 		541AC5E12399498B00A769D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		541AC5E32399498B00A769D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		541AC5EA2399499A00A769D7 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
-		548B1F8823D3374F005B047C /* GlassDNS.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GlassDNS.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		548B1F8A23D3374F005B047C /* DNSProxyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DNSProxyProvider.swift; sourceTree = "<group>"; };
-		548B1F8C23D3374F005B047C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		548B1F8D23D3374F005B047C /* GlassDNS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GlassDNS.entitlements; sourceTree = "<group>"; };
+		543CDB1D23EEE61900B7F323 /* GlassVPN.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GlassVPN.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		543CDB1F23EEE61900B7F323 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
+		543CDB2123EEE61900B7F323 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		543CDB2223EEE61900B7F323 /* GlassVPN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GlassVPN.entitlements; sourceTree = "<group>"; };
+		546063B123FC254B008F505A /* Sodium.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sodium.framework; path = Carthage/Build/iOS/Sodium.framework; sourceTree = "<group>"; };
+		546063B223FC254B008F505A /* NEKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NEKit.framework; path = Carthage/Build/iOS/NEKit.framework; sourceTree = "<group>"; };
+		546063B323FC254B008F505A /* tun2socks.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = tun2socks.framework; path = Carthage/Build/iOS/tun2socks.framework; sourceTree = "<group>"; };
+		546063B423FC254B008F505A /* CocoaLumberjackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjackSwift.framework; path = Carthage/Build/iOS/CocoaLumberjackSwift.framework; sourceTree = "<group>"; };
+		546063B523FC254B008F505A /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = Carthage/Build/iOS/CocoaLumberjack.framework; sourceTree = "<group>"; };
+		546063B623FC254B008F505A /* lwip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lwip.framework; path = Carthage/Build/iOS/lwip.framework; sourceTree = "<group>"; };
+		546063B723FC254C008F505A /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = Carthage/Build/iOS/CocoaAsyncSocket.framework; sourceTree = "<group>"; };
+		546063B823FC254C008F505A /* Yaml.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Yaml.framework; path = Carthage/Build/iOS/Yaml.framework; sourceTree = "<group>"; };
+		546063B923FC254C008F505A /* MMDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MMDB.framework; path = Carthage/Build/iOS/MMDB.framework; sourceTree = "<group>"; };
+		546063BA23FC254C008F505A /* Resolver.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Resolver.framework; path = Carthage/Build/iOS/Resolver.framework; sourceTree = "<group>"; };
 		548B1F9423D338EC005B047C /* main.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = main.entitlements; sourceTree = "<group>"; };
-		54953E5E23DEBE840054345C /* TVCApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCApps.swift; sourceTree = "<group>"; };
-		54953E6023E0D69A0054345C /* TVCRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCRequests.swift; sourceTree = "<group>"; };
-		54953E6E23E44CD00054345C /* TVCRequestDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCRequestDetails.swift; sourceTree = "<group>"; };
+		54953E5E23DEBE840054345C /* TVCDomains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCDomains.swift; sourceTree = "<group>"; };
+		54953E6023E0D69A0054345C /* TVCHosts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCHosts.swift; sourceTree = "<group>"; };
+		54953E6E23E44CD00054345C /* TVCHostDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCHostDetails.swift; sourceTree = "<group>"; };
 		54953E7023E473F10054345C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		54B7562223D7B2DC008F0C41 /* SQDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQDB.swift; sourceTree = "<group>"; };
 		54C056DA23E9E36E00214A3F /* AppInfoType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoType.swift; sourceTree = "<group>"; };
@@ -80,17 +126,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				54B7560123D4EFDC008F0C41 /* DNS in Frameworks */,
-				541AC5EB2399499A00A769D7 /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		548B1F8523D3374F005B047C /* Frameworks */ = {
+		543CDB1A23EEE61900B7F323 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				54B7560323D4F5BC008F0C41 /* DNS in Frameworks */,
-				5433233423ECD3F5007C8052 /* NetworkExtension.framework in Frameworks */,
+				546063DC23FC2565008F505A /* Resolver.framework in Frameworks */,
+				546063D423FC2565008F505A /* CocoaLumberjackSwift.framework in Frameworks */,
+				546063D023FC2565008F505A /* CocoaAsyncSocket.framework in Frameworks */,
+				546063D223FC2565008F505A /* CocoaLumberjack.framework in Frameworks */,
+				546063DE23FC2565008F505A /* Sodium.framework in Frameworks */,
+				546063D623FC2565008F505A /* lwip.framework in Frameworks */,
+				546063D823FC2565008F505A /* MMDB.framework in Frameworks */,
+				546063E223FC2565008F505A /* Yaml.framework in Frameworks */,
+				546063E023FC2565008F505A /* tun2socks.framework in Frameworks */,
+				546063DA23FC2565008F505A /* NEKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,7 +154,7 @@
 			children = (
 				54B7562223D7B2DC008F0C41 /* SQDB.swift */,
 				541AC5D62399498A00A769D7 /* main */,
-				548B1F8923D3374F005B047C /* GlassDNS */,
+				543CDB1E23EEE61900B7F323 /* GlassVPN */,
 				541AC5D52399498A00A769D7 /* Products */,
 				541AC5E92399499A00A769D7 /* Frameworks */,
 			);
@@ -112,7 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				541AC5D42399498A00A769D7 /* AppCheck.app */,
-				548B1F8823D3374F005B047C /* GlassDNS.appex */,
+				543CDB1D23EEE61900B7F323 /* GlassVPN.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -124,9 +176,9 @@
 				541AC5D72399498A00A769D7 /* AppDelegate.swift */,
 				54C056DC23E9EEF700214A3F /* BundleIcon.swift */,
 				54C056DA23E9E36E00214A3F /* AppInfoType.swift */,
-				54953E5E23DEBE840054345C /* TVCApps.swift */,
-				54953E6023E0D69A0054345C /* TVCRequests.swift */,
-				54953E6E23E44CD00054345C /* TVCRequestDetails.swift */,
+				54953E5E23DEBE840054345C /* TVCDomains.swift */,
+				54953E6023E0D69A0054345C /* TVCHosts.swift */,
+				54953E6E23E44CD00054345C /* TVCHostDetails.swift */,
 				541AC5DB2399498A00A769D7 /* Main.storyboard */,
 				541A957523E602DF00C09C19 /* LaunchIcon.png */,
 				541AC5E02399498B00A769D7 /* LaunchScreen.storyboard */,
@@ -140,19 +192,29 @@
 		541AC5E92399499A00A769D7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				546063B723FC254C008F505A /* CocoaAsyncSocket.framework */,
+				546063B523FC254B008F505A /* CocoaLumberjack.framework */,
+				546063B423FC254B008F505A /* CocoaLumberjackSwift.framework */,
+				546063B623FC254B008F505A /* lwip.framework */,
+				546063B923FC254C008F505A /* MMDB.framework */,
+				546063B223FC254B008F505A /* NEKit.framework */,
+				546063BA23FC254C008F505A /* Resolver.framework */,
+				546063B123FC254B008F505A /* Sodium.framework */,
+				546063B323FC254B008F505A /* tun2socks.framework */,
+				546063B823FC254C008F505A /* Yaml.framework */,
 				541AC5EA2399499A00A769D7 /* NetworkExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		548B1F8923D3374F005B047C /* GlassDNS */ = {
+		543CDB1E23EEE61900B7F323 /* GlassVPN */ = {
 			isa = PBXGroup;
 			children = (
-				548B1F8A23D3374F005B047C /* DNSProxyProvider.swift */,
-				548B1F8C23D3374F005B047C /* Info.plist */,
-				548B1F8D23D3374F005B047C /* GlassDNS.entitlements */,
+				543CDB1F23EEE61900B7F323 /* PacketTunnelProvider.swift */,
+				543CDB2123EEE61900B7F323 /* Info.plist */,
+				543CDB2223EEE61900B7F323 /* GlassVPN.entitlements */,
 			);
-			path = GlassDNS;
+			path = GlassVPN;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -171,34 +233,33 @@
 			buildRules = (
 			);
 			dependencies = (
-				548B1F8F23D3374F005B047C /* PBXTargetDependency */,
+				543CDB2423EEE61900B7F323 /* PBXTargetDependency */,
 			);
 			name = AppCheck;
 			packageProductDependencies = (
-				54B7560023D4EFDC008F0C41 /* DNS */,
 			);
 			productName = PrivacyScore;
 			productReference = 541AC5D42399498A00A769D7 /* AppCheck.app */;
 			productType = "com.apple.product-type.application";
 		};
-		548B1F8723D3374F005B047C /* GlassDNS */ = {
+		543CDB1C23EEE61900B7F323 /* GlassVPN */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 548B1F9123D3374F005B047C /* Build configuration list for PBXNativeTarget "GlassDNS" */;
+			buildConfigurationList = 543CDB2623EEE61A00B7F323 /* Build configuration list for PBXNativeTarget "GlassVPN" */;
 			buildPhases = (
-				548B1F8423D3374F005B047C /* Sources */,
-				548B1F8523D3374F005B047C /* Frameworks */,
-				548B1F8623D3374F005B047C /* Resources */,
+				543CDB1923EEE61900B7F323 /* Sources */,
+				543CDB1A23EEE61900B7F323 /* Frameworks */,
+				543CDB1B23EEE61900B7F323 /* Resources */,
+				546063E423FC2565008F505A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = GlassDNS;
+			name = GlassVPN;
 			packageProductDependencies = (
-				54B7560223D4F5BC008F0C41 /* DNS */,
 			);
-			productName = DNS;
-			productReference = 548B1F8823D3374F005B047C /* GlassDNS.appex */;
+			productName = GlassVPN;
+			productReference = 543CDB1D23EEE61900B7F323 /* GlassVPN.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -220,7 +281,7 @@
 							};
 						};
 					};
-					548B1F8723D3374F005B047C = {
+					543CDB1C23EEE61900B7F323 = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
 				};
@@ -235,14 +296,13 @@
 			);
 			mainGroup = 541AC5CB2399498A00A769D7;
 			packageReferences = (
-				54B755FF23D4EFDC008F0C41 /* XCRemoteSwiftPackageReference "DNS" */,
 			);
 			productRefGroup = 541AC5D52399498A00A769D7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				541AC5D32399498A00A769D7 /* AppCheck */,
-				548B1F8723D3374F005B047C /* GlassDNS */,
+				543CDB1C23EEE61900B7F323 /* GlassVPN */,
 			);
 		};
 /* End PBXProject section */
@@ -260,7 +320,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		548B1F8623D3374F005B047C /* Resources */ = {
+		543CDB1B23EEE61900B7F323 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -295,31 +355,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				54953E3323DC752E0054345C /* SQDB.swift in Sources */,
-				54953E6123E0D69A0054345C /* TVCRequests.swift in Sources */,
-				54953E5F23DEBE840054345C /* TVCApps.swift in Sources */,
+				54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */,
+				54953E5F23DEBE840054345C /* TVCDomains.swift in Sources */,
 				54C056DB23E9E36E00214A3F /* AppInfoType.swift in Sources */,
-				54953E6F23E44CD00054345C /* TVCRequestDetails.swift in Sources */,
+				54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */,
 				54C056DD23E9EEF700214A3F /* BundleIcon.swift in Sources */,
 				541AC5D82399498A00A769D7 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		548B1F8423D3374F005B047C /* Sources */ = {
+		543CDB1923EEE61900B7F323 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				548B1F8B23D3374F005B047C /* DNSProxyProvider.swift in Sources */,
-				54953E3423DC752F0054345C /* SQDB.swift in Sources */,
+				543CDB2023EEE61900B7F323 /* PacketTunnelProvider.swift in Sources */,
+				546063E523FEFAFE008F505A /* SQDB.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		548B1F8F23D3374F005B047C /* PBXTargetDependency */ = {
+		543CDB2423EEE61900B7F323 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 548B1F8723D3374F005B047C /* GlassDNS */;
-			targetProxy = 548B1F8E23D3374F005B047C /* PBXContainerItemProxy */;
+			target = 543CDB1C23EEE61900B7F323 /* GlassVPN */;
+			targetProxy = 543CDB2323EEE61900B7F323 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -503,51 +563,51 @@
 			};
 			name = Release;
 		};
-		548B1F9223D3374F005B047C /* Debug */ = {
+		543CDB2723EEE61A00B7F323 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = GlassDNS/GlassDNS.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_ENTITLEMENTS = GlassVPN/GlassVPN.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
-				DEVELOPMENT_TEAM = MY7CB4555Z;
-				INFOPLIST_FILE = GlassDNS/Info.plist;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = GlassVPN/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "de.uni-bamberg.psi.AppCheck.DNS";
-				PRODUCT_NAME = GlassDNS;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.uni-bamberg.psi.AppCheck.VPN";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		548B1F9323D3374F005B047C /* Release */ = {
+		543CDB2823EEE61A00B7F323 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = GlassDNS/GlassDNS.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_ENTITLEMENTS = GlassVPN/GlassVPN.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
-				DEVELOPMENT_TEAM = MY7CB4555Z;
-				INFOPLIST_FILE = GlassDNS/Info.plist;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = GlassVPN/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "de.uni-bamberg.psi.AppCheck.DNS";
-				PRODUCT_NAME = GlassDNS;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.uni-bamberg.psi.AppCheck.VPN";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -572,40 +632,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		548B1F9123D3374F005B047C /* Build configuration list for PBXNativeTarget "GlassDNS" */ = {
+		543CDB2623EEE61A00B7F323 /* Build configuration list for PBXNativeTarget "GlassVPN" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				548B1F9223D3374F005B047C /* Debug */,
-				548B1F9323D3374F005B047C /* Release */,
+				543CDB2723EEE61A00B7F323 /* Debug */,
+				543CDB2823EEE61A00B7F323 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		54B755FF23D4EFDC008F0C41 /* XCRemoteSwiftPackageReference "DNS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Bouke/DNS";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		54B7560023D4EFDC008F0C41 /* DNS */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 54B755FF23D4EFDC008F0C41 /* XCRemoteSwiftPackageReference "DNS" */;
-			productName = DNS;
-		};
-		54B7560223D4F5BC008F0C41 /* DNS */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 54B755FF23D4EFDC008F0C41 /* XCRemoteSwiftPackageReference "DNS" */;
-			productName = DNS;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 541AC5CC2399498A00A769D7 /* Project object */;
 }

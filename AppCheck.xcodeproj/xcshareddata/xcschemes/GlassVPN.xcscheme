@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "548B1F8723D3374F005B047C"
-               BuildableName = "GlassDNS.appex"
-               BlueprintName = "GlassDNS"
-               ReferencedContainer = "container:PrivacyScore.xcodeproj">
+               BlueprintIdentifier = "543CDB1C23EEE61900B7F323"
+               BuildableName = "GlassVPN.appex"
+               BlueprintName = "GlassVPN"
+               ReferencedContainer = "container:AppCheck.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -30,9 +30,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "541AC5D32399498A00A769D7"
-               BuildableName = "PrivacyScore.app"
-               BlueprintName = "PrivacyScore"
-               ReferencedContainer = "container:PrivacyScore.xcodeproj">
+               BuildableName = "AppCheck.app"
+               BlueprintName = "AppCheck"
+               ReferencedContainer = "container:AppCheck.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "541AC5D32399498A00A769D7"
-            BuildableName = "PrivacyScore.app"
-            BlueprintName = "PrivacyScore"
-            ReferencedContainer = "container:PrivacyScore.xcodeproj">
+            BuildableName = "AppCheck.app"
+            BlueprintName = "AppCheck"
+            ReferencedContainer = "container:AppCheck.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -80,9 +80,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "541AC5D32399498A00A769D7"
-            BuildableName = "PrivacyScore.app"
-            BlueprintName = "PrivacyScore"
-            ReferencedContainer = "container:PrivacyScore.xcodeproj">
+            BuildableName = "AppCheck.app"
+            BlueprintName = "AppCheck"
+            ReferencedContainer = "container:AppCheck.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -97,15 +97,15 @@ protocol SQLTable {
 }
 
 struct DNSQuery: SQLTable {
-	let app: String
-	let dns: String
 	let ts: Int64
+	let domain: String
+	let host: String?
 	static var createStatement: String {
 		return """
 		CREATE TABLE IF NOT EXISTS req(
-		app VARCHAR(255),
-		dns VARCHAR(2047),
-		ts BIGINT DEFAULT (strftime('%s','now'))
+		ts BIGINT DEFAULT (strftime('%s','now')),
+		domain VARCHAR(255) NOT NULL,
+		host VARCHAR(2047)
 		);
 		"""
 	}
@@ -113,15 +113,30 @@ struct DNSQuery: SQLTable {
 
 extension SQLiteDatabase {
 	
-	func insertDNSQuery(appId: NSString, dnsQuery: NSString) throws {
-		let insertSql = "INSERT INTO req (app, dns) VALUES (?, ?);"
+	func insertDNSQuery(_ dnsQuery: String) throws {
+		// Split dns query into subdomain part
+		var domain: String = dnsQuery
+		var host: String? = nil
+		let lastChr = dnsQuery.last?.asciiValue ?? 0
+		if lastChr > UInt8(ascii: "9") || lastChr < UInt8(ascii: "0") { // if not IP address
+			guard let last1 = dnsQuery.lastIndex(of: ".") else {
+				return
+			}
+			let last2 = dnsQuery[...dnsQuery.index(before: last1)].lastIndex(of: ".")
+			if let idx = last2 {
+				domain = String(dnsQuery.suffix(from: dnsQuery.index(after: idx)))
+				host = String(dnsQuery.prefix(upTo: idx))
+			}
+		}
+		// perform query
+		let insertSql = "INSERT INTO req (domain, host) VALUES (?, ?);"
 		let insertStatement = try prepareStatement(sql: insertSql)
 		defer {
 			sqlite3_finalize(insertStatement)
 		}
 		guard
-			sqlite3_bind_text(insertStatement, 1, appId.utf8String, -1, nil) == SQLITE_OK &&
-				sqlite3_bind_text(insertStatement, 2, dnsQuery.utf8String, -1, nil) == SQLITE_OK
+			sqlite3_bind_text(insertStatement, 1, (domain as NSString).utf8String, -1, nil) == SQLITE_OK &&
+			sqlite3_bind_text(insertStatement, 2, (host as NSString?)?.utf8String, -1, nil) == SQLITE_OK
 			else {
 				throw SQLiteError.Bind(message: errorMessage)
 		}
@@ -130,32 +145,9 @@ extension SQLiteDatabase {
 		}
 	}
 	
-	func dnsQueriesForApp(appIdentifier: NSString, _ body: @escaping (DNSQuery) -> Void) {
-		let querySql = "SELECT * FROM req WHERE app = ?;"
-		guard let queryStatement = try? prepareStatement(sql: querySql) else {
-			print("Error preparing statement for insert")
-			return
-		}
-		defer {
-			sqlite3_finalize(queryStatement)
-		}
-		guard sqlite3_bind_text(queryStatement, 1, appIdentifier.utf8String, -1, nil) == SQLITE_OK else {
-			print("Error binding insert key")
-			return
-		}
-		while (sqlite3_step(queryStatement) == SQLITE_ROW) {
-			let appId = sqlite3_column_text(queryStatement, 0)
-			let dnsQ = sqlite3_column_text(queryStatement, 1)
-			let ts = sqlite3_column_int64(queryStatement, 2)
-			let res = DNSQuery(app: String(cString: appId!),
-							   dns: String(cString: dnsQ!),
-							   ts: ts)
-			body(res)
-		}
-	}
-	
-	func appList() -> [String] {
-		let querySql = "SELECT DISTINCT app FROM req;"
+	func domainList() -> [GroupedDomain] {
+//		let querySql = "SELECT DISTINCT domain FROM req;"
+		let querySql = "SELECT domain, COUNT(*), MAX(ts) FROM req GROUP BY domain ORDER BY 3 DESC;"
 		guard let queryStatement = try? prepareStatement(sql: querySql) else {
 			print("Error preparing statement for insert")
 			return []
@@ -163,11 +155,65 @@ extension SQLiteDatabase {
 		defer {
 			sqlite3_finalize(queryStatement)
 		}
-		var res: [String] = []
+		var res: [GroupedDomain] = []
 		while (sqlite3_step(queryStatement) == SQLITE_ROW) {
-			let appId = sqlite3_column_text(queryStatement, 0)
-			res.append(String(cString: appId!))
+			let d = sqlite3_column_text(queryStatement, 0)
+			let c = sqlite3_column_int64(queryStatement, 1)
+			let l = sqlite3_column_int64(queryStatement, 2)
+			res.append(GroupedDomain(label: String(cString: d!), count: c, lastModified: l))
 		}
 		return res
 	}
+	
+	func hostsForDomain(_ domain: NSString) -> [GroupedDomain] {
+		let querySql = "SELECT host, COUNT(*), MAX(ts) FROM req WHERE domain = ? GROUP BY host ORDER BY 1 ASC;"
+		guard let queryStatement = try? prepareStatement(sql: querySql) else {
+			print("Error preparing statement for insert")
+			return []
+		}
+		defer {
+			sqlite3_finalize(queryStatement)
+		}
+		guard sqlite3_bind_text(queryStatement, 1, domain.utf8String, -1, nil) == SQLITE_OK else {
+			print("Error binding insert key")
+			return []
+		}
+		var res: [GroupedDomain] = []
+		while (sqlite3_step(queryStatement) == SQLITE_ROW) {
+			let h = sqlite3_column_text(queryStatement, 0)
+			let c = sqlite3_column_int64(queryStatement, 1)
+			let l = sqlite3_column_int64(queryStatement, 2)
+			res.append(GroupedDomain(label: h != nil ? String(cString: h!) : "", count: c, lastModified: l))
+		}
+		return res
+	}
+	
+	func timesForDomain(_ domain: String, host: String?) -> [Timestamp] {
+		let querySql = "SELECT ts FROM req WHERE domain = ? AND host = ?;"
+		guard let queryStatement = try? prepareStatement(sql: querySql) else {
+			print("Error preparing statement for insert")
+			return []
+		}
+		defer {
+			sqlite3_finalize(queryStatement)
+		}
+		guard
+			sqlite3_bind_text(queryStatement, 1, (domain as NSString).utf8String, -1, nil) == SQLITE_OK &&
+			sqlite3_bind_text(queryStatement, 2, (host as NSString?)?.utf8String, -1, nil) == SQLITE_OK
+			else {
+				print("Error binding insert key")
+				return []
+		}
+		var res: [Timestamp] = []
+		while (sqlite3_step(queryStatement) == SQLITE_ROW) {
+			let ts = sqlite3_column_int64(queryStatement, 0)
+			res.append(ts)
+		}
+		return res
+	}
+}
+
+typealias Timestamp = Int64
+struct GroupedDomain {
+	let label: String, count: Int64, lastModified: Timestamp
 }

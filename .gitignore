@@ -1,0 +1,7 @@
+xcuserdata/
+.build/
+build/
+DerivedData/
+
+Carthage/Checkouts
+Carthage/Build
