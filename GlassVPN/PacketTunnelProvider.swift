@@ -2,8 +2,7 @@ import NetworkExtension
 import NEKit
 
 fileprivate var db: SQLiteDatabase?
-fileprivate var blockedDomains: [String] = []
-fileprivate var ignoredDomains: [String] = []
+fileprivate var domainFilters: [String : FilterOptions] = [:]
 
 // MARK: ObserverFactory
 
@@ -17,19 +16,13 @@ class LDObserverFactory: ObserverFactory {
 		override func signal(_ event: ProxySocketEvent) {
 			switch event {
 			case .receivedRequest(let session, let socket):
-				QLog("DNS: \(session.host)")
-				if ignoredDomains.allSatisfy({ session.host != $0 && !session.host.hasSuffix("." + $0) }) {
-					try? db?.insertDNSQuery(session.host)
-				} else {
-					QLog("ignored")
-				}
-				for domain in blockedDomains {
-                    if (session.host == domain || session.host.hasSuffix("." + domain)) {
-                        QLog("blocked")
-						socket.forceDisconnect()
-                        return
-                    }
-                }
+				ZLog("DNS: \(session.host)")
+				let match = domainFilters.first { session.host == $0.key || session.host.hasSuffix("." + $0.key) }
+				let block = match?.value.contains(.blocked) ?? false
+				let ignore = match?.value.contains(.ignored) ?? false
+				if !ignore { try? db?.insertDNSQuery(session.host, blocked: block) }
+				else { ZLog("ignored") }
+				if block { ZLog("blocked"); socket.forceDisconnect() }
 			default:
 				break
 			}
@@ -47,9 +40,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	var proxyServer: GCDHTTPProxyServer!
 
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
-		QLog("startTunnel")
-		ignoredDomains = ["signal.org", "whispersystems.org"]
-		// TODO: init blocked & ignored
+		ZLog("startTunnel")
 		do {
 			db = try SQLiteDatabase.open(path: DB_PATH)
 			try db!.createTable(table: DNSQuery.self)
@@ -62,6 +53,10 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         }
         proxyServer = nil
         
+		// Load domain filter
+		domainFilters = db!.loadFilters() ?? [:]
+		
+		// Create proxy
         let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: proxyServerAddress)
         settings.mtu = NSNumber(value: 1500)
         
@@ -81,11 +76,11 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 		
 		self.setTunnelNetworkSettings(settings) { error in
 			guard error == nil else {
-				QLog("setTunnelNetworkSettings error: \(String(describing: error))")
+				ZLog("setTunnelNetworkSettings error: \(String(describing: error))")
 				completionHandler(error)
 				return
 			}
-			QLog("setTunnelNetworkSettings success \(self.packetFlow)")
+			ZLog("setTunnelNetworkSettings success \(self.packetFlow)")
 			completionHandler(nil)
 			
 			self.proxyServer = GCDHTTPProxyServer(address: IPAddress(fromString: self.proxyServerAddress), port: Port(port: self.proxyServerPort))
@@ -94,7 +89,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 completionHandler(nil)
             }
             catch let proxyError {
-                QLog("Error starting proxy server \(proxyError)")
+                ZLog("Error starting proxy server \(proxyError)")
                 completionHandler(proxyError)
             }
 		}
@@ -102,26 +97,26 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	
     
 	override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-		QLog("stopTunnel")
+		ZLog("stopTunnel")
 		db = nil
 		DNSServer.currentServer = nil
         RawSocketFactory.TunnelProvider = nil
         ObserverFactory.currentFactory = nil
         proxyServer.stop()
         proxyServer = nil
-        QLog("error on stopping: \(reason)")
+        ZLog("error on stopping: \(reason)")
         completionHandler()
         exit(EXIT_SUCCESS)
     }
     
     override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
-        QLog("handleAppMessage")
+        ZLog("handleAppMessage")
         if let handler = completionHandler {
             handler(messageData)
         }
     }
 }
 
-public func QLog(_ message: String) {
+fileprivate func ZLog(_ message: String) {
 	NSLog("TUN: \(message)")
 }

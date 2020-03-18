@@ -2,7 +2,6 @@ import UIKit
 import NetworkExtension
 
 let VPNConfigBundleIdentifier = "de.uni-bamberg.psi.AppCheck.VPN"
-let dateFormatter = DateFormatter()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -11,15 +10,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var managerVPN: NETunnelProviderManager?
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		dateFormatter.dateFormat = "yyyy-MM-dd  HH:mm:ss"
-		
-//		if UserDefaults.standard.bool(forKey: "kill_proxy") {
-//			UserDefaults.standard.set(false, forKey: "kill_proxy")
-//			disableDNS()
-//		} else {
-//			postDNSState()
-//		}
-		
 		if UserDefaults.standard.bool(forKey: "kill_db") {
 			UserDefaults.standard.set(false, forKey: "kill_db")
 			SQLiteDatabase.destroyDatabase(path: DB_PATH)
@@ -27,19 +17,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		do {
 			let db = try SQLiteDatabase.open(path: DB_PATH)
 			try db.createTable(table: DNSQuery.self)
+			try db.createTable(table: DNSFilter.self)
 		} catch {}
 		
-		self.postVPNState(.invalid)
+		DBWrp.initContentOfDB()
+		
 		loadVPN { mgr in
 			self.managerVPN = mgr
 			self.postVPNState()
 		}
+		NSNotification.Name.NEVPNStatusDidChange.observe(call: #selector(vpnStatusChanged(_:)), on: self)
 		return true
 	}
-
-	func applicationDidBecomeActive(_ application: UIApplication) {
-		// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-//		postVPNState()
+	
+	@objc private func vpnStatusChanged(_ notification: Notification) {
+		postRawVPNState((notification.object as? NETunnelProviderSession)?.status ?? .invalid)
 	}
 	
 	func setProxyEnabled(_ newState: Bool) {
@@ -69,7 +61,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		mgr.protocolConfiguration = proto
 		mgr.isEnabled = true
 		mgr.saveToPreferences { error in
-			guard error == nil else { return }
+			guard error == nil else {
+				self.postProcessedVPNState(.off)
+				//ErrorAlert(error!).presentIn(self.window?.rootViewController)
+				return
+			}
 			success(mgr)
 		}
 	}
@@ -105,16 +101,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	private func postVPNState() {
 		guard let mgr = self.managerVPN else {
-			self.postVPNState(.invalid)
+			self.postRawVPNState(.invalid)
 			return
 		}
 		mgr.loadFromPreferences { _ in
-			self.postVPNState(mgr.connection.status)
+			self.postRawVPNState(mgr.connection.status)
 		}
 	}
 	
-	private func postVPNState(_ state: NEVPNStatus) {
-		NotificationCenter.default.post(name: .init("ChangedStateGlassVPN"), object: state)
+	// MARK: Notifications
+	
+	private func postRawVPNState(_ origState: NEVPNStatus) {
+		let state: VPNState
+		switch origState {
+		case .connected: 								state = .on
+		case .connecting, .disconnecting, .reasserting: state = .inbetween
+		case .invalid, .disconnected: fallthrough
+		@unknown default: 								state = .off
+		}
+		postProcessedVPNState(state)
+	}
+	
+	private func postProcessedVPNState(_ state: VPNState) {
+		currentVPNState = state
+		NotifyVPNStateChanged.post(state)
 	}
 }
-

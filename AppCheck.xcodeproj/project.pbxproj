@@ -7,13 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		540C6457240D929300E948F9 /* EditableRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540C6456240D929300E948F9 /* EditableRows.swift */; };
 		541A957623E602DF00C09C19 /* LaunchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 541A957523E602DF00C09C19 /* LaunchIcon.png */; };
 		541AC5D82399498A00A769D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541AC5D72399498A00A769D7 /* AppDelegate.swift */; };
 		541AC5DD2399498A00A769D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5DB2399498A00A769D7 /* Main.storyboard */; };
 		541AC5DF2399498B00A769D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5DE2399498B00A769D7 /* Assets.xcassets */; };
 		541AC5E22399498B00A769D7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5E02399498B00A769D7 /* LaunchScreen.storyboard */; };
+		542E2A982404973F001462DC /* TBCMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542E2A972404973F001462DC /* TBCMain.swift */; };
+		542E2A9A24051556001462DC /* TVCSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542E2A9924051556001462DC /* TVCSettings.swift */; };
 		543CDB2023EEE61900B7F323 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543CDB1F23EEE61900B7F323 /* PacketTunnelProvider.swift */; };
 		543CDB2523EEE61900B7F323 /* GlassVPN.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 543CDB1D23EEE61900B7F323 /* GlassVPN.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		544C95262407B1C700AB89D0 /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544C95252407B1C700AB89D0 /* SharedState.swift */; };
 		546063D023FC2565008F505A /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B723FC254C008F505A /* CocoaAsyncSocket.framework */; };
 		546063D123FC2565008F505A /* CocoaAsyncSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B723FC254C008F505A /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		546063D223FC2565008F505A /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 546063B523FC254B008F505A /* CocoaLumberjack.framework */; };
@@ -40,6 +44,14 @@
 		54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6023E0D69A0054345C /* TVCHosts.swift */; };
 		54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6E23E44CD00054345C /* TVCHostDetails.swift */; };
 		54953E7123E473F10054345C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 54953E7023E473F10054345C /* Settings.bundle */; };
+		54B34594240E6343004C53CC /* TVCFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B34593240E6343004C53CC /* TVCFilter.swift */; };
+		54B34596240F0513004C53CC /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B34595240F0513004C53CC /* TableView.swift */; };
+		54B345992414F491004C53CC /* DBWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345982414F491004C53CC /* DBWrapper.swift */; };
+		54B345A6241BB982004C53CC /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345A5241BB982004C53CC /* Notifications.swift */; };
+		54B345A9241BBA0B004C53CC /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345A8241BBA0B004C53CC /* Generic.swift */; };
+		54B345AB241BBA5B004C53CC /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345AA241BBA5B004C53CC /* AlertSheet.swift */; };
+		54B345AD241BBB00004C53CC /* GroupedDomain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345AC241BBB00004C53CC /* GroupedDomain.swift */; };
+		54B345B0242264F8004C53CC /* third-level.txt in Resources */ = {isa = PBXBuildFile; fileRef = 54B345AF242264F8004C53CC /* third-level.txt */; };
 		54C056DB23E9E36E00214A3F /* AppInfoType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C056DA23E9E36E00214A3F /* AppInfoType.swift */; };
 		54C056DD23E9EEF700214A3F /* BundleIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C056DC23E9EEF700214A3F /* BundleIcon.swift */; };
 /* End PBXBuildFile section */
@@ -89,6 +101,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		540C6456240D929300E948F9 /* EditableRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableRows.swift; sourceTree = "<group>"; };
 		541A957523E602DF00C09C19 /* LaunchIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LaunchIcon.png; sourceTree = "<group>"; };
 		541AC5D42399498A00A769D7 /* AppCheck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		541AC5D72399498A00A769D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -97,10 +110,13 @@
 		541AC5E12399498B00A769D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		541AC5E32399498B00A769D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		541AC5EA2399499A00A769D7 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		542E2A972404973F001462DC /* TBCMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBCMain.swift; sourceTree = "<group>"; };
+		542E2A9924051556001462DC /* TVCSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCSettings.swift; sourceTree = "<group>"; };
 		543CDB1D23EEE61900B7F323 /* GlassVPN.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GlassVPN.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		543CDB1F23EEE61900B7F323 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
 		543CDB2123EEE61900B7F323 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		543CDB2223EEE61900B7F323 /* GlassVPN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GlassVPN.entitlements; sourceTree = "<group>"; };
+		544C95252407B1C700AB89D0 /* SharedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedState.swift; sourceTree = "<group>"; };
 		546063B123FC254B008F505A /* Sodium.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sodium.framework; path = Carthage/Build/iOS/Sodium.framework; sourceTree = "<group>"; };
 		546063B223FC254B008F505A /* NEKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NEKit.framework; path = Carthage/Build/iOS/NEKit.framework; sourceTree = "<group>"; };
 		546063B323FC254B008F505A /* tun2socks.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = tun2socks.framework; path = Carthage/Build/iOS/tun2socks.framework; sourceTree = "<group>"; };
@@ -116,6 +132,14 @@
 		54953E6023E0D69A0054345C /* TVCHosts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCHosts.swift; sourceTree = "<group>"; };
 		54953E6E23E44CD00054345C /* TVCHostDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCHostDetails.swift; sourceTree = "<group>"; };
 		54953E7023E473F10054345C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		54B34593240E6343004C53CC /* TVCFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCFilter.swift; sourceTree = "<group>"; };
+		54B34595240F0513004C53CC /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
+		54B345982414F491004C53CC /* DBWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBWrapper.swift; sourceTree = "<group>"; };
+		54B345A5241BB982004C53CC /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		54B345A8241BBA0B004C53CC /* Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generic.swift; sourceTree = "<group>"; };
+		54B345AA241BBA5B004C53CC /* AlertSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSheet.swift; sourceTree = "<group>"; };
+		54B345AC241BBB00004C53CC /* GroupedDomain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedDomain.swift; sourceTree = "<group>"; };
+		54B345AF242264F8004C53CC /* third-level.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "third-level.txt"; sourceTree = "<group>"; };
 		54B7562223D7B2DC008F0C41 /* SQDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQDB.swift; sourceTree = "<group>"; };
 		54C056DA23E9E36E00214A3F /* AppInfoType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoType.swift; sourceTree = "<group>"; };
 		54C056DC23E9EEF700214A3F /* BundleIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleIcon.swift; sourceTree = "<group>"; };
@@ -149,11 +173,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		540C6454240D5BAE00E948F9 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				54953E5E23DEBE840054345C /* TVCDomains.swift */,
+				54953E6023E0D69A0054345C /* TVCHosts.swift */,
+				54953E6E23E44CD00054345C /* TVCHostDetails.swift */,
+			);
+			path = Requests;
+			sourceTree = "<group>";
+		};
+		540C6455240D5BD200E948F9 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				542E2A9924051556001462DC /* TVCSettings.swift */,
+				54B34593240E6343004C53CC /* TVCFilter.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		541AC5CB2399498A00A769D7 = {
 			isa = PBXGroup;
 			children = (
-				54B7562223D7B2DC008F0C41 /* SQDB.swift */,
 				541AC5D62399498A00A769D7 /* main */,
+				542E2A9B24051F79001462DC /* media */,
 				543CDB1E23EEE61900B7F323 /* GlassVPN */,
 				541AC5D52399498A00A769D7 /* Products */,
 				541AC5E92399499A00A769D7 /* Frameworks */,
@@ -172,15 +215,16 @@
 		541AC5D62399498A00A769D7 /* main */ = {
 			isa = PBXGroup;
 			children = (
+				54B3459A2415651C004C53CC /* DB */,
+				54B345A4241BB975004C53CC /* Extensions */,
 				548B1F9423D338EC005B047C /* main.entitlements */,
 				541AC5D72399498A00A769D7 /* AppDelegate.swift */,
-				54C056DC23E9EEF700214A3F /* BundleIcon.swift */,
-				54C056DA23E9E36E00214A3F /* AppInfoType.swift */,
-				54953E5E23DEBE840054345C /* TVCDomains.swift */,
-				54953E6023E0D69A0054345C /* TVCHosts.swift */,
-				54953E6E23E44CD00054345C /* TVCHostDetails.swift */,
+				542E2A972404973F001462DC /* TBCMain.swift */,
+				54B34597240F18DD004C53CC /* TVC Extensions */,
+				540C6454240D5BAE00E948F9 /* Requests */,
+				540C6455240D5BD200E948F9 /* Settings */,
+				54B345B12422E029004C53CC /* unused */,
 				541AC5DB2399498A00A769D7 /* Main.storyboard */,
-				541A957523E602DF00C09C19 /* LaunchIcon.png */,
 				541AC5E02399498B00A769D7 /* LaunchScreen.storyboard */,
 				541AC5DE2399498B00A769D7 /* Assets.xcassets */,
 				541AC5E32399498B00A769D7 /* Info.plist */,
@@ -207,6 +251,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		542E2A9B24051F79001462DC /* media */ = {
+			isa = PBXGroup;
+			children = (
+				541A957523E602DF00C09C19 /* LaunchIcon.png */,
+				54B345AF242264F8004C53CC /* third-level.txt */,
+			);
+			path = media;
+			sourceTree = "<group>";
+		};
 		543CDB1E23EEE61900B7F323 /* GlassVPN */ = {
 			isa = PBXGroup;
 			children = (
@@ -215,6 +268,45 @@
 				543CDB2223EEE61900B7F323 /* GlassVPN.entitlements */,
 			);
 			path = GlassVPN;
+			sourceTree = "<group>";
+		};
+		54B34597240F18DD004C53CC /* TVC Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				540C6456240D929300E948F9 /* EditableRows.swift */,
+			);
+			path = "TVC Extensions";
+			sourceTree = "<group>";
+		};
+		54B3459A2415651C004C53CC /* DB */ = {
+			isa = PBXGroup;
+			children = (
+				54B7562223D7B2DC008F0C41 /* SQDB.swift */,
+				54B345982414F491004C53CC /* DBWrapper.swift */,
+			);
+			path = DB;
+			sourceTree = "<group>";
+		};
+		54B345A4241BB975004C53CC /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				544C95252407B1C700AB89D0 /* SharedState.swift */,
+				54B345A8241BBA0B004C53CC /* Generic.swift */,
+				54B345A5241BB982004C53CC /* Notifications.swift */,
+				54B345AA241BBA5B004C53CC /* AlertSheet.swift */,
+				54B345AC241BBB00004C53CC /* GroupedDomain.swift */,
+				54B34595240F0513004C53CC /* TableView.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		54B345B12422E029004C53CC /* unused */ = {
+			isa = PBXGroup;
+			children = (
+				54C056DC23E9EEF700214A3F /* BundleIcon.swift */,
+				54C056DA23E9E36E00214A3F /* AppInfoType.swift */,
+			);
+			path = unused;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -316,6 +408,7 @@
 				541AC5E22399498B00A769D7 /* LaunchScreen.storyboard in Resources */,
 				541AC5DF2399498B00A769D7 /* Assets.xcassets in Resources */,
 				541AC5DD2399498A00A769D7 /* Main.storyboard in Resources */,
+				54B345B0242264F8004C53CC /* third-level.txt in Resources */,
 				541A957623E602DF00C09C19 /* LaunchIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -354,13 +447,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54B345AD241BBB00004C53CC /* GroupedDomain.swift in Sources */,
+				54B345A6241BB982004C53CC /* Notifications.swift in Sources */,
+				54B345AB241BBA5B004C53CC /* AlertSheet.swift in Sources */,
+				544C95262407B1C700AB89D0 /* SharedState.swift in Sources */,
+				54B345A9241BBA0B004C53CC /* Generic.swift in Sources */,
+				54B34596240F0513004C53CC /* TableView.swift in Sources */,
 				54953E3323DC752E0054345C /* SQDB.swift in Sources */,
 				54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */,
+				540C6457240D929300E948F9 /* EditableRows.swift in Sources */,
+				542E2A9A24051556001462DC /* TVCSettings.swift in Sources */,
 				54953E5F23DEBE840054345C /* TVCDomains.swift in Sources */,
 				54C056DB23E9E36E00214A3F /* AppInfoType.swift in Sources */,
 				54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */,
 				54C056DD23E9EEF700214A3F /* BundleIcon.swift in Sources */,
+				542E2A982404973F001462DC /* TBCMain.swift in Sources */,
 				541AC5D82399498A00A769D7 /* AppDelegate.swift in Sources */,
+				54B345992414F491004C53CC /* DBWrapper.swift in Sources */,
+				54B34594240E6343004C53CC /* TVCFilter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -455,10 +559,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "";
+				"OTHER_SWIFT_FLAGS[sdk=iphonesimulator*]" = "-D IOS_SIMULATOR";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -512,9 +618,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -530,6 +637,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = main/main.entitlements;
 				CURRENT_PROJECT_VERSION = 7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = main/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -550,6 +661,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = main/main.entitlements;
 				CURRENT_PROJECT_VERSION = 7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = main/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -573,7 +688,6 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = GlassVPN/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -597,7 +711,6 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = GlassVPN/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

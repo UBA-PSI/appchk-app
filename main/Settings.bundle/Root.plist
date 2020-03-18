@@ -10,16 +10,6 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Kill proxy on startup</string>
-			<key>Key</key>
-			<string>kill_proxy</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
 			<string>Delete DB on startup</string>
 			<key>Key</key>
 			<string>kill_db</string>
