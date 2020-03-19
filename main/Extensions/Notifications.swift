@@ -9,7 +9,7 @@ extension NSNotification.Name {
 	func post(_ obj: Any? = nil) {
 		NotificationCenter.default.post(name: self, object: obj)
 	}
-	func postOnMainThread(_ obj: Any? = nil) {
+	func postAsyncMain(_ obj: Any? = nil) {
 		DispatchQueue.main.async { NotificationCenter.default.post(name: self, object: obj) }
 	}
 	/// You are responsible for removing the returned object in a `deinit` block.

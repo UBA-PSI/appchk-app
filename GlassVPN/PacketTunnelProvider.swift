@@ -38,11 +38,15 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	let proxyServerPort: UInt16 = 9090
     let proxyServerAddress = "127.0.0.1"
 	var proxyServer: GCDHTTPProxyServer!
+	
+	func reloadDomainFilter() {
+		domainFilters = db?.loadFilters() ?? [:]
+	}
 
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
 		ZLog("startTunnel")
 		do {
-			db = try SQLiteDatabase.open(path: DB_PATH)
+			db = try SQLiteDatabase.open()
 			try db!.createTable(table: DNSQuery.self)
 		} catch {
 			completionHandler(error)
@@ -53,8 +57,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         }
         proxyServer = nil
         
-		// Load domain filter
-		domainFilters = db!.loadFilters() ?? [:]
+		reloadDomainFilter()
 		
 		// Create proxy
         let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: proxyServerAddress)
@@ -111,9 +114,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
     
     override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
         ZLog("handleAppMessage")
-        if let handler = completionHandler {
-            handler(messageData)
-        }
+		reloadDomainFilter()
     }
 }
 

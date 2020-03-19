@@ -31,10 +31,10 @@ class TVCSettings: UITableViewController {
 		// TODO: export partly?
 		// TODO: show header-banner of success
 		// Share Sheet
-		let sheet = UIActivityViewController(activityItems: [URL(fileURLWithPath: DB_PATH)], applicationActivities: nil)
+		let sheet = UIActivityViewController(activityItems: [URL.internalDB()], applicationActivities: nil)
 		self.present(sheet, animated: true)
 		// Save to Files app
-//		self.present(UIDocumentPickerViewController(url: URL(fileURLWithPath: DB_PATH), in: .exportToService), animated: true)
+//		self.present(UIDocumentPickerViewController(url: FileManager.default.internalDB(), in: .exportToService), animated: true)
 		// Shows Alert and exports to Documents directory
 //		AskAlert(title: "Export results?", text: """
 //			This action will copy the internal database to the app's local Documents directory. You can use the Files app to access the database file.

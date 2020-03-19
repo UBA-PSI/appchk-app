@@ -45,7 +45,9 @@ protocol EditActionsIgnoreBlockDelete : EditableRows {
 extension EditActionsIgnoreBlockDelete where Self: UITableViewController {
 	func editableRowActions(_ index: IndexPath) -> [(RowAction, String)] {
 		let x = dataSource[index.row]
-		QLog.m(x.domain)
+		if x.domain.starts(with: "#") {
+			return [(.delete, "Delete")]
+		}
 		let b = x.options?.contains(.blocked) ?? false
 		let i = x.options?.contains(.ignored) ?? false
 		return [(.delete, "Delete"), (.block, b ? "Unblock" : "Block"), (.ignore, i ? "Unignore" : "Ignore")]

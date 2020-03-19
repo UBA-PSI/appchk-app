@@ -1,10 +1,6 @@
 import Foundation
 import SQLite3
 
-let exportPath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-let basePath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.de.uni-bamberg.psi.AppCheck")
-let DB_PATH = basePath!.appendingPathComponent("dns-logs.sqlite").relativePath
-
 typealias Timestamp = Int64
 struct GroupedDomain {
 	let domain: String, total: Int32, blocked: Int32, lastModified: Timestamp
@@ -29,7 +25,7 @@ enum SQLiteError: Error {
 
 // MARK: - SQLiteDatabase
 
-var AppDB: SQLiteDatabase? { get { try? SQLiteDatabase.open(path: DB_PATH) } }
+var AppDB: SQLiteDatabase? { get { try? SQLiteDatabase.open() } }
 
 class SQLiteDatabase {
 	private let dbPointer: OpaquePointer?
@@ -49,10 +45,9 @@ class SQLiteDatabase {
 	
 	deinit {
 		sqlite3_close(dbPointer)
-//		SQLiteDatabase.destroyDatabase(path: DB_PATH)
 	}
 	
-	static func destroyDatabase(path: String) {
+	static func destroyDatabase(path: String = URL.internalDB().relativePath) {
 		if FileManager.default.fileExists(atPath: path) {
 			do { try FileManager.default.removeItem(atPath: path) }
 			catch { print("Could not destroy database file: \(path)") }
@@ -62,13 +57,13 @@ class SQLiteDatabase {
 //	static func export() throws -> URL {
 //		let fmt = DateFormatter()
 //		fmt.dateFormat = "yyyy-MM-dd"
-//		let dest = exportPath.appendingPathComponent("\(fmt.string(from: Date()))-dns-log.sqlite")
+//		let dest = FileManager.default.exportDir().appendingPathComponent("\(fmt.string(from: Date()))-dns-log.sqlite")
 //		try? FileManager.default.removeItem(at: dest)
-//		try FileManager.default.copyItem(atPath: DB_PATH, toPath: dest.relativePath)
+//		try FileManager.default.copyItem(at: FileManager.default.internalDB(), to: dest)
 //		return dest
 //	}
 	
-	static func open(path: String) throws -> SQLiteDatabase {
+	static func open(path: String = URL.internalDB().relativePath) throws -> SQLiteDatabase {
 		var db: OpaquePointer?
 		//sqlite3_open_v2(path, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_SHAREDCACHE, nil)
 		if sqlite3_open(path, &db) == SQLITE_OK {

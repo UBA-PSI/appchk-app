@@ -65,7 +65,7 @@ class DBWrapper {
 		let list = AppDB?.loadFilters() ?? [:]
 		Q.async(flags: .barrier) {
 			self.dataF = list
-			NotifyFilterChanged.postOnMainThread()
+			NotifyFilterChanged.postAsyncMain()
 		}
 	}
 	
@@ -82,7 +82,7 @@ class DBWrapper {
 					self.latestModification = max(parent.lastModified, self.latestModification)
 				}
 			}
-			NotifyLogHistoryReset.postOnMainThread()
+			NotifyLogHistoryReset.postAsyncMain()
 		}
 	}
 	
@@ -215,7 +215,7 @@ class DBWrapper {
 					self.dataB_delegate(self.dataA[i].domain)?.replaceRow(self.dataB[i][u], at: u)
 				}
 			}
-			NotifyFilterChanged.postOnMainThread()
+			NotifyFilterChanged.postAsyncMain()
 		}
 	}
 	

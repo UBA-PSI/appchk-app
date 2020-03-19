@@ -12,10 +12,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		if UserDefaults.standard.bool(forKey: "kill_db") {
 			UserDefaults.standard.set(false, forKey: "kill_db")
-			SQLiteDatabase.destroyDatabase(path: DB_PATH)
+			SQLiteDatabase.destroyDatabase()
 		}
 		do {
-			let db = try SQLiteDatabase.open(path: DB_PATH)
+			let db = try SQLiteDatabase.open()
 			try db.createTable(table: DNSQuery.self)
 			try db.createTable(table: DNSFilter.self)
 		} catch {}
@@ -27,11 +27,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			self.postVPNState()
 		}
 		NSNotification.Name.NEVPNStatusDidChange.observe(call: #selector(vpnStatusChanged(_:)), on: self)
+		NotifyFilterChanged.observe(call: #selector(filterDidChange), on: self)
 		return true
 	}
 	
 	@objc private func vpnStatusChanged(_ notification: Notification) {
 		postRawVPNState((notification.object as? NETunnelProviderSession)?.status ?? .invalid)
+	}
+	
+	@objc private func filterDidChange() {
+		// Notify VPN extension about changes
+		if let session = self.managerVPN?.connection as? NETunnelProviderSession,
+			session.status == .connected {
+			try? session.sendProviderMessage("filter-update".data(using: .ascii)!, responseHandler: nil)
+		}
 	}
 	
 	func setProxyEnabled(_ newState: Bool) {
@@ -42,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			}
 			return
 		}
-		let state = mgr.isEnabled && (mgr.connection.status == NEVPNStatus.connected)
+		let state = mgr.isEnabled && (mgr.connection.status == .connected)
 		if state != newState {
 			self.updateVPN({ mgr.isEnabled = true }) {
 				newState ? try? mgr.connection.startVPNTunnel() : mgr.connection.stopVPNTunnel()
