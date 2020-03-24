@@ -14,11 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			UserDefaults.standard.set(false, forKey: "kill_db")
 			SQLiteDatabase.destroyDatabase()
 		}
-		do {
-			let db = try SQLiteDatabase.open()
-			try db.createTable(table: DNSQuery.self)
-			try db.createTable(table: DNSFilter.self)
-		} catch {}
+		try? SQLiteDatabase.open().initScheme()
 		
 		DBWrp.initContentOfDB()
 		

@@ -158,10 +158,17 @@ private extension SQLiteDatabase {
 	}
 }
 
+extension SQLiteDatabase {
+	func initScheme() {
+		try? self.createTable(table: DNSQueryT.self)
+		try? self.createTable(table: DNSFilterT.self)
+	}
+}
 
-// MARK: - DNSQuery
 
-struct DNSQuery: SQLTable {
+// MARK: - DNSQueryT
+
+private struct DNSQueryT: SQLTable {
 	let ts: Timestamp
 	let domain: String
 	let wasBlocked: Bool
@@ -195,7 +202,7 @@ extension SQLiteDatabase {
 		try? run(sql: "DROP TABLE IF EXISTS req;", bind: nil) {
 			try ifStep($0, SQLITE_DONE)
 		}
-		try? createTable(table: DNSQuery.self)
+		try? createTable(table: DNSQueryT.self)
 	}
 	
 	/// Delete rows matching `ts >= ? AND "domain" OR "*.domain"`
@@ -236,9 +243,9 @@ extension SQLiteDatabase {
 }
 
 
-// MARK: - DNSFilter
+// MARK: - DNSFilterT
 
-struct DNSFilter: SQLTable {
+private struct DNSFilterT: SQLTable {
 	let domain: String
 	let options: FilterOptions
 	static var createStatement: String {

@@ -1,5 +1,4 @@
 import NetworkExtension
-import NEKit
 
 fileprivate var db: SQLiteDatabase?
 fileprivate var domainFilters: [String : FilterOptions] = [:]
@@ -16,13 +15,13 @@ class LDObserverFactory: ObserverFactory {
 		override func signal(_ event: ProxySocketEvent) {
 			switch event {
 			case .receivedRequest(let session, let socket):
-				ZLog("DNS: \(session.host)")
+				DDLogDebug("DNS: \(session.host)")
 				let match = domainFilters.first { session.host == $0.key || session.host.hasSuffix("." + $0.key) }
 				let block = match?.value.contains(.blocked) ?? false
 				let ignore = match?.value.contains(.ignored) ?? false
 				if !ignore { try? db?.insertDNSQuery(session.host, blocked: block) }
-				else { ZLog("ignored") }
-				if block { ZLog("blocked"); socket.forceDisconnect() }
+				else { DDLogDebug("ignored") }
+				if block { DDLogDebug("blocked"); socket.forceDisconnect() }
 			default:
 				break
 			}
@@ -44,10 +43,10 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	}
 
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
-		ZLog("startTunnel")
+		DDLogVerbose("startTunnel")
 		do {
 			db = try SQLiteDatabase.open()
-			try db!.createTable(table: DNSQuery.self)
+			db!.initScheme()
 		} catch {
 			completionHandler(error)
 			return
@@ -79,11 +78,11 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 		
 		self.setTunnelNetworkSettings(settings) { error in
 			guard error == nil else {
-				ZLog("setTunnelNetworkSettings error: \(String(describing: error))")
+				DDLogError("setTunnelNetworkSettings error: \(String(describing: error))")
 				completionHandler(error)
 				return
 			}
-			ZLog("setTunnelNetworkSettings success \(self.packetFlow)")
+			DDLogVerbose("setTunnelNetworkSettings success \(self.packetFlow)")
 			completionHandler(nil)
 			
 			self.proxyServer = GCDHTTPProxyServer(address: IPAddress(fromString: self.proxyServerAddress), port: Port(port: self.proxyServerPort))
@@ -92,7 +91,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 completionHandler(nil)
             }
             catch let proxyError {
-                ZLog("Error starting proxy server \(proxyError)")
+                DDLogError("Error starting proxy server \(proxyError)")
                 completionHandler(proxyError)
             }
 		}
@@ -100,24 +99,19 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	
     
 	override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-		ZLog("stopTunnel")
+		DDLogVerbose("stopTunnel with reason: \(reason)")
 		db = nil
 		DNSServer.currentServer = nil
         RawSocketFactory.TunnelProvider = nil
         ObserverFactory.currentFactory = nil
         proxyServer.stop()
         proxyServer = nil
-        ZLog("error on stopping: \(reason)")
         completionHandler()
         exit(EXIT_SUCCESS)
     }
     
     override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
-        ZLog("handleAppMessage")
+        DDLogVerbose("handleAppMessage")
 		reloadDomainFilter()
     }
-}
-
-fileprivate func ZLog(_ message: String) {
-	NSLog("TUN: \(message)")
 }
