@@ -56,7 +56,7 @@ class TVCSettings: UITableViewController {
 		AskAlert(title: "Clear results?", text: """
 			You are about to delete all results that have been logged in the past. Your preference for blocked and ignored domains is preserved.
 			Continue?
-		""", buttonText: "Delete", buttonStyle: .destructive) {
+		""", buttonText: "Delete", buttonStyle: .destructive) { _ in
 			DBWrp.deleteHistory()
 		}.presentIn(self)
 	}

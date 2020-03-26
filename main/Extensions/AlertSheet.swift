@@ -2,19 +2,32 @@ import UIKit
 
 // MARK: Basic Alerts
 
+/// - Parameters:
+///   - buttonText: Default: "Dismiss"
 func Alert(title: String?, text: String?, buttonText: String = "Dismiss") -> UIAlertController {
 	let alert = UIAlertController(title: title, message: text, preferredStyle: .alert)
 	alert.addAction(UIAlertAction(title: buttonText, style: .cancel, handler: nil))
 	return alert
 }
 
+/// - Parameters:
+///   - buttonText: Default: "Dismiss"
 func ErrorAlert(_ error: Error, buttonText: String = "Dismiss") -> UIAlertController {
 	return Alert(title: "Error", text: error.localizedDescription, buttonText: buttonText)
 }
 
-func AskAlert(title: String?, text: String?, buttonText: String = "Continue", buttonStyle: UIAlertAction.Style = .default, action: @escaping () -> Void) -> UIAlertController {
+/// - Parameters:
+///   - buttonText: Default: "Dismiss"
+func ErrorAlert(_ errorDescription: String, buttonText: String = "Dismiss") -> UIAlertController {
+	return Alert(title: "Error", text: errorDescription, buttonText: buttonText)
+}
+
+/// - Parameters:
+///   - buttonText: Default: "Continue"
+///   - buttonStyle: Default: `.default`
+func AskAlert(title: String?, text: String?, buttonText: String = "Continue", buttonStyle: UIAlertAction.Style = .default, action: @escaping (UIAlertController) -> Void) -> UIAlertController {
 	let alert = Alert(title: title, text: text, buttonText: "Cancel")
-	alert.addAction(UIAlertAction(title: buttonText, style: buttonStyle) { _ in action() })
+	alert.addAction(UIAlertAction(title: buttonText, style: buttonStyle) { _ in action(alert) })
 	return alert
 }
 

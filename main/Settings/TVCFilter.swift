@@ -18,6 +18,27 @@ class TVCFilter: UITableViewController, EditActionsRemove {
 		tableView.reloadData()
 	}
 	
+	@IBAction private func addNewFilter() {
+		let desc: String
+		switch currentFilter {
+		case .blocked: desc = "Enter the domain name you wish to block."
+		case .ignored: desc = "Enter the domain name you wish to ignore."
+		default: return
+		}
+		let alert = AskAlert(title: "Create new filter", text: desc, buttonText: "Add") {
+			guard let dom = $0.textFields?.first?.text else {
+				return
+			}
+			guard dom.contains("."), !dom.isKnownSLD() else {
+				ErrorAlert("Entered domain is not valid. Filter can't match country TLD only.").presentIn(self)
+				return
+			}
+			DBWrp.updateFilter(dom, add: self.currentFilter)
+		}
+		alert.addTextField { $0.placeholder = "cdn.domain.tld" }
+		alert.presentIn(self)
+	}
+	
 	// MARK: - Table View Delegate
 	
 	override func tableView(_ _: UITableView, numberOfRowsInSection _: Int) -> Int { dataSource.count }

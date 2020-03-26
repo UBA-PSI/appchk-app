@@ -55,15 +55,11 @@ extension String {
 			ending = rld + "." + ending
 		}
 		return (domain: ending, host: parts.joined(separator: "."))
-		
-//		var allDots = enumerated().compactMap { $1 == "." ? $0 : nil }
-//		let d1 = allDots.popLast() // we dont care about TLD
-//		guard let d2 = allDots.popLast() else {
-//			return (domain: self, host: nil) // no subdomains, just plain SLD
-//		}
-//		// TODO: check third level domains
-////		let d3 = allDots.popLast()
-//		return (String(suffix(count - d2 - 1)), String(prefix(d2)))
+	}
+	/// Returns `true` if String matches list of known second level domains (e.g., `co.uk`).
+	func isKnownSLD() -> Bool {
+		let parts = components(separatedBy: ".")
+		return parts.count == 2 && listOfSLDs[parts.last!]?[parts.first!] ?? false
 	}
 }
 
