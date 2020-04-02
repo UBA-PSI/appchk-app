@@ -41,7 +41,7 @@ class VCRecordings: UIViewController {
 		guard let r = currentRecording, r.stop == nil else {
 			return
 		}
-		recordingTimer = Timer.repeating(0.173, call: #selector(timerCallback(_:)), on: self, userInfo: r.start.toDate())
+		recordingTimer = Timer.repeating(0.086, call: #selector(timerCallback(_:)), on: self, userInfo: r.start.toDate())
 		updateUI(setRecording: true, animated: animate)
 	}
 	
