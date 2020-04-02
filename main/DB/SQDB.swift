@@ -25,12 +25,10 @@ enum SQLiteError: Error {
 
 // MARK: - SQLiteDatabase
 
-var AppDB: SQLiteDatabase? { get { try? SQLiteDatabase.open() } }
-
 class SQLiteDatabase {
 	private let dbPointer: OpaquePointer?
 	private init(dbPointer: OpaquePointer?) {
-//		print("SQLite path: \(basePath!.absoluteString)")
+//		print("SQLite path: \(URL.internalDB())")
 		self.dbPointer = dbPointer
 	}
 	
@@ -133,16 +131,13 @@ private extension SQLiteDatabase {
 		sqlite3_bind_text(stmt, col, (value as NSString).utf8String, -1, nil) == SQLITE_OK
 	}
 	
+	func bindTextOrNil(_ stmt: OpaquePointer, _ col: Int32, _ value: String?) -> Bool {
+		sqlite3_bind_text(stmt, col, (value == nil) ? nil : (value! as NSString).utf8String, -1, nil) == SQLITE_OK
+	}
+	
 	func readText(_ stmt: OpaquePointer, _ col: Int32) -> String? {
 		let val = sqlite3_column_text(stmt, col)
 		return (val != nil ? String(cString: val!) : nil)
-	}
-	
-	func readGroupedDomain(_ stmt: OpaquePointer) -> GroupedDomain {
-		GroupedDomain(domain: readText(stmt, 0) ?? "",
-					  total: sqlite3_column_int(stmt, 1),
-					  blocked: sqlite3_column_int(stmt, 2),
-					  lastModified: sqlite3_column_int64(stmt, 3))
 	}
 	
 	func allRows<T>(_ stmt: OpaquePointer, _ fn: (OpaquePointer) -> T) -> [T] {
@@ -162,6 +157,7 @@ extension SQLiteDatabase {
 	func initScheme() {
 		try? self.createTable(table: DNSQueryT.self)
 		try? self.createTable(table: DNSFilterT.self)
+		try? self.createTable(table: Recording.self)
 	}
 }
 
@@ -216,6 +212,13 @@ extension SQLiteDatabase {
 	}
 	
 	// MARK: read
+	
+	func readGroupedDomain(_ stmt: OpaquePointer) -> GroupedDomain {
+		GroupedDomain(domain: readText(stmt, 0) ?? "",
+					  total: sqlite3_column_int(stmt, 1),
+					  blocked: sqlite3_column_int(stmt, 2),
+					  lastModified: sqlite3_column_int64(stmt, 3))
+	}
 	
 	func domainList(since ts: Timestamp = 0) -> [GroupedDomain]? {
 		try? run(sql: "SELECT domain, COUNT(*), SUM(logOpt&1), MAX(ts) FROM req \(ts == 0 ? "" : "WHERE ts > ?") GROUP BY domain ORDER BY 4 DESC;", bind: {
@@ -300,5 +303,89 @@ extension SQLiteDatabase {
 			}
 		}
 		do { try createFilter() } catch { updateFilter() }
+	}
+}
+
+
+// MARK: - Recordings
+
+struct Recording: SQLTable {
+	let start: Timestamp
+	let stop: Timestamp?
+	var appId: String? = nil
+	var title: String? = nil
+	var notes: String? = nil
+	static var createStatement: String {
+		return """
+		CREATE TABLE IF NOT EXISTS rec(
+		start BIGINT DEFAULT (strftime('%s','now')),
+		stop BIGINT,
+		appid VARCHAR(255),
+		title VARCHAR(255),
+		notes TEXT
+		);
+		"""
+	}
+}
+
+extension SQLiteDatabase {
+	
+	// MARK: write
+	
+	func startNewRecording(_ title: String? = nil, appBundle: String? = nil) throws -> Recording {
+		try run(sql: "INSERT INTO rec (title, appid) VALUES (?, ?);", bind: {
+			self.bindTextOrNil($0, 1, title) && self.bindTextOrNil($0, 2, appBundle)
+		}) { stmt -> Recording in
+			try ifStep(stmt, SQLITE_DONE)
+			return ongoingRecording()!
+		}
+	}
+	
+	func stopRecordings() {
+		try? run(sql: "UPDATE rec SET stop = (strftime('%s','now')) WHERE stop IS NULL;", bind: nil) { stmt -> Void in
+			sqlite3_step(stmt)
+		}
+	}
+	
+	func updateRecording(_ r: Recording) {
+		try? run(sql: "UPDATE rec SET title = ?, appid = ?, notes = ? WHERE start = ? LIMIT 1;", bind: {
+			self.bindTextOrNil($0, 1, r.title) && self.bindTextOrNil($0, 2, r.appId)
+				&& self.bindTextOrNil($0, 3, r.notes) && self.bindInt64($0, 4, r.start)
+		}) { stmt -> Void in
+			sqlite3_step(stmt)
+		}
+	}
+	
+	func deleteRecording(_ r: Recording) throws -> Bool {
+		try run(sql: "DELETE FROM rec WHERE start = ? LIMIT 1;", bind: {
+			self.bindInt64($0, 1, r.start)
+		}) {
+			try ifStep($0, SQLITE_DONE)
+			return sqlite3_changes(dbPointer) > 0
+		}
+	}
+	
+	// MARK: read
+	
+	func readRecording(_ stmt: OpaquePointer) -> Recording {
+		let end = sqlite3_column_int64(stmt, 1)
+		return Recording(start: sqlite3_column_int64(stmt, 0),
+						 stop: end == 0 ? nil : end,
+						 appId: readText(stmt, 2),
+						 title: readText(stmt, 3),
+						 notes: readText(stmt, 4))
+	}
+	
+	func ongoingRecording() -> Recording? {
+		try? run(sql: "SELECT * FROM rec WHERE stop IS NULL LIMIT 1;", bind: nil) {
+			try ifStep($0, SQLITE_ROW)
+			return readRecording($0)
+		}
+	}
+	
+	func allRecordings() -> [Recording]? {
+		try? run(sql: "SELECT * FROM rec WHERE stop IS NOT NULL;", bind: nil) {
+			allRows($0) { readRecording($0) }
+		}
 	}
 }

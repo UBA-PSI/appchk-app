@@ -25,7 +25,7 @@ class TVCHostDetails: UITableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "HostDetailCell")!
 		let src = dataSource[indexPath.row]
-		cell.textLabel?.text = dateTimeFormat.string(from: src.ts)
+		cell.textLabel?.text = src.ts.asDateTime()
 		cell.imageView?.image = (src.blocked ? UIImage(named: "shield-x") : nil)
 		return cell
 	}

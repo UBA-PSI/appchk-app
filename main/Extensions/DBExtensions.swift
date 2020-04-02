@@ -18,3 +18,19 @@ extension Array where Element == GroupedDomain {
 		return GroupedDomain(domain: domain, total: t, blocked: b, lastModified: m, options: opt)
 	}
 }
+
+extension Recording {
+	func stoppedCopy() -> Recording {
+		stop != nil ? self : Recording(start: start, stop: Timestamp(Date().timeIntervalSince1970),
+									   appId: appId, title: title, notes: notes)
+	}
+	var fallbackTitle: String { get { "Unnamed #\(start)" } }
+	var duration: Timestamp? { get { stop == nil ? nil : stop! - start } }
+	var durationString: String? { get { stop == nil ? nil : TimeFormat.from(duration!) } }
+}
+
+extension Timestamp {
+	func asDateTime() -> String { dateTimeFormat.string(from: self) }
+	func toDate() -> Date { Date(timeIntervalSince1970: Double(self)) }
+	static func now() -> Timestamp { Timestamp(Date().timeIntervalSince1970) }
+}

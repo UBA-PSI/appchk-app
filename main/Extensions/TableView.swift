@@ -3,8 +3,8 @@ import UIKit
 extension GroupedDomain {
 	var detailCellText: String { get {
 		return blocked > 0
-		? "\(dateTimeFormat.string(from: lastModified))   —   \(blocked)/\(total) blocked"
-		: "\(dateTimeFormat.string(from: lastModified))   —   \(total)"
+		? "\(lastModified.asDateTime())   —   \(blocked)/\(total) blocked"
+		: "\(lastModified.asDateTime())   —   \(total)"
 		}
 	}
 }
@@ -59,29 +59,29 @@ extension IncrementalDataSourceUpdate {
 	func insertRow(_ obj: GroupedDomain, at index: Int) {
 		dataSource.insert(obj, at: index)
 		ifDisplayed {
-			self.tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .left)
+			self.tableView.insertRows(at: [IndexPath(row: index)], with: .left)
 		}
 	}
 	func moveRow(_ obj: GroupedDomain, from: Int, to: Int) {
 		dataSource.remove(at: from)
 		dataSource.insert(obj, at: to)
 		ifDisplayed {
-			let source = IndexPath(row: from, section: 0)
+			let source = IndexPath(row: from)
 			let cell = self.tableView.cellForRow(at: source)
 			cell?.detailTextLabel?.text = obj.detailCellText
-			self.tableView.moveRow(at: source, to: IndexPath(row: to, section: 0))
+			self.tableView.moveRow(at: source, to: IndexPath(row: to))
 		}
 	}
 	func replaceRow(_ obj: GroupedDomain, at index: Int) {
 		dataSource[index] = obj
 		ifDisplayed {
-			self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+			self.tableView.reloadRows(at: [IndexPath(row: index)], with: .automatic)
 		}
 	}
 	func deleteRow(at index: Int) {
 		dataSource.remove(at: index)
 		ifDisplayed {
-			self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+			self.tableView.deleteRows(at: [IndexPath(row: index)], with: .automatic)
 		}
 	}
 	func replaceData(with newData: [GroupedDomain]) {
@@ -90,4 +90,9 @@ extension IncrementalDataSourceUpdate {
 			self.tableView.reloadData()
 		}
 	}
+}
+
+extension IndexPath {
+	/// Convenience init with `section: 0`
+	public init(row: Int) { self.init(row: row, section: 0) }
 }

@@ -1,6 +1,7 @@
 import UIKit
 
 let DBWrp = DBWrapper()
+fileprivate var AppDB: SQLiteDatabase? { get { try? SQLiteDatabase.open() } }
 
 class DBWrapper {
 	private var latestModification: Timestamp = 0
@@ -49,11 +50,11 @@ class DBWrapper {
 	func initContentOfDB() {
 		DispatchQueue.global().async {
 #if IOS_SIMULATOR
-//			self.generateTestData()
-//			DispatchQueue.main.async {
-//				// dont know why main queue is needed, wont start otherwise
-//				Timer.repeating(2, call: #selector(self.insertRandomEntry), on: self)
-//			}
+			self.generateTestData()
+			DispatchQueue.main.async {
+				// dont know why main queue is needed, wont start otherwise
+				Timer.repeating(2, call: #selector(self.insertRandomEntry), on: self)
+			}
 #endif
 			self.dataF_init()
 			self.dataAB_init()
@@ -100,7 +101,7 @@ class DBWrapper {
 	// MARK: - Partial Update History
 	
 	@objc private func syncNewestLogs() {
-		QLog.Debug("\(#function)")
+		//QLog.Debug("\(#function)")
 #if !IOS_SIMULATOR
 		guard currentVPNState == .on else { return }
 #endif
@@ -220,6 +221,25 @@ class DBWrapper {
 	}
 	
 	
+	// MARK: - Recordings
+	
+	func listOfRecordings() -> [Recording] { AppDB?.allRecordings() ?? [] }
+	func recordingGetCurrent() -> Recording? { AppDB?.ongoingRecording() }
+	func recordingStartNew() -> Recording? { try? AppDB?.startNewRecording() }
+	func recordingStopAll() { AppDB?.stopRecordings() }
+	
+	func recordingUpdate(_ r: Recording) {
+		AppDB?.updateRecording(r)
+		NotifyRecordingChanged.post((r, false))
+	}
+	
+	func recordingDelete(_ r: Recording) {
+		if (try? AppDB?.deleteRecording(r)) == true {
+			NotifyRecordingChanged.post((r, true))
+		}
+	}
+	
+	
 	// MARK: - Helper methods
 	
 	private func dataA_index(of domain: String) -> Int? {
@@ -270,7 +290,7 @@ extension DBWrapper {
 	}
 	
 	@objc private func insertRandomEntry() {
-		QLog.Debug("Inserting 1 periodic log entry")
+		//QLog.Debug("Inserting 1 periodic log entry")
 		try? AppDB?.insertDNSQuery("\(arc4random() % 5).count.test.com", blocked: true)
 	}
 }

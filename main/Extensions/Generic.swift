@@ -84,4 +84,20 @@ extension DateFormatter {
 	}
 }
 
-func TimestampNow() -> Timestamp { Timestamp(Date().timeIntervalSince1970) }
+struct TimeFormat {
+	static func from(_ duration: Timestamp) -> String {
+		String(format: "%02d:%02d", duration / 60, duration % 60)
+	}
+	static func from(_ duration: TimeInterval, millis: Bool = false) -> String {
+		let t = Int(duration)
+		if millis {
+			let mil = Int(duration * 1000) % 1000
+			return String(format: "%02d:%02d.%03d", t / 60, t % 60, mil)
+		}
+		return String(format: "%02d:%02d", t / 60, t % 60)
+	}
+	static func since(_ date: Date, millis: Bool = false) -> String {
+		from(Date().timeIntervalSince(date), millis: millis)
+	}
+	
+}
