@@ -11,9 +11,6 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	@IBOutlet private var inputDetails: UITextView!
 	
 	override func viewDidLoad() {
-		if deleteOnCancel { // mark as destructive
-			buttonCancel.tintColor = .systemRed
-		}
 		inputTitle.placeholder = record.fallbackTitle
 		inputTitle.text = record.title
 		inputNotes.text = record.notes
@@ -22,14 +19,20 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 			End:\t\t\(record.stop?.asDateTime() ?? "?")
 			Duration:\t\(record.durationString ?? "?")
 			"""
+		validateSaveButton()
+		if deleteOnCancel { // mark as destructive
+			buttonCancel.tintColor = .systemRed
+		}
+		UIResponder.keyboardWillShowNotification.observe(call: #selector(keyboardWillShow), on: self)
+		UIResponder.keyboardWillHideNotification.observe(call: #selector(keyboardWillHide), on: self)
 	}
 	
-	func textFieldDidChangeSelection(_ _: UITextField) { validateInput() }
-	func textViewDidChange(_ _: UITextView) { validateInput() }
+	func textFieldDidChangeSelection(_ _: UITextField) { validateSaveButton() }
+	func textViewDidChange(_ _: UITextView) { validateSaveButton() }
 	
-	private func validateInput() {
+	private func validateSaveButton() {
 		let changed = (inputTitle.text != record.title ?? "" || inputNotes.text != record.notes ?? "")
-		buttonSave.isEnabled = changed
+		buttonSave.isEnabled = changed || deleteOnCancel // always allow save for new recordings
 	}
 	
 	@IBAction func didTapSave(_ sender: UIBarButtonItem) {
@@ -64,5 +67,57 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 			return inputNotes.becomeFirstResponder()
 		}
 		return true
+	}
+	
+	
+	// MARK: Handle Keyboard & Notes Frame
+	
+	private var isEditingNotes: Bool = false
+	private var keyboardHeight: CGFloat = 0
+	
+	@IBAction func hideKeyboard() { view.endEditing(false) }
+	
+	func textViewDidBeginEditing(_ textView: UITextView) {
+		if textView == inputNotes {
+			isEditingNotes = true
+			updateKeyboard()
+		}
+	}
+	
+	func textViewDidEndEditing(_ textView: UITextView) {
+		if textView == inputNotes {
+			isEditingNotes = false
+			updateKeyboard()
+		}
+	}
+	
+	@objc func keyboardWillShow(_ notification: NSNotification) {
+		keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height ?? 0
+		updateKeyboard()
+	}
+	
+	@objc func keyboardWillHide(_ notification: NSNotification) {
+		keyboardHeight = 0
+		updateKeyboard()
+	}
+	
+	private func updateKeyboard() {
+		guard let parent = inputNotes.superview, let stack = parent.superview else {
+			return
+		}
+		let shouldAdjust = (isEditingNotes && keyboardHeight > 0)
+		let noteTitle = parent.subviews.first!
+		noteTitle.isHidden = shouldAdjust
+		stack.subviews.forEach{ $0.isHidden = (shouldAdjust && $0 != parent) }
+		
+		if shouldAdjust {
+			inputNotes.frame.origin.y = 0
+			inputNotes.frame.size.height = view.frame.height - keyboardHeight - stack.frame.minY - 4
+			inputNotes.autoresizingMask = .init(arrayLiteral: .flexibleWidth, .flexibleBottomMargin)
+		} else {
+			inputNotes.frame.origin.y = noteTitle.frame.height
+			inputNotes.frame.size.height = parent.frame.height - noteTitle.frame.height
+			inputNotes.autoresizingMask = .init(arrayLiteral: .flexibleWidth, .flexibleHeight)
+		}
 	}
 }
