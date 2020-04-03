@@ -9,6 +9,7 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	@IBOutlet private var inputTitle: UITextField!
 	@IBOutlet private var inputNotes: UITextView!
 	@IBOutlet private var inputDetails: UITextView!
+	@IBOutlet private var noteBottom: NSLayoutConstraint!
 	
 	override func viewDidLoad() {
 		inputTitle.placeholder = record.fallbackTitle
@@ -105,19 +106,14 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		guard let parent = inputNotes.superview, let stack = parent.superview else {
 			return
 		}
-		let shouldAdjust = (isEditingNotes && keyboardHeight > 0)
-		let noteTitle = parent.subviews.first!
-		noteTitle.isHidden = shouldAdjust
-		stack.subviews.forEach{ $0.isHidden = (shouldAdjust && $0 != parent) }
+		let adjust = (isEditingNotes && keyboardHeight > 0)
+		stack.subviews.forEach{ $0.isHidden = (adjust && $0 != parent) }
 		
-		if shouldAdjust {
-			inputNotes.frame.origin.y = 0
-			inputNotes.frame.size.height = view.frame.height - keyboardHeight - stack.frame.minY - 4
-			inputNotes.autoresizingMask = .init(arrayLiteral: .flexibleWidth, .flexibleBottomMargin)
-		} else {
-			inputNotes.frame.origin.y = noteTitle.frame.height
-			inputNotes.frame.size.height = parent.frame.height - noteTitle.frame.height
-			inputNotes.autoresizingMask = .init(arrayLiteral: .flexibleWidth, .flexibleHeight)
-		}
+		let title = parent.subviews.first as! UILabel
+		title.font = .preferredFont(forTextStyle: adjust ? .subheadline : .title2)
+		title.sizeToFit()
+		title.frame.size.width = parent.frame.width
+		
+		noteBottom.constant = adjust ? view.frame.height - stack.frame.maxY - keyboardHeight : 0
 	}
 }

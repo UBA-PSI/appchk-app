@@ -613,9 +613,8 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NXU-yU-eST">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NXU-yU-eST">
                                                 <rect key="frame" x="0.0" y="24" width="288" height="122"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                                 <string key="text">1. Line
 2. Line
@@ -631,7 +630,11 @@
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <constraints>
+                                            <constraint firstItem="NXU-yU-eST" firstAttribute="leading" secondItem="ybL-UG-dwT" secondAttribute="leading" id="D6U-8L-f9m"/>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="750" constant="107" id="Pfy-uW-kRl"/>
+                                            <constraint firstItem="NXU-yU-eST" firstAttribute="trailing" secondItem="ybL-UG-dwT" secondAttribute="trailing" id="eBc-6g-nWr"/>
+                                            <constraint firstItem="NXU-yU-eST" firstAttribute="top" secondItem="QJp-6C-yoZ" secondAttribute="bottom" id="mnZ-WQ-LX8"/>
+                                            <constraint firstItem="NXU-yU-eST" firstAttribute="bottom" secondItem="ybL-UG-dwT" secondAttribute="bottom" id="vFS-tG-E43"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QiY-Mm-Dej" userLabel="Details">
@@ -687,6 +690,7 @@ Duration:	60:00</string>
                         <outlet property="inputDetails" destination="pql-H5-k6U" id="NXm-8f-5E6"/>
                         <outlet property="inputNotes" destination="NXU-yU-eST" id="c2n-cG-aLq"/>
                         <outlet property="inputTitle" destination="OCX-wu-l5d" id="PeC-F5-4mx"/>
+                        <outlet property="noteBottom" destination="vFS-tG-E43" id="Bxh-Tl-E2U"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KN7-F1-BOL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
