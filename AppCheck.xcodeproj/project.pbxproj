@@ -21,6 +21,7 @@
 		543CDB2023EEE61900B7F323 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543CDB1F23EEE61900B7F323 /* PacketTunnelProvider.swift */; };
 		543CDB2523EEE61900B7F323 /* GlassVPN.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 543CDB1D23EEE61900B7F323 /* GlassVPN.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		544C95262407B1C700AB89D0 /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544C95252407B1C700AB89D0 /* SharedState.swift */; };
+		5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */; };
 		546063E523FEFAFE008F505A /* SQDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7562223D7B2DC008F0C41 /* SQDB.swift */; };
 		54751E512423955100168273 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54751E502423955000168273 /* FileManager.swift */; };
 		54751E522423955100168273 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54751E502423955000168273 /* FileManager.swift */; };
@@ -172,6 +173,7 @@
 		543CDB2123EEE61900B7F323 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		543CDB2223EEE61900B7F323 /* GlassVPN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GlassVPN.entitlements; sourceTree = "<group>"; };
 		544C95252407B1C700AB89D0 /* SharedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedState.swift; sourceTree = "<group>"; };
+		5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCRecordingDetails.swift; sourceTree = "<group>"; };
 		54751E502423955000168273 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		548B1F9423D338EC005B047C /* main.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = main.entitlements; sourceTree = "<group>"; };
 		54953E5E23DEBE840054345C /* TVCDomains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCDomains.swift; sourceTree = "<group>"; };
@@ -325,6 +327,7 @@
 				540E677F242D2CF100871BBE /* VCRecordings.swift */,
 				540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */,
 				540E67812433483D00871BBE /* VCEditRecording.swift */,
+				5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */,
 			);
 			path = Recordings;
 			sourceTree = "<group>";
@@ -807,6 +810,7 @@
 				54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */,
 				54C056DD23E9EEF700214A3F /* BundleIcon.swift in Sources */,
 				542E2A982404973F001462DC /* TBCMain.swift in Sources */,
+				5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */,
 				541AC5D82399498A00A769D7 /* AppDelegate.swift in Sources */,
 				54B345992414F491004C53CC /* DBWrapper.swift in Sources */,
 				540E67822433483D00871BBE /* VCEditRecording.swift in Sources */,

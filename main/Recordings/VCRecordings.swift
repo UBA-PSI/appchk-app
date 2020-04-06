@@ -1,13 +1,17 @@
 import UIKit
 
-class VCRecordings: UIViewController {
+class VCRecordings: UIViewController, UINavigationControllerDelegate {
 	private var currentRecording: Recording?
 	private var recordingTimer: Timer?
 	
 	@IBOutlet private var timeLabel: UILabel!
 	@IBOutlet private var startButton: UIButton!
+	@IBOutlet private var startNewRecView: UIView!
+	private var prevRecController: UINavigationController!
 	
 	override func viewDidLoad() {
+		prevRecController = (children.first as! UINavigationController)
+		prevRecController.delegate = self
 		// Duplicate font attributes but set monospace
 		let traits = timeLabel.font.fontDescriptor.object(forKey: .traits) as? [UIFontDescriptor.TraitKey: Any] ?? [:]
 		let weight = traits[.weight] as? CGFloat ?? UIFont.Weight.regular.rawValue
@@ -25,14 +29,25 @@ class VCRecordings: UIViewController {
 		stopTimer(animate: false)
 	}
 	
-	@IBAction private func recordingButtonTapped(_ sender: UIButton) {
+	func navigationController(_ navigationController: UINavigationController, willShow vc: UIViewController, animated: Bool) {
+		let isRoot = (vc == navigationController.viewControllers.first)
+		UIView.animate(withDuration: 0.3) {
+			self.startNewRecView.isHidden = !isRoot // hide "new recording" if details open
+		}
+	}
+	
+	
+	// MARK: Start New Recording
+	
+	@IBAction private func startRecordingButtonTapped(_ sender: UIButton) {
 		if recordingTimer == nil {
 			currentRecording = DBWrp.recordingStartNew()
 			startTimer(animate: true)
 		} else {
 			stopTimer(animate: true)
 			DBWrp.recordingStopAll()
-			(children.first as! TVCPreviousRecords).stopRecording(currentRecording!)
+			prevRecController.popToRootViewController(animated: true)
+			(prevRecController.topViewController as! TVCPreviousRecords).stopRecording(currentRecording!)
 			currentRecording = nil // otherwise it will restart
 		}
 	}

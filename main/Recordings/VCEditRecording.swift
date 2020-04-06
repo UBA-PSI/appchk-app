@@ -16,9 +16,9 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		inputTitle.text = record.title
 		inputNotes.text = record.notes
 		inputDetails.text = """
-			Start:\t\t\(record.start.asDateTime())
-			End:\t\t\(record.stop?.asDateTime() ?? "?")
-			Duration:\t\(record.durationString ?? "?")
+			Start:		\(record.start.asDateTime())
+			End:		\(record.stop?.asDateTime() ?? "?")
+			Duration:	\(record.durationString ?? "?")
 			"""
 		validateSaveButton()
 		if deleteOnCancel { // mark as destructive
@@ -28,13 +28,8 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		UIResponder.keyboardWillHideNotification.observe(call: #selector(keyboardWillHide), on: self)
 	}
 	
-	func textFieldDidChangeSelection(_ _: UITextField) { validateSaveButton() }
-	func textViewDidChange(_ _: UITextView) { validateSaveButton() }
 	
-	private func validateSaveButton() {
-		let changed = (inputTitle.text != record.title ?? "" || inputNotes.text != record.notes ?? "")
-		buttonSave.isEnabled = changed || deleteOnCancel // always allow save for new recordings
-	}
+	// MARK: Save & Cancel Buttons
 	
 	@IBAction func didTapSave(_ sender: UIBarButtonItem) {
 		if deleteOnCancel { // aka newly created
@@ -61,13 +56,6 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 			DBWrp.recordingDelete(record)
 			deleteOnCancel = false
 		}
-	}
-	
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		if textField == inputTitle {
-			return inputNotes.becomeFirstResponder()
-		}
-		return true
 	}
 	
 	
@@ -115,5 +103,20 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		title.frame.size.width = parent.frame.width
 		
 		noteBottom.constant = adjust ? view.frame.height - stack.frame.maxY - keyboardHeight : 0
+	}
+	
+	
+	// MARK: TextField & TextView Delegate
+	
+	func textFieldDidChangeSelection(_ _: UITextField) { validateSaveButton() }
+	func textViewDidChange(_ _: UITextView) { validateSaveButton() }
+	
+	private func validateSaveButton() {
+		let changed = (inputTitle.text != record.title ?? "" || inputNotes.text != record.notes ?? "")
+		buttonSave.isEnabled = changed || deleteOnCancel // always allow save for new recordings
+	}
+	
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		textField == inputTitle ? inputNotes.becomeFirstResponder() : true
 	}
 }

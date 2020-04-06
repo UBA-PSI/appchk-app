@@ -53,6 +53,10 @@ class TVCPreviousRecords: UITableViewController {
 			let target = segue.destination as! VCEditRecording
 			target.record = record
 			target.deleteOnCancel = newlyCreated
+		} else if segue.identifier == "openRecordDetailsSegue" {
+			if let i = tableView.indexPathForSelectedRow {
+				(segue.destination as? TVCRecordingDetails)?.record = dataSource[i.row]
+			}
 		}
 	}
 	
