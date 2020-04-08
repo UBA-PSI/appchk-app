@@ -230,6 +230,7 @@ class DBWrapper {
 	
 	func recordingStop(_ r: inout Recording) { AppDB?.stopRecording(&r) }
 	func recordingPersist(_ r: Recording) { AppDB?.persistRecordingLogs(r) }
+	func recordingDetails(_ r: Recording) -> [RecordLog] { AppDB?.getRecordingsLogs(r) ?? [] }
 	
 	func recordingUpdate(_ r: Recording) {
 		AppDB?.updateRecording(r)
@@ -242,8 +243,8 @@ class DBWrapper {
 		}
 	}
 	
-	func recordingDetails(_ r: Recording) -> [(domain: String?, count: Int32)]? {
-		AppDB?.getRecordingsLogs(r)
+	func recordingDeleteDetails(_ r: Recording, domain: String?) -> Bool {
+		((try? AppDB?.deleteRecordingLogs(r.id, matchingDomain: domain)) ?? 0) > 0
 	}
 	
 	

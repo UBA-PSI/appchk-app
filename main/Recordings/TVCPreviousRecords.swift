@@ -1,6 +1,6 @@
 import UIKit
 
-class TVCPreviousRecords: UITableViewController {
+class TVCPreviousRecords: UITableViewController, EditActionsRemove {
 	private var dataSource: [Recording] = []
 	
 	override func viewDidLoad() {
@@ -71,5 +71,13 @@ class TVCPreviousRecords: UITableViewController {
 		cell.textLabel?.textColor = (x.title == nil) ? .systemGray : nil
 		cell.detailTextLabel?.text = "at \(x.start.asDateTime()),  duration: \(x.durationString  ?? "?")"
 		return cell
+	}
+	
+	
+	// MARK: - Editing
+	
+	func editableRowCallback(_ index: IndexPath, _ action: RowAction, _ userInfo: Any?) -> Bool {
+		DBWrp.recordingDelete(self.dataSource[index.row])
+		return true
 	}
 }

@@ -441,9 +441,9 @@ extension SQLiteDatabase {
 		}
 	}
 	
-	private func deleteRecordingLogs(_ recId: sqlite3_int64) throws -> Int32 {
-		try run(sql: "DELETE FROM recLog WHERE rid = ?;", bind: {
-			self.bindInt64($0, 1, recId)
+	func deleteRecordingLogs(_ recId: sqlite3_int64, matchingDomain d: String? = nil) throws -> Int32 {
+		try run(sql: "DELETE FROM recLog WHERE rid = ? \(d==nil ? "" : "AND domain = ?");", bind: {
+			self.bindInt64($0, 1, recId) && (d==nil ? true : self.bindTextOrNil($0, 2,d))
 		}) {
 			try ifStep($0, SQLITE_DONE)
 			return sqlite3_changes(dbPointer)
@@ -452,7 +452,7 @@ extension SQLiteDatabase {
 	
 	// MARK: read
 	
-	func getRecordingsLogs(_ r: Recording) -> [(domain: String?, count: Int32)]? {
+	func getRecordingsLogs(_ r: Recording) -> [RecordLog]? {
 		try? run(sql: "SELECT domain, COUNT() FROM recLog WHERE rid = ? GROUP BY domain;", bind: {
 			self.bindInt64($0, 1, r.id)
 		}) {
@@ -460,3 +460,5 @@ extension SQLiteDatabase {
 		}
 	}
 }
+
+typealias RecordLog = (domain: String?, count: Int32)

@@ -1,12 +1,12 @@
 import UIKit
 
-class TVCRecordingDetails: UITableViewController {
+class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	var record: Recording!
-	private var dataSource: [(domain: String?, count: Int32)]!
+	private var dataSource: [RecordLog]!
 	
 	override func viewDidLoad() {
 		title = record.title ?? record.fallbackTitle
-		dataSource = DBWrp.recordingDetails(record) ?? []
+		dataSource = DBWrp.recordingDetails(record)
 	}
 	
 	
@@ -22,5 +22,16 @@ class TVCRecordingDetails: UITableViewController {
 		cell.textLabel?.text = x.domain
 		cell.detailTextLabel?.text = "\(x.count)"
 		return cell
+	}
+	
+	
+	// MARK: - Editing
+	
+	func editableRowCallback(_ index: IndexPath, _ action: RowAction, _ userInfo: Any?) -> Bool {
+		if DBWrp.recordingDeleteDetails(record, domain: self.dataSource[index.row].domain) {
+			self.dataSource.remove(at: index.row)
+			self.tableView.deleteRows(at: [index], with: .automatic)
+		}
+		return true
 	}
 }

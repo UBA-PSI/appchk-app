@@ -123,3 +123,23 @@ extension TVCFilter : EditableRows {
 		getRowActionsIOS11(indexPath)
 	}
 }
+
+extension TVCPreviousRecords : EditableRows {
+	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+		getRowActionsIOS9(indexPath)
+	}
+	@available(iOS 11.0, *)
+	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+		getRowActionsIOS11(indexPath)
+	}
+}
+
+extension TVCRecordingDetails : EditableRows {
+	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+		getRowActionsIOS9(indexPath)
+	}
+	@available(iOS 11.0, *)
+	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+		getRowActionsIOS11(indexPath)
+	}
+}
