@@ -35,24 +35,24 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		if deleteOnCancel { // aka newly created
 			// if remains true, `viewDidDisappear` will delete the record
 			deleteOnCancel = false
-			// TODO: copy db entries in new table for editing
 		}
-		QLog.Debug("updating record \(record.start)")
+		QLog.Debug("updating record #\(record.id)")
 		record.title = (inputTitle.text == "") ? nil : inputTitle.text
 		record.notes = (inputNotes.text == "") ? nil : inputNotes.text
 		dismiss(animated: true) {
 			DBWrp.recordingUpdate(self.record)
+			DBWrp.recordingPersist(self.record)
 		}
 	}
 	
 	@IBAction func didTapCancel(_ sender: UIBarButtonItem) {
-		QLog.Debug("discard edit of record \(record.start)")
+		QLog.Debug("discard edit of record #\(record.id)")
 		dismiss(animated: true)
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		if deleteOnCancel {
-			QLog.Debug("deleting record \(record.start)")
+			QLog.Debug("deleting record #\(record.id)")
 			DBWrp.recordingDelete(record)
 			deleteOnCancel = false
 		}

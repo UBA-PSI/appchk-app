@@ -45,9 +45,10 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 			startTimer(animate: true)
 		} else {
 			stopTimer(animate: true)
-			DBWrp.recordingStopAll()
+			DBWrp.recordingStop(&currentRecording!)
 			prevRecController.popToRootViewController(animated: true)
-			(prevRecController.topViewController as! TVCPreviousRecords).stopRecording(currentRecording!)
+			let editVC = (prevRecController.topViewController as! TVCPreviousRecords)
+			editVC.insertAndEditRecording(currentRecording!)
 			currentRecording = nil // otherwise it will restart
 		}
 	}

@@ -8,17 +8,14 @@ class TVCPreviousRecords: UITableViewController {
 		NotifyRecordingChanged.observe(call: #selector(recordingDidChange(_:)), on: self)
 	}
 	
-	func stopRecording(_ record: Recording?) {
-		guard let r = record?.stoppedCopy() else {
-			return
-		}
+	func insertAndEditRecording(_ r: Recording) {
 		insertNewRecord(r)
 		editRecord(r, isNewRecording: true)
 	}
 	
 	@objc private func recordingDidChange(_ notification: Notification) {
 		let (new, deleted) = notification.object as! (Recording, Bool)
-		if let i = dataSource.firstIndex(where: { $0.start == new.start }) {
+		if let i = dataSource.firstIndex(where: { $0.id == new.id }) {
 			if deleted {
 				dataSource.remove(at: i)
 				tableView.deleteRows(at: [IndexPath(row: i)], with: .automatic)

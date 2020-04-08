@@ -20,11 +20,7 @@ extension Array where Element == GroupedDomain {
 }
 
 extension Recording {
-	func stoppedCopy() -> Recording {
-		stop != nil ? self : Recording(start: start, stop: Timestamp(Date().timeIntervalSince1970),
-									   appId: appId, title: title, notes: notes)
-	}
-	var fallbackTitle: String { get { "Unnamed #\(start)" } }
+	var fallbackTitle: String { get { "Unnamed Recording #\(id)" } }
 	var duration: Timestamp? { get { stop == nil ? nil : stop! - start } }
 	var durationString: String? { get { stop == nil ? nil : TimeFormat.from(duration!) } }
 }

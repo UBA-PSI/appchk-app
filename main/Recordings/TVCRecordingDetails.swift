@@ -2,14 +2,11 @@ import UIKit
 
 class TVCRecordingDetails: UITableViewController {
 	var record: Recording!
-	private var dataSource: [(domain: String, count: Int)] = [
-		("apple.com", 3),
-		("cdn.apple.com", 1)
-	]
+	private var dataSource: [(domain: String?, count: Int32)]!
 	
 	override func viewDidLoad() {
 		title = record.title ?? record.fallbackTitle
-		// TODO: load db entries
+		dataSource = DBWrp.recordingDetails(record) ?? []
 	}
 	
 	

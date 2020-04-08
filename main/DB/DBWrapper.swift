@@ -48,6 +48,7 @@ class DBWrapper {
 	// MARK: - Init
 	
 	func initContentOfDB() {
+		QLog.Debug("SQLite path: \(URL.internalDB())")
 		DispatchQueue.global().async {
 #if IOS_SIMULATOR
 			self.generateTestData()
@@ -226,7 +227,9 @@ class DBWrapper {
 	func listOfRecordings() -> [Recording] { AppDB?.allRecordings() ?? [] }
 	func recordingGetCurrent() -> Recording? { AppDB?.ongoingRecording() }
 	func recordingStartNew() -> Recording? { try? AppDB?.startNewRecording() }
-	func recordingStopAll() { AppDB?.stopRecordings() }
+	
+	func recordingStop(_ r: inout Recording) { AppDB?.stopRecording(&r) }
+	func recordingPersist(_ r: Recording) { AppDB?.persistRecordingLogs(r) }
 	
 	func recordingUpdate(_ r: Recording) {
 		AppDB?.updateRecording(r)
@@ -237,6 +240,10 @@ class DBWrapper {
 		if (try? AppDB?.deleteRecording(r)) == true {
 			NotifyRecordingChanged.post((r, true))
 		}
+	}
+	
+	func recordingDetails(_ r: Recording) -> [(domain: String?, count: Int32)]? {
+		AppDB?.getRecordingsLogs(r)
 	}
 	
 	
