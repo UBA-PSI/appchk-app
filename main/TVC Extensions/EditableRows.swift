@@ -19,7 +19,9 @@ extension EditableRows where Self: UITableViewController {
 		let userInfo = editableRowUserInfo(index)
 		return editableRowActions(index).compactMap { a,t in
 			let x = UITableViewRowAction(style: a == .delete ? .destructive : .normal, title: t) { self.editableRowCallback($1, a, userInfo) }
-			x.backgroundColor = editableRowActionColor(index, a)
+			if let color = editableRowActionColor(index, a) {
+				x.backgroundColor = color
+			}
 			return x
 		}
 	}
