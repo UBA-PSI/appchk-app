@@ -22,9 +22,12 @@
 		543CDB2523EEE61900B7F323 /* GlassVPN.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 543CDB1D23EEE61900B7F323 /* GlassVPN.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		544C95262407B1C700AB89D0 /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544C95252407B1C700AB89D0 /* SharedState.swift */; };
 		5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */; };
+		545DDDCF243E6267003B6544 /* TutorialSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545DDDCE243E6267003B6544 /* TutorialSheet.swift */; };
+		545DDDD124436983003B6544 /* QuickUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545DDDD024436983003B6544 /* QuickUI.swift */; };
+		545DDDD424466D37003B6544 /* AutoLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545DDDD324466D37003B6544 /* AutoLayout.swift */; };
 		546063E523FEFAFE008F505A /* SQDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7562223D7B2DC008F0C41 /* SQDB.swift */; };
-		54751E512423955100168273 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54751E502423955000168273 /* FileManager.swift */; };
-		54751E522423955100168273 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54751E502423955000168273 /* FileManager.swift */; };
+		54751E512423955100168273 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54751E502423955000168273 /* URL.swift */; };
+		54751E522423955100168273 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54751E502423955000168273 /* URL.swift */; };
 		54953E3323DC752E0054345C /* SQDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7562223D7B2DC008F0C41 /* SQDB.swift */; };
 		54953E5F23DEBE840054345C /* TVCDomains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E5E23DEBE840054345C /* TVCDomains.swift */; };
 		54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6023E0D69A0054345C /* TVCHosts.swift */; };
@@ -166,7 +169,10 @@
 		543CDB2223EEE61900B7F323 /* GlassVPN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GlassVPN.entitlements; sourceTree = "<group>"; };
 		544C95252407B1C700AB89D0 /* SharedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedState.swift; sourceTree = "<group>"; };
 		5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCRecordingDetails.swift; sourceTree = "<group>"; };
-		54751E502423955000168273 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
+		545DDDCE243E6267003B6544 /* TutorialSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialSheet.swift; sourceTree = "<group>"; };
+		545DDDD024436983003B6544 /* QuickUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickUI.swift; sourceTree = "<group>"; };
+		545DDDD324466D37003B6544 /* AutoLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoLayout.swift; sourceTree = "<group>"; };
+		54751E502423955000168273 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		548B1F9423D338EC005B047C /* main.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = main.entitlements; sourceTree = "<group>"; };
 		54953E5E23DEBE840054345C /* TVCDomains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCDomains.swift; sourceTree = "<group>"; };
 		54953E6023E0D69A0054345C /* TVCHosts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCHosts.swift; sourceTree = "<group>"; };
@@ -340,10 +346,10 @@
 			children = (
 				54B3459A2415651C004C53CC /* DB */,
 				54B345A4241BB975004C53CC /* Extensions */,
+				545DDDD224436A03003B6544 /* Common Classes */,
 				548B1F9423D338EC005B047C /* main.entitlements */,
 				541AC5D72399498A00A769D7 /* AppDelegate.swift */,
 				542E2A972404973F001462DC /* TBCMain.swift */,
-				54B34597240F18DD004C53CC /* TVC Extensions */,
 				540C6454240D5BAE00E948F9 /* Requests */,
 				540E677E242D2CD200871BBE /* Recordings */,
 				540C6455240D5BD200E948F9 /* Settings */,
@@ -380,12 +386,14 @@
 			path = GlassVPN;
 			sourceTree = "<group>";
 		};
-		54B34597240F18DD004C53CC /* TVC Extensions */ = {
+		545DDDD224436A03003B6544 /* Common Classes */ = {
 			isa = PBXGroup;
 			children = (
+				545DDDD024436983003B6544 /* QuickUI.swift */,
+				545DDDCE243E6267003B6544 /* TutorialSheet.swift */,
 				540C6456240D929300E948F9 /* EditableRows.swift */,
 			);
-			path = "TVC Extensions";
+			path = "Common Classes";
 			sourceTree = "<group>";
 		};
 		54B3459A2415651C004C53CC /* DB */ = {
@@ -406,7 +414,8 @@
 				54B345AC241BBB00004C53CC /* DBExtensions.swift */,
 				54B345AA241BBA5B004C53CC /* AlertSheet.swift */,
 				54B34595240F0513004C53CC /* TableView.swift */,
-				54751E502423955000168273 /* FileManager.swift */,
+				54751E502423955000168273 /* URL.swift */,
+				545DDDD324466D37003B6544 /* AutoLayout.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -760,18 +769,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				545DDDD424466D37003B6544 /* AutoLayout.swift in Sources */,
 				54B345AD241BBB00004C53CC /* DBExtensions.swift in Sources */,
 				540E67842433FAFE00871BBE /* TVCPreviousRecords.swift in Sources */,
 				54B345A6241BB982004C53CC /* Notifications.swift in Sources */,
 				54B345AB241BBA5B004C53CC /* AlertSheet.swift in Sources */,
 				544C95262407B1C700AB89D0 /* SharedState.swift in Sources */,
+				545DDDCF243E6267003B6544 /* TutorialSheet.swift in Sources */,
 				54B345A9241BBA0B004C53CC /* Generic.swift in Sources */,
 				54B34596240F0513004C53CC /* TableView.swift in Sources */,
 				540E6780242D2CF100871BBE /* VCRecordings.swift in Sources */,
 				54953E3323DC752E0054345C /* SQDB.swift in Sources */,
 				54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */,
 				540C6457240D929300E948F9 /* EditableRows.swift in Sources */,
-				54751E512423955100168273 /* FileManager.swift in Sources */,
+				54751E512423955100168273 /* URL.swift in Sources */,
 				542E2A9A24051556001462DC /* TVCSettings.swift in Sources */,
 				54953E5F23DEBE840054345C /* TVCDomains.swift in Sources */,
 				54C056DB23E9E36E00214A3F /* AppInfoType.swift in Sources */,
@@ -779,6 +790,7 @@
 				54C056DD23E9EEF700214A3F /* BundleIcon.swift in Sources */,
 				542E2A982404973F001462DC /* TBCMain.swift in Sources */,
 				5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */,
+				545DDDD124436983003B6544 /* QuickUI.swift in Sources */,
 				541AC5D82399498A00A769D7 /* AppDelegate.swift in Sources */,
 				54B345992414F491004C53CC /* DBWrapper.swift in Sources */,
 				540E67822433483D00871BBE /* VCEditRecording.swift in Sources */,
@@ -839,7 +851,7 @@
 				54CA025F2426B2FD003A5E04 /* ProxyServer.swift in Sources */,
 				54CA02842426B2FD003A5E04 /* Rule.swift in Sources */,
 				54CA02B92426B2FD003A5E04 /* DirectProxySocket.swift in Sources */,
-				54751E522423955100168273 /* FileManager.swift in Sources */,
+				54751E522423955100168273 /* URL.swift in Sources */,
 				54CA02A92426B2FD003A5E04 /* RejectAdapter.swift in Sources */,
 				54CA02732426B2FD003A5E04 /* IPPool.swift in Sources */,
 				54CA027E2426B2FD003A5E04 /* DomainListRule.swift in Sources */,

@@ -19,6 +19,10 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		// hide timer if not running
 		updateUI(setRecording: false, animated: false)
 		currentRecording = DBWrp.recordingGetCurrent()
+		
+		if !UserDefaults.standard.bool(forKey: "didShowTutorialRecordings") {
+			self.perform(#selector(showTutorial), with: nil, afterDelay: 0.5)
+		}
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -84,6 +88,46 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 			self.startButton.frame.origin.y = yB
 			self.startButton.setTitle(title, for: .normal)
 			self.startButton.setTitleColor(color, for: .normal)
+		}
+	}
+	
+	
+	// MARK: Tutorial View Controller
+	
+	@objc private func showTutorial() {
+		let x = TutorialSheet()
+		x.addSheet().addArrangedSubview(QuickUI.text(attributed: NSMutableAttributedString()
+			.h1("What are Recordings?\n")
+			.normal("\nSimilar to the default logging, recordings will intercept every request and log it for later review. " +
+				"Recordings are usually 3 – 5 minutes long and cover a single application. " +
+				"You can utilize recordings for App analysis or to get a ground truth for background traffic." +
+				"\n\n" +
+				"Optionally, you can help us by providing app specific recordings. " +
+				"Together with your findings we can create a community driven privacy monitor. " +
+				"The research results will help you and others avoid Apps that unnecessarily share data with third-party providers.")
+		))
+		x.addSheet().addArrangedSubview(QuickUI.text(attributed: NSMutableAttributedString()
+			.h1("How to record?\n")
+			.normal("\nBefore you begin a new recording make sure that you quit all running applications. " +
+				"Tap on the 'Start Recording' button and switch to the application you'd like to inspect. " +
+				"Use the App as you would normally. Try to get to all corners and functionality the App provides. " +
+				"When you feel that you have captured enough content, come back to ").italic("AppCheck").normal(" and stop the recording." +
+				"\n\n" +
+				"Upon completion you will find your recording in the 'Previous Recordings' section. " +
+				"You can review your results and remove user specific information if necessary.")
+		))
+		x.addSheet().addArrangedSubview(QuickUI.text(attributed: NSMutableAttributedString()
+			.h1("Share results\n")
+			.normal("\nThis step is completely ").bold("optional").normal(". " +
+				"You can choose to share your results with us. " +
+				"We can compare similar applications and suggest privacy friendly alternatives. " +
+				"Together with other likeminded individuals we can increase the awareness for privacy friendly design." +
+				"\n\n" +
+				"Thank you very much.")
+		))
+		x.buttonTitleDone = "Got it"
+		x.present {
+			UserDefaults.standard.set(true, forKey: "didShowTutorialRecordings")
 		}
 	}
 }

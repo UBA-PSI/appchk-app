@@ -23,6 +23,9 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		validateSaveButton()
 		if deleteOnCancel { // mark as destructive
 			buttonCancel.tintColor = .systemRed
+			if #available(iOS 13.0, *) {
+				isModalInPresentation = true
+			}
 		}
 		UIResponder.keyboardWillShowNotification.observe(call: #selector(keyboardWillShow), on: self)
 		UIResponder.keyboardWillHideNotification.observe(call: #selector(keyboardWillHide), on: self)

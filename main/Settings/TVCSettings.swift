@@ -52,11 +52,18 @@ class TVCSettings: UITableViewController {
 //		}.presentIn(self)
 	}
 	
+	@IBAction func resetTutorialAlerts(_ sender: UIButton) {
+		UserDefaults.standard.removeObject(forKey: "didShowTutorialAppWelcome")
+		UserDefaults.standard.removeObject(forKey: "didShowTutorialRecordings")
+		Alert(title: sender.titleLabel?.text,
+			  text: "\nDone.\n\nYou may need to restart the application.").presentIn(self)
+	}
+	
 	@IBAction func clearDatabaseResults(_ sender: Any) {
-		AskAlert(title: "Clear results?", text: """
-			You are about to delete all results that have been logged in the past. Your preference for blocked and ignored domains is preserved.
-			Continue?
-		""", buttonText: "Delete", buttonStyle: .destructive) { _ in
+		AskAlert(title: "Clear results?", text:
+			"You are about to delete all results that have been logged in the past. " +
+			"Your preferences for blocked and ignored domains are preserved.\n" +
+			"Continue?", buttonText: "Delete", buttonStyle: .destructive) { _ in
 			DBWrp.deleteHistory()
 		}.presentIn(self)
 	}

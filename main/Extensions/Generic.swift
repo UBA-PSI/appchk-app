@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 struct QLog {
 	private init() {}
@@ -99,5 +99,15 @@ struct TimeFormat {
 	static func since(_ date: Date, millis: Bool = false) -> String {
 		from(Date().timeIntervalSince(date), millis: millis)
 	}
-	
+}
+
+extension UIColor {
+	static var sysBg: UIColor { get { if #available(iOS 13.0, *) { return .systemBackground } else { return .white } }}
+	static var sysFg: UIColor { get { if #available(iOS 13.0, *) { return .label } else { return .black } }}
+}
+
+extension UIEdgeInsets {
+	init(all: CGFloat = 0, top: CGFloat? = nil, left: CGFloat? = nil, bottom: CGFloat? = nil, right: CGFloat? = nil) {
+		self.init(top: top ?? all, left: left ?? all, bottom: bottom ?? all, right: right ?? all)
+	}
 }
