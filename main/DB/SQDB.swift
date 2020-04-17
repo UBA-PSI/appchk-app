@@ -266,7 +266,7 @@ extension SQLiteDatabase {
 	// MARK: read
 	
 	func loadFilters() -> [String : FilterOptions]? {
-		try? run(sql: "SELECT domain, opt FROM filter ORDER BY domain ASC;", bind: nil) {
+		try? run(sql: "SELECT domain, opt FROM filter;", bind: nil) {
 			allRowsKeyed($0) {
 				(key: readText($0, 0) ?? "",
 				 value: FilterOptions(rawValue: sqlite3_column_int($0, 1)))

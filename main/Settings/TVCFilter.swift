@@ -6,9 +6,9 @@ class TVCFilter: UITableViewController, EditActionsRemove {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		if #available(iOS 10.0, *) {
-			tableView.refreshControl = UIRefreshControl(call: #selector(reloadDataSource), on: self)
-		}
+//		if #available(iOS 10.0, *) {
+//			tableView.refreshControl = UIRefreshControl(call: #selector(reloadDataSource), on: self)
+//		}
 		NotifyFilterChanged.observe(call: #selector(reloadDataSource), on: self)
 		reloadDataSource()
 	}
@@ -46,16 +46,47 @@ class TVCFilter: UITableViewController, EditActionsRemove {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "DomainFilterCell")!
 		cell.textLabel?.text = dataSource[indexPath.row]
+		if cell.gestureRecognizers?.isEmpty ?? true {
+			cell.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongTap)))
+		}
 		return cell
 	}
 	
 	// MARK: - Editing
 	
 	func editableRowCallback(_ index: IndexPath, _ action: RowAction, _ userInfo: Any?) -> Bool {
-		let domain = self.dataSource[index.row]
+		let domain = dataSource[index.row]
 		DBWrp.updateFilter(domain, remove: currentFilter)
-		self.dataSource.remove(at: index.row)
-		self.tableView.deleteRows(at: [index], with: .automatic)
+		dataSource.remove(at: index.row)
+		tableView.deleteRows(at: [index], with: .automatic)
 		return true
+	}
+	
+	// MARK: - Long Press Gesture
+	
+	private var cellTitleCopy: String?
+	
+	@objc private func didLongTap(_ sender: UILongPressGestureRecognizer) {
+		guard let cell = sender.view as? UITableViewCell else {
+			return
+		}
+		if sender.state == .began {
+			cellTitleCopy = cell.textLabel?.text
+			self.becomeFirstResponder()
+			let menu = UIMenuController.shared
+//			menu.setTargetRect(CGRect(origin: sender.location(in: cell), size: CGSize.zero), in: cell)
+			menu.setTargetRect(cell.bounds, in: cell)
+			menu.setMenuVisible(true, animated: true)
+		}
+    }
+	override var canBecomeFirstResponder: Bool { get { true } }
+	
+	override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+		action == #selector(UIResponderStandardEditActions.copy)
+	}
+	
+	override func copy(_ sender: Any?) {
+		UIPasteboard.general.string = cellTitleCopy
+		cellTitleCopy = nil
 	}
 }

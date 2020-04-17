@@ -30,7 +30,7 @@ class DBWrapper {
 	}
 	
 	func dataF_list(_ filter: FilterOptions) -> [String] {
-		Q.sync() { dataF.compactMap { $1.contains(filter) ? $0 : nil } }
+		Q.sync() { dataF.compactMap { $1.contains(filter) ? $0 : nil } }.sorted()
 	}
 	
 	func dataF_counts() -> (blocked: Int, ignored: Int) {
