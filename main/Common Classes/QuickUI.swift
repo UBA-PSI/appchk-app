@@ -52,7 +52,10 @@ extension NSMutableAttributedString {
 	func h3(_ str: String) -> Self { normal(str, .title3) }
 	
 	private func append(_ str: String, withFont: UIFont) -> Self {
-		append(NSAttributedString(string: str, attributes: [.font : withFont]))
+		append(NSAttributedString(string: str, attributes: [
+			.font : withFont,
+			.foregroundColor : UIColor.sysFg
+		]))
 		return self
 	}
 }
