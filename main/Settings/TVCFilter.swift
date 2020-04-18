@@ -35,7 +35,10 @@ class TVCFilter: UITableViewController, EditActionsRemove {
 			}
 			DBWrp.updateFilter(dom, add: self.currentFilter)
 		}
-		alert.addTextField { $0.placeholder = "cdn.domain.tld" }
+		alert.addTextField {
+			$0.placeholder = "cdn.domain.tld"
+			$0.keyboardType = .URL
+		}
 		alert.presentIn(self)
 	}
 	
