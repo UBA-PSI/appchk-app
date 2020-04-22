@@ -33,10 +33,19 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		stopTimer(animate: false)
 	}
 	
-	func navigationController(_ navigationController: UINavigationController, willShow vc: UIViewController, animated: Bool) {
-		let isRoot = (vc == navigationController.viewControllers.first)
-		UIView.animate(withDuration: 0.3) {
-			self.startNewRecView.isHidden = !isRoot // hide "new recording" if details open
+	func navigationController(_ nav: UINavigationController, willShow vc: UIViewController, animated: Bool) {
+		hideNewRecording(isRootVC: (vc == nav.viewControllers.first), didShow: false)
+	}
+	
+	func navigationController(_ nav: UINavigationController, didShow vc: UIViewController, animated: Bool) {
+		hideNewRecording(isRootVC: (vc == nav.viewControllers.first), didShow: true)
+	}
+	
+	private func hideNewRecording(isRootVC: Bool, didShow: Bool) {
+		if isRootVC == didShow {
+			UIView.animate(withDuration: 0.3) {
+				self.startNewRecView.isHidden = !isRootVC // hide "new recording" if details open
+			}
 		}
 	}
 	
