@@ -20,7 +20,7 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		updateUI(setRecording: false, animated: false)
 		currentRecording = DBWrp.recordingGetCurrent()
 		
-		if !UserDefaults.standard.bool(forKey: "didShowTutorialRecordings") {
+		if !Pref.DidShowTutorial.Recordings {
 			self.perform(#selector(showTutorial), with: nil, afterDelay: 0.5)
 		}
 	}
@@ -136,7 +136,7 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		))
 		x.buttonTitleDone = "Got it"
 		x.present {
-			UserDefaults.standard.set(true, forKey: "didShowTutorialRecordings")
+			Pref.DidShowTutorial.Recordings = true
 		}
 	}
 }

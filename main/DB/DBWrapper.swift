@@ -4,6 +4,7 @@ let DBWrp = DBWrapper()
 fileprivate var AppDB: SQLiteDatabase? { get { try? SQLiteDatabase.open() } }
 
 class DBWrapper {
+	private var earliestEntry: Timestamp = 0
 	private var latestModification: Timestamp = 0
 	private var dataA: [GroupedDomain] = [] // Domains
 	private var dataB: [[GroupedDomain]] = [] // Hosts
@@ -39,9 +40,8 @@ class DBWrapper {
 			 $0.1 + ($1.1.contains(.ignored) ? 1 : 0)) }}
 	}
 	
-	func listOfTimes(_ domain: String?) -> [(Timestamp, Bool)] {
-		guard let domain = domain else { return [] }
-		return AppDB?.timesForDomain(domain)?.reversed() ?? []
+	func listOfTimes(_ domain: String) -> [(Timestamp, Bool)] {
+		return AppDB?.timesForDomain(domain, since: earliestEntry)?.reversed() ?? []
 	}
 	
 	
@@ -63,20 +63,28 @@ class DBWrapper {
 		}
 	}
 	
+	func reloadAfterDateFilterHasChanged() {
+		DispatchQueue.global().async {
+			self.dataAB_init()
+		}
+	}
+	
 	private func dataF_init() {
 		let list = AppDB?.loadFilters() ?? [:]
 		Q.async(flags: .barrier) {
 			self.dataF = list
-			NotifyFilterChanged.postAsyncMain()
+			NotifyDNSFilterChanged.postAsyncMain()
 		}
 	}
 	
 	private func dataAB_init() {
-		let list = AppDB?.domainList()
+		let earliest = Pref.DateFilter.lastXMinTimestamp() ?? 0
+		let list = AppDB?.domainList(since: earliest)
 		Q.async(flags: .barrier) {
 			self.dataA = []
 			self.dataB = []
-			self.latestModification = 0
+			self.earliestEntry = earliest
+			self.latestModification = earliest
 			if let allDomains = list {
 				for (parent, parts) in self.groupBySubdomains(allDomains) {
 					self.dataA.append(parent)
@@ -102,11 +110,20 @@ class DBWrapper {
 	// MARK: - Partial Update History
 	
 	@objc private func syncNewestLogs() {
-		//QLog.Debug("\(#function)")
+		dataA_mergeInsert();
+		if let lastXFilter = Pref.DateFilter.lastXMinTimestamp() {
+			if earliestEntry < lastXFilter {
+				dataA_mergeDelete(between: earliestEntry, and: lastXFilter)
+				earliestEntry = lastXFilter
+			}
+		}
+	}
+	
+	private func dataA_mergeInsert() {
 #if !IOS_SIMULATOR
 		guard currentVPNState == .on else { return }
 #endif
-		guard let res = AppDB?.domainList(since: latestModification), res.count > 0 else {
+		guard let res = AppDB?.domainList(since: latestModification + 1), res.count > 0 else {
 			return
 		}
 		QLog.Info("auto sync \(res.count) new logs")
@@ -114,7 +131,7 @@ class DBWrapper {
 			var c = 0
 			for (parent, parts) in self.groupBySubdomains(res) {
 				if let i = self.dataA_index(of: parent.domain) {
-					self.mergeExistingParts(parent.domain, at: i, newChildren: parts)
+					self.dataB_mergeInsert(parent.domain, at: i, newChildren: parts)
 					
 					let merged = parent + self.dataA.remove(at: i)
 					self.dataA.insert(merged, at: c)
@@ -124,6 +141,7 @@ class DBWrapper {
 					self.dataA.insert(parent, at: c)
 					self.dataB.insert(parts, at: c)
 					self.dataA_delegate?.insertRow(parent, at: c)
+					self.dataB_delegate(parent.domain)?.replaceData(with: parts);
 				}
 				c += 1
 				self.latestModification = max(parent.lastModified, self.latestModification)
@@ -131,7 +149,7 @@ class DBWrapper {
 		}
 	}
 	
-	private func mergeExistingParts(_ dom: String, at index: Int, newChildren: [GroupedDomain]) {
+	private func dataB_mergeInsert(_ dom: String, at index: Int, newChildren: [GroupedDomain]) {
 		let tvc = dataB_delegate(dom)
 		var i = 0
 		for child in newChildren {
@@ -148,7 +166,61 @@ class DBWrapper {
 	}
 	
 	
-	// MARK: - Delete History
+	// MARK: - Soft Delete History
+	// Will delete appearance only. DB still contains a copy.
+	
+	/// Technically not really deleting existing logs. Rather query DB for selected range and decrement whatever count is returned.
+	/// This means you should only run the delete operation once. As running multiple times will distrort the data.
+	/// - Parameters:
+	///   - between: Starting with and including
+	///   - and: Up until, exculding
+	private func dataA_mergeDelete(between: Timestamp, and: Timestamp) {
+		guard let res = AppDB?.domainList(between: between, and: and), res.count > 0 else {
+			return
+		}
+		QLog.Info("deleting \(res.count) old logs (soft delete)")
+		Q.async(flags: .barrier) {
+			for (parent, parts) in self.groupBySubdomains(res) {
+				guard let i = self.dataA_index(of: parent.domain) else {
+					continue // should never happen anyway
+				}
+				if parent.total < self.dataA[i].total {
+					self.dataB_mergeDelete(parent.domain, at: i, oldChildren: parts)
+					self.dataA[i] = self.dataA[i] - parent
+					self.dataA_delegate?.replaceRow(self.dataA[i], at: i)
+				} else {
+					self.dataA_delete(at: i, parentDomain: parent.domain)
+				}
+			}
+		}
+	}
+	
+	private func dataB_mergeDelete(_ dom: String, at index: Int, oldChildren: [GroupedDomain]) {
+		let tvc = dataB_delegate(dom)
+		for child in oldChildren {
+			guard let u = dataB[index].firstIndex(where: { $0.domain == child.domain }) else {
+				continue // should never happen anyway
+			}
+			if child.total < dataB[index][u].total {
+				dataB[index][u] = dataB[index][u] - child
+				tvc?.replaceRow(dataB[index][u], at: u)
+			} else {
+				dataB[index].remove(at: u)
+				tvc?.deleteRow(at: u)
+			}
+		}
+	}
+	
+	private func dataA_delete(at index: Int, parentDomain: String) {
+		dataA.remove(at: index)
+		dataB.remove(at: index)
+		dataA_delegate?.deleteRow(at: index)
+		dataB_delegate(parentDomain)?.replaceData(with: [])
+	}
+	
+	
+	// MARK: - Hard Delete History
+	// will delete DB content. No restore.
 	
 	func deleteHistory() {
 		DispatchQueue.global().async {
@@ -160,22 +232,21 @@ class DBWrapper {
 	
 	func deleteHistory(domain: String, since ts: Timestamp) {
 		DispatchQueue.global().async {
-			let modified = (try? AppDB?.deleteRows(matching: domain, since: ts)) ?? 0
+			let modified = (try? AppDB?.deleteRows(matching: domain, since: max(ts, self.earliestEntry))) ?? 0
 			guard modified > 0 else {
 				return // nothing has changed
 			}
+			QLog.Info("deleting \(modified) old logs (hard delete)")
 			AppDB?.vacuum()
 			self.Q.async(flags: .barrier) {
 				guard let index = self.dataA_index(of: domain) else {
 					return // nothing has changed
 				}
 				let parentDom = self.dataA[index].domain
-				guard let list = AppDB?.domainList(matching: parentDom), list.count > 0 else {
-					self.dataA.remove(at: index)
-					self.dataB.remove(at: index)
-					self.dataA_delegate?.deleteRow(at: index)
-					self.dataB_delegate(parentDom)?.replaceData(with: [])
-					return // nothing left, after deleting matching rows
+				guard let list = AppDB?.domainList(matching: parentDom, since: self.earliestEntry),
+					list.count > 0 else {
+						self.dataA_delete(at: index, parentDomain: parentDom)
+						return // nothing left, after deleting matching rows
 				}
 				// else: incremental update, replace whole list
 				self.dataA[index] = list.merge(parentDom, options: self.dataF[parentDom])
@@ -217,7 +288,7 @@ class DBWrapper {
 					self.dataB_delegate(self.dataA[i].domain)?.replaceRow(self.dataB[i][u], at: u)
 				}
 			}
-			NotifyFilterChanged.postAsyncMain()
+			NotifyDNSFilterChanged.postAsyncMain()
 		}
 	}
 	

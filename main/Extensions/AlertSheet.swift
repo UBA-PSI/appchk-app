@@ -2,7 +2,7 @@ import UIKit
 
 extension UIAlertController {
 	func presentIn(_ viewController: UIViewController?) {
-		viewController?.present(self, animated: true, completion: nil)
+		viewController?.present(self, animated: true)
 	}
 }
 
@@ -68,7 +68,7 @@ func AlertDeleteLogs(_ domain: String, latest: Timestamp, success: @escaping (_ 
 		if idx >= times.count {
 			success(0)
 		} else {
-			success(Timestamp(Date().timeIntervalSince1970) - times[idx])
+			success(Timestamp.now() - times[idx])
 		}
 	}
 }

@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			self.postVPNState()
 		}
 		NSNotification.Name.NEVPNStatusDidChange.observe(call: #selector(vpnStatusChanged(_:)), on: self)
-		NotifyFilterChanged.observe(call: #selector(filterDidChange), on: self)
+		NotifyDNSFilterChanged.observe(call: #selector(filterDidChange), on: self)
 		return true
 	}
 	

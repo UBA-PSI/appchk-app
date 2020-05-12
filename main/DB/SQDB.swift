@@ -80,15 +80,19 @@ class SQLiteDatabase {
 		}
 	}
 	
-	func run<T>(sql: String, bind: ((OpaquePointer) -> Bool)?, step: (OpaquePointer) throws -> T) throws -> T {
+	func run<T>(sql: String, bind: [DBBinding?] = [], step: (OpaquePointer) throws -> T) throws -> T {
 		var statement: OpaquePointer?
 		guard sqlite3_prepare_v2(dbPointer, sql, -1, &statement, nil) == SQLITE_OK,
 			let stmt = statement else {
 				throw SQLiteError.Prepare(message: errorMessage)
 		}
 		defer { sqlite3_finalize(stmt) }
-		guard bind?(stmt) ?? true else {
-			throw SQLiteError.Bind(message: errorMessage)
+		var col: Int32 = 0
+		for b in bind.compactMap({$0}) {
+			col += 1
+			guard b.bind(stmt, col) == SQLITE_OK else {
+				throw SQLiteError.Bind(message: errorMessage)
+			}
 		}
 		return try step(stmt)
 	}
@@ -100,13 +104,11 @@ class SQLiteDatabase {
 	}
 	
 	func createTable(table: SQLTable.Type) throws {
-		try run(sql: table.createStatement, bind: nil) {
-			try ifStep($0, SQLITE_DONE)
-		}
+		try run(sql: table.createStatement) { try ifStep($0, SQLITE_DONE) }
 	}
 	
 	func vacuum() {
-		try? run(sql: "VACUUM;", bind: nil) { try ifStep($0, SQLITE_DONE) }
+		try? run(sql: "VACUUM;") { try ifStep($0, SQLITE_DONE) }
 	}
 }
 
@@ -115,25 +117,39 @@ protocol SQLTable {
 }
 
 
+// MARK: - Bindings
+
+protocol DBBinding {
+	func bind(_ stmt: OpaquePointer, _ col: Int32) -> Int32
+}
+
+struct BindInt32 : DBBinding {
+	let raw: Int32
+	init(_ value: Int32) { raw = value }
+	func bind(_ stmt: OpaquePointer, _ col: Int32) -> Int32 { sqlite3_bind_int(stmt, col, raw) }
+}
+
+struct BindInt64 : DBBinding {
+	let raw: sqlite3_int64
+	init(_ value: sqlite3_int64) { raw = value }
+	func bind(_ stmt: OpaquePointer, _ col: Int32) -> Int32 { sqlite3_bind_int64(stmt, col, raw) }
+}
+
+struct BindText : DBBinding {
+	let raw: String
+	init(_ value: String) { raw = value }
+	func bind(_ stmt: OpaquePointer, _ col: Int32) -> Int32 { sqlite3_bind_text(stmt, col, (raw as NSString).utf8String, -1, nil) }
+}
+
+struct BindTextOrNil : DBBinding {
+	let raw: String?
+	init(_ value: String?) { raw = value }
+	func bind(_ stmt: OpaquePointer, _ col: Int32) -> Int32 { sqlite3_bind_text(stmt, col, (raw == nil) ? nil : (raw! as NSString).utf8String, -1, nil) }
+}
+
 // MARK: - Easy Access func
 
 private extension SQLiteDatabase {
-	func bindInt(_ stmt: OpaquePointer, _ col: Int32, _ value: Int32) -> Bool {
-		sqlite3_bind_int(stmt, col, value) == SQLITE_OK
-	}
-	
-	func bindInt64(_ stmt: OpaquePointer, _ col: Int32, _ value: sqlite3_int64) -> Bool {
-		sqlite3_bind_int64(stmt, col, value) == SQLITE_OK
-	}
-	
-	func bindText(_ stmt: OpaquePointer, _ col: Int32, _ value: String) -> Bool {
-		sqlite3_bind_text(stmt, col, (value as NSString).utf8String, -1, nil) == SQLITE_OK
-	}
-	
-	func bindTextOrNil(_ stmt: OpaquePointer, _ col: Int32, _ value: String?) -> Bool {
-		sqlite3_bind_text(stmt, col, (value == nil) ? nil : (value! as NSString).utf8String, -1, nil) == SQLITE_OK
-	}
-	
 	func readText(_ stmt: OpaquePointer, _ col: Int32) -> String? {
 		let val = sqlite3_column_text(stmt, col)
 		return (val != nil ? String(cString: val!) : nil)
@@ -185,9 +201,8 @@ extension SQLiteDatabase {
 	// MARK: insert
 	
 	func insertDNSQuery(_ domain: String, blocked: Bool) throws {
-		try? run(sql: "INSERT INTO req (domain, logOpt) VALUES (?, ?);", bind: {
-			self.bindText($0, 1, domain) && self.bindInt($0, 2, blocked ? 1 : 0)
-		}) {
+		try? run(sql: "INSERT INTO req (domain, logOpt) VALUES (?, ?);",
+				 bind: [BindText(domain), BindInt32(blocked ? 1 : 0)]) {
 			try ifStep($0, SQLITE_DONE)
 		}
 	}
@@ -195,17 +210,14 @@ extension SQLiteDatabase {
 	// MARK: delete
 	
 	func destroyContent() throws {
-		try? run(sql: "DROP TABLE IF EXISTS req;", bind: nil) {
-			try ifStep($0, SQLITE_DONE)
-		}
+		try? run(sql: "DROP TABLE IF EXISTS req;") { try ifStep($0, SQLITE_DONE) }
 		try? createTable(table: DNSQueryT.self)
 	}
 	
 	/// Delete rows matching `ts >= ? AND "domain" OR "*.domain"`
 	@discardableResult func deleteRows(matching domain: String, since ts: Timestamp = 0) throws -> Int32 {
-		try run(sql: "DELETE FROM req WHERE ts >= ? AND (domain = ? OR domain LIKE '%.' || ?);", bind: {
-			self.bindInt64($0, 1, ts) && self.bindText($0, 2, domain) && self.bindText($0, 3, domain)
-		}) { stmt -> Int32 in
+		try run(sql: "DELETE FROM req WHERE ts >= ? AND (domain = ? OR domain LIKE '%.' || ?);",
+				bind: [BindInt64(ts), BindText(domain), BindText(domain)]) { stmt -> Int32 in
 			try ifStep(stmt, SQLITE_DONE)
 			return sqlite3_changes(dbPointer)
 		}
@@ -213,33 +225,35 @@ extension SQLiteDatabase {
 	
 	// MARK: read
 	
-	func readGroupedDomain(_ stmt: OpaquePointer) -> GroupedDomain {
-		GroupedDomain(domain: readText(stmt, 0) ?? "",
-					  total: sqlite3_column_int(stmt, 1),
-					  blocked: sqlite3_column_int(stmt, 2),
-					  lastModified: sqlite3_column_int64(stmt, 3))
+	private func allDomainsGrouped(_ clause: String = "", bind: [DBBinding?] = []) -> [GroupedDomain]? {
+		try? run(sql: "SELECT domain, COUNT(*), SUM(logOpt&1), MAX(ts) FROM req \(clause) GROUP BY domain ORDER BY 4 DESC;", bind: bind) {
+			allRows($0) {
+				GroupedDomain(domain: readText($0, 0) ?? "",
+							  total: sqlite3_column_int($0, 1),
+							  blocked: sqlite3_column_int($0, 2),
+							  lastModified: sqlite3_column_int64($0, 3))
+			}
+		}
 	}
 	
 	func domainList(since ts: Timestamp = 0) -> [GroupedDomain]? {
-		try? run(sql: "SELECT domain, COUNT(*), SUM(logOpt&1), MAX(ts) FROM req \(ts == 0 ? "" : "WHERE ts > ?") GROUP BY domain ORDER BY 4 DESC;", bind: {
-			ts == 0 || self.bindInt64($0, 1, ts)
-		}) {
-			allRows($0) { readGroupedDomain($0) }
-		}
+		ts==0 ? allDomainsGrouped() : allDomainsGrouped("WHERE ts >= ?", bind: [BindInt64(ts)])
 	}
 	
-	func domainList(matching domain: String) -> [GroupedDomain]? {
-		try? run(sql: "SELECT domain, COUNT(*), SUM(logOpt&1), MAX(ts) FROM req WHERE (domain = ? OR domain LIKE '%.' || ?) GROUP BY domain ORDER BY 4 DESC;", bind: {
-			self.bindText($0, 1, domain) && self.bindText($0, 2, domain)
-		}) {
-			allRows($0) { readGroupedDomain($0) }
-		}
+	/// Get grouped domains matching `ts >= ? AND "domain" OR "*.domain"`
+	func domainList(matching domain: String, since ts: Timestamp = 0) -> [GroupedDomain]? {
+		allDomainsGrouped("WHERE ts >= ? AND (domain = ? OR domain LIKE '%.' || ?)",
+						  bind: [BindInt64(ts), BindText(domain), BindText(domain)])
 	}
 	
-	func timesForDomain(_ fullDomain: String) -> [(Timestamp, Bool)]? {
-		try? run(sql: "SELECT ts, logOpt FROM req WHERE domain = ?;", bind: {
-			self.bindText($0, 1, fullDomain)
-		}) {
+	/// From `ts1` (including) and up to `ts2` (excluding). `ts1 >= X < ts2`
+	func domainList(between ts1: Timestamp, and ts2: Timestamp) -> [GroupedDomain]? {
+		allDomainsGrouped("WHERE ts >= ? AND ts < ?", bind: [BindInt64(ts1), BindInt64(ts2)])
+	}
+	
+	func timesForDomain(_ fullDomain: String, since ts: Timestamp = 0) -> [(Timestamp, Bool)]? {
+		try? run(sql: "SELECT ts, logOpt FROM req WHERE ts >= ? AND domain = ?;",
+				 bind: [BindInt64(ts), BindText(fullDomain)]) {
 			allRows($0) { (sqlite3_column_int64($0, 0), sqlite3_column_int($0, 1) > 0) }
 		}
 	}
@@ -266,7 +280,7 @@ extension SQLiteDatabase {
 	// MARK: read
 	
 	func loadFilters() -> [String : FilterOptions]? {
-		try? run(sql: "SELECT domain, opt FROM filter;", bind: nil) {
+		try? run(sql: "SELECT domain, opt FROM filter;") {
 			allRowsKeyed($0) {
 				(key: readText($0, 0) ?? "",
 				 value: FilterOptions(rawValue: sqlite3_column_int($0, 1)))
@@ -278,9 +292,8 @@ extension SQLiteDatabase {
 	
 	func setFilter(_ domain: String, _ value: FilterOptions?) {
 		func removeFilter() {
-			try? run(sql: "DELETE FROM filter WHERE domain = ? LIMIT 1;", bind: {
-				self.bindText($0, 1, domain)
-			}) { stmt -> Void in
+			try? run(sql: "DELETE FROM filter WHERE domain = ? LIMIT 1;",
+					 bind: [BindText(domain)]) { stmt -> Void in
 				sqlite3_step(stmt)
 			}
 		}
@@ -289,16 +302,14 @@ extension SQLiteDatabase {
 			return
 		}
 		func createFilter() throws {
-			try run(sql: "INSERT OR FAIL INTO filter (domain, opt) VALUES (?, ?);", bind: {
-				self.bindText($0, 1, domain) && self.bindInt($0, 2, rv)
-			}) {
+			try run(sql: "INSERT OR FAIL INTO filter (domain, opt) VALUES (?, ?);",
+					bind: [BindText(domain), BindInt32(rv)]) {
 				try ifStep($0, SQLITE_DONE)
 			}
 		}
 		func updateFilter() {
-			try? run(sql: "UPDATE filter SET opt = ? WHERE domain = ? LIMIT 1;", bind: {
-				self.bindInt($0, 1, rv) && self.bindText($0, 2, domain)
-			}) { stmt -> Void in
+			try? run(sql: "UPDATE filter SET opt = ? WHERE domain = ? LIMIT 1;",
+					 bind: [BindInt32(rv), BindText(domain)]) { stmt -> Void in
 				sqlite3_step(stmt)
 			}
 		}
@@ -335,7 +346,7 @@ extension SQLiteDatabase {
 	// MARK: write
 	
 	func startNewRecording() throws -> Recording {
-		try run(sql: "INSERT INTO rec (stop) VALUES (NULL);", bind: nil) { stmt -> Recording in
+		try run(sql: "INSERT INTO rec (stop) VALUES (NULL);") { stmt -> Recording in
 			try ifStep(stmt, SQLITE_DONE)
 			return try getRecording(withID: sqlite3_last_insert_rowid(dbPointer))
 		}
@@ -344,28 +355,23 @@ extension SQLiteDatabase {
 	func stopRecording(_ r: inout Recording) {
 		guard r.stop == nil else { return }
 		let theID = r.id
-		try? run(sql: "UPDATE rec SET stop = (strftime('%s','now')) WHERE id = ? LIMIT 1;", bind: {
-			self.bindInt64($0, 1, theID)
-		}) { stmt -> Void in
+		try? run(sql: "UPDATE rec SET stop = (strftime('%s','now')) WHERE id = ? LIMIT 1;",
+				 bind: [BindInt64(theID)]) { stmt -> Void in
 			try ifStep(stmt, SQLITE_DONE)
 			r = try getRecording(withID: theID)
 		}
 	}
 	
 	func updateRecording(_ r: Recording) {
-		try? run(sql: "UPDATE rec SET title = ?, appid = ?, notes = ? WHERE id = ? LIMIT 1;", bind: {
-			self.bindTextOrNil($0, 1, r.title) && self.bindTextOrNil($0, 2, r.appId)
-				&& self.bindTextOrNil($0, 3, r.notes) && self.bindInt64($0, 4, r.id)
-		}) { stmt -> Void in
+		try? run(sql: "UPDATE rec SET title = ?, appid = ?, notes = ? WHERE id = ? LIMIT 1;",
+				 bind: [BindTextOrNil(r.title), BindTextOrNil(r.appId), BindTextOrNil(r.notes), BindInt64(r.id)]) { stmt -> Void in
 			sqlite3_step(stmt)
 		}
 	}
 	
 	func deleteRecording(_ r: Recording) throws -> Bool {
 		_ = try? deleteRecordingLogs(r.id)
-		return try run(sql: "DELETE FROM rec WHERE id = ? LIMIT 1;", bind: {
-			self.bindInt64($0, 1, r.id)
-		}) {
+		return try run(sql: "DELETE FROM rec WHERE id = ? LIMIT 1;", bind: [BindInt64(r.id)]) {
 			try ifStep($0, SQLITE_DONE)
 			return sqlite3_changes(dbPointer) > 0
 		}
@@ -384,22 +390,20 @@ extension SQLiteDatabase {
 	}
 	
 	func ongoingRecording() -> Recording? {
-		try? run(sql: "SELECT * FROM rec WHERE stop IS NULL LIMIT 1;", bind: nil) {
+		try? run(sql: "SELECT * FROM rec WHERE stop IS NULL LIMIT 1;") {
 			try ifStep($0, SQLITE_ROW)
 			return readRecording($0)
 		}
 	}
 	
 	func allRecordings() -> [Recording]? {
-		try? run(sql: "SELECT * FROM rec WHERE stop IS NOT NULL;", bind: nil) {
+		try? run(sql: "SELECT * FROM rec WHERE stop IS NOT NULL;") {
 			allRows($0) { readRecording($0) }
 		}
 	}
 	
 	func getRecording(withID: sqlite3_int64) throws -> Recording {
-		try run(sql: "SELECT * FROM rec WHERE id = ? LIMIT 1;", bind: {
-			self.bindInt64($0, 1, withID)
-		}) {
+		try run(sql: "SELECT * FROM rec WHERE id = ? LIMIT 1;", bind: [BindInt64(withID)]) {
 			try ifStep($0, SQLITE_ROW)
 			return readRecording($0)
 		}
@@ -434,17 +438,14 @@ extension SQLiteDatabase {
 		try? run(sql: """
 			INSERT INTO recLog (rid, ts, domain) SELECT ?, ts, domain FROM req
 			WHERE req.ts >= ? AND req.ts <= ?
-			""", bind: {
-			self.bindInt64($0, 1, r.id) && self.bindInt64($0, 2, r.start) && self.bindInt64($0, 3, end)
-		}) {
+			""", bind: [BindInt64(r.id), BindInt64(r.start), BindInt64(end)]) {
 			try ifStep($0, SQLITE_DONE)
 		}
 	}
 	
 	func deleteRecordingLogs(_ recId: sqlite3_int64, matchingDomain d: String? = nil) throws -> Int32 {
-		try run(sql: "DELETE FROM recLog WHERE rid = ? \(d==nil ? "" : "AND domain = ?");", bind: {
-			self.bindInt64($0, 1, recId) && (d==nil ? true : self.bindTextOrNil($0, 2,d))
-		}) {
+		try run(sql: "DELETE FROM recLog WHERE rid = ? \(d==nil ? "" : "AND domain = ?");",
+				bind: [BindInt64(recId), d==nil ? nil : BindText(d!)]) {
 			try ifStep($0, SQLITE_DONE)
 			return sqlite3_changes(dbPointer)
 		}
@@ -453,9 +454,8 @@ extension SQLiteDatabase {
 	// MARK: read
 	
 	func getRecordingsLogs(_ r: Recording) -> [RecordLog]? {
-		try? run(sql: "SELECT domain, COUNT() FROM recLog WHERE rid = ? GROUP BY domain;", bind: {
-			self.bindInt64($0, 1, r.id)
-		}) {
+		try? run(sql: "SELECT domain, COUNT() FROM recLog WHERE rid = ? GROUP BY domain;",
+				 bind: [BindInt64(r.id)]) {
 			allRows($0) { (readText($0, 0), sqlite3_column_int($0, 1)) }
 		}
 	}

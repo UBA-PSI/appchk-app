@@ -39,60 +39,96 @@ extension UIRefreshControl {
 	
 }
 
-// MARK: - Incremental Update Delegate
-
-protocol IncrementalDataSourceUpdate : UITableViewController {
-	var dataSource: [GroupedDomain] { get set }
-}
-
-extension IncrementalDataSourceUpdate {
-	func ifDisplayed(_ block: () -> Void) {
-		DispatchQueue.main.sync {
-			if self.tableView.window?.isKeyWindow ?? false {
-				block()
-				// TODO: custom handling if cell is being edited
-			} else {
-				self.tableView.reloadData()
-			}
-		}
-	}
-	func insertRow(_ obj: GroupedDomain, at index: Int) {
-		dataSource.insert(obj, at: index)
-		ifDisplayed {
-			self.tableView.insertRows(at: [IndexPath(row: index)], with: .left)
-		}
-	}
-	func moveRow(_ obj: GroupedDomain, from: Int, to: Int) {
-		dataSource.remove(at: from)
-		dataSource.insert(obj, at: to)
-		ifDisplayed {
-			let source = IndexPath(row: from)
-			let cell = self.tableView.cellForRow(at: source)
-			cell?.detailTextLabel?.text = obj.detailCellText
-			self.tableView.moveRow(at: source, to: IndexPath(row: to))
-		}
-	}
-	func replaceRow(_ obj: GroupedDomain, at index: Int) {
-		dataSource[index] = obj
-		ifDisplayed {
-			self.tableView.reloadRows(at: [IndexPath(row: index)], with: .automatic)
-		}
-	}
-	func deleteRow(at index: Int) {
-		dataSource.remove(at: index)
-		ifDisplayed {
-			self.tableView.deleteRows(at: [IndexPath(row: index)], with: .automatic)
-		}
-	}
-	func replaceData(with newData: [GroupedDomain]) {
-		dataSource = newData
-		ifDisplayed {
-			self.tableView.reloadData()
-		}
-	}
-}
+// MARK: TableView extensions
 
 extension IndexPath {
 	/// Convenience init with `section: 0`
 	public init(row: Int) { self.init(row: row, section: 0) }
+}
+
+extension UITableView {
+	/// Returns `true` if this `tableView` is the currently frontmost visible
+	var isFrontmost: Bool { window?.isKeyWindow ?? false }
+	
+	/// If frontmost window, perform `deleteRows()`; If not, perform `reloadData()`
+	func safeDeleteRow(_ index: Int, with animation: UITableView.RowAnimation = .automatic) {
+		isFrontmost ? deleteRows(at: [IndexPath(row: index)], with: animation) : reloadData()
+	}
+	/// If frontmost window, perform `reloadRows()`; If not, perform `reloadData()`
+	func safeReloadRow(_ index: Int, with animation: UITableView.RowAnimation = .automatic) {
+		isFrontmost ? reloadRows(at: [IndexPath(row: index)], with: animation) : reloadData()
+	}
+	/// If frontmost window, perform `insertRows()`; If not, perform `reloadData()`
+	func safeInsertRow(_ index: Int, with animation: UITableView.RowAnimation = .automatic) {
+		isFrontmost ? insertRows(at: [IndexPath(row: index)], with: animation) : reloadData()
+	}
+	/// If frontmost window, perform `moveRow()`; If not, perform `reloadData()`
+	func safeMoveRow(_ from: Int, to: Int) {
+		isFrontmost ? moveRow(at: IndexPath(row: from), to: IndexPath(row: to)) : reloadData()
+	}
+}
+
+
+// MARK: - Incremental Update Delegate
+
+enum IncrementalDataSourceUpdateOperation {
+	case ReloadTable, Update, Insert, Delete, Move
+}
+
+protocol IncrementalDataSourceUpdate : UITableViewController {
+	var dataSource: [GroupedDomain] { get set }
+	func shouldLiveUpdateIncrementalDataSource() -> Bool
+	/// - Warning: Called on a background thread!
+	/// - Parameters:
+	///   - operation: Row update action
+	///   - row: Which row index is affected? `IndexPath(row: row)`
+	///   - moveTo: Only set for `Move` operation, otherwise `-1`
+	func didUpdateIncrementalDataSource(_ operation: IncrementalDataSourceUpdateOperation, row: Int, moveTo: Int)
+}
+
+extension IncrementalDataSourceUpdate {
+	func shouldLiveUpdateIncrementalDataSource() -> Bool { true }
+	func didUpdateIncrementalDataSource(_: IncrementalDataSourceUpdateOperation, row: Int, moveTo: Int) {}
+	// TODO: custom handling if cell is being edited
+	
+	func insertRow(_ obj: GroupedDomain, at index: Int) {
+		dataSource.insert(obj, at: index)
+		if shouldLiveUpdateIncrementalDataSource() {
+			DispatchQueue.main.sync { tableView.safeInsertRow(index, with: .left) }
+		}
+		didUpdateIncrementalDataSource(.Insert, row: index, moveTo: -1)
+	}
+	func moveRow(_ obj: GroupedDomain, from: Int, to: Int) {
+		dataSource.remove(at: from)
+		dataSource.insert(obj, at: to)
+		if shouldLiveUpdateIncrementalDataSource() {
+			DispatchQueue.main.sync {
+				let cell = tableView.cellForRow(at: IndexPath(row: from))
+				cell?.detailTextLabel?.text = obj.detailCellText
+				tableView.safeMoveRow(from, to: to)
+			}
+		}
+		didUpdateIncrementalDataSource(.Move, row: from, moveTo: to)
+	}
+	func replaceRow(_ obj: GroupedDomain, at index: Int) {
+		dataSource[index] = obj
+		if shouldLiveUpdateIncrementalDataSource() {
+			DispatchQueue.main.sync { tableView.safeReloadRow(index) }
+		}
+		didUpdateIncrementalDataSource(.Update, row: index, moveTo: -1)
+	}
+	func deleteRow(at index: Int) {
+		dataSource.remove(at: index)
+		if shouldLiveUpdateIncrementalDataSource() {
+			DispatchQueue.main.sync { tableView.safeDeleteRow(index) }
+		}
+		didUpdateIncrementalDataSource(.Delete, row: index, moveTo: -1)
+	}
+	func replaceData(with newData: [GroupedDomain]) {
+		dataSource = newData
+		if shouldLiveUpdateIncrementalDataSource() {
+			DispatchQueue.main.sync { tableView.reloadData() }
+		}
+		didUpdateIncrementalDataSource(.ReloadTable, row: -1, moveTo: -1)
+	}
 }

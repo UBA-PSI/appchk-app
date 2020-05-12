@@ -11,6 +11,7 @@
 		540E6780242D2CF100871BBE /* VCRecordings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E677F242D2CF100871BBE /* VCRecordings.swift */; };
 		540E67822433483D00871BBE /* VCEditRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E67812433483D00871BBE /* VCEditRecording.swift */; };
 		540E67842433FAFE00871BBE /* TVCPreviousRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */; };
+		5412F8EE24571B8200A63D7A /* VCDateFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5412F8ED24571B8100A63D7A /* VCDateFilter.swift */; };
 		541A957623E602DF00C09C19 /* LaunchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 541A957523E602DF00C09C19 /* LaunchIcon.png */; };
 		541AC5D82399498A00A769D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541AC5D72399498A00A769D7 /* AppDelegate.swift */; };
 		541AC5DD2399498A00A769D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5DB2399498A00A769D7 /* Main.storyboard */; };
@@ -154,6 +155,7 @@
 		540E677F242D2CF100871BBE /* VCRecordings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCRecordings.swift; sourceTree = "<group>"; };
 		540E67812433483D00871BBE /* VCEditRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCEditRecording.swift; sourceTree = "<group>"; };
 		540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCPreviousRecords.swift; sourceTree = "<group>"; };
+		5412F8ED24571B8100A63D7A /* VCDateFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCDateFilter.swift; sourceTree = "<group>"; };
 		541A957523E602DF00C09C19 /* LaunchIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LaunchIcon.png; sourceTree = "<group>"; };
 		541AC5D42399498A00A769D7 /* AppCheck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		541AC5D72399498A00A769D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 			isa = PBXGroup;
 			children = (
 				54953E5E23DEBE840054345C /* TVCDomains.swift */,
+				5412F8ED24571B8100A63D7A /* VCDateFilter.swift */,
 				54953E6023E0D69A0054345C /* TVCHosts.swift */,
 				54953E6E23E44CD00054345C /* TVCHostDetails.swift */,
 			);
@@ -790,6 +793,7 @@
 				54C056DD23E9EEF700214A3F /* BundleIcon.swift in Sources */,
 				542E2A982404973F001462DC /* TBCMain.swift in Sources */,
 				5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */,
+				5412F8EE24571B8200A63D7A /* VCDateFilter.swift in Sources */,
 				545DDDD124436983003B6544 /* QuickUI.swift in Sources */,
 				541AC5D82399498A00A769D7 /* AppDelegate.swift in Sources */,
 				54B345992414F491004C53CC /* DBWrapper.swift in Sources */,

@@ -9,7 +9,7 @@ class TVCFilter: UITableViewController, EditActionsRemove {
 //		if #available(iOS 10.0, *) {
 //			tableView.refreshControl = UIRefreshControl(call: #selector(reloadDataSource), on: self)
 //		}
-		NotifyFilterChanged.observe(call: #selector(reloadDataSource), on: self)
+		NotifyDNSFilterChanged.observe(call: #selector(reloadDataSource), on: self)
 		reloadDataSource()
 	}
 

@@ -11,7 +11,7 @@ class TVCSettings: UITableViewController {
 		super.viewDidLoad()
 		NotifyVPNStateChanged.observe(call: #selector(vpnStateChanged(_:)), on: self)
 		changedState(currentVPNState)
-		NotifyFilterChanged.observe(call: #selector(reloadDataSource), on: self)
+		NotifyDNSFilterChanged.observe(call: #selector(reloadDataSource), on: self)
 		reloadDataSource()
 	}
 	
@@ -53,8 +53,8 @@ class TVCSettings: UITableViewController {
 	}
 	
 	@IBAction func resetTutorialAlerts(_ sender: UIButton) {
-		UserDefaults.standard.removeObject(forKey: "didShowTutorialAppWelcome")
-		UserDefaults.standard.removeObject(forKey: "didShowTutorialRecordings")
+		Pref.DidShowTutorial.Welcome = false
+		Pref.DidShowTutorial.Recordings = false
 		Alert(title: sender.titleLabel?.text,
 			  text: "\nDone.\n\nYou may need to restart the application.").presentIn(self)
 	}

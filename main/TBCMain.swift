@@ -8,7 +8,7 @@ class TBCMain: UITabBarController {
 		NotifyVPNStateChanged.observe(call: #selector(vpnStateChanged(_:)), on: self)
 		changedState(currentVPNState)
 		
-		if !UserDefaults.standard.bool(forKey: "didShowTutorialAppWelcome") {
+		if !Pref.DidShowTutorial.Welcome {
 			self.perform(#selector(showWelcomeMessage), with: nil, afterDelay: 0.5)
 		}
 	}
@@ -37,7 +37,7 @@ class TBCMain: UITabBarController {
 			)
 		))
 		x.present {
-			UserDefaults.standard.set(true, forKey: "didShowTutorialAppWelcome")
+			Pref.DidShowTutorial.Welcome = true
 		}
 	}
 	

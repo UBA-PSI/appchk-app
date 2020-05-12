@@ -1,9 +1,15 @@
 import Foundation
 
 extension GroupedDomain {
+	/// Return new `GroupedDomain` by adding `total` and `blocked` counts. Set `lastModified` to the maximum of the two.
 	static func +(a: GroupedDomain, b: GroupedDomain) -> Self {
 		GroupedDomain(domain: a.domain, total: a.total + b.total, blocked: a.blocked + b.blocked,
 					  lastModified: max(a.lastModified, b.lastModified), options: a.options ?? b.options )
+	}
+	/// Return new `GroupedDomain` by subtracting `total` and `blocked` counts.
+	static func -(a: GroupedDomain, b: GroupedDomain) -> Self {
+		GroupedDomain(domain: a.domain, total: a.total - b.total, blocked: a.blocked - b.blocked,
+					  lastModified: a.lastModified, options: a.options )
 	}
 }
 
@@ -26,7 +32,9 @@ extension Recording {
 }
 
 extension Timestamp {
+	/// - Returns: Time string with format `yyyy-MM-dd  HH:mm:ss`
 	func asDateTime() -> String { dateTimeFormat.string(from: self) }
 	func toDate() -> Date { Date(timeIntervalSince1970: Double(self)) }
 	static func now() -> Timestamp { Timestamp(Date().timeIntervalSince1970) }
+	static func past(minutes: Int) -> Timestamp { now() - Timestamp(minutes * 60) }
 }
