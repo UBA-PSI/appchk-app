@@ -2,10 +2,6 @@ import Foundation
 import SQLite3
 
 typealias Timestamp = Int64
-struct GroupedDomain {
-	let domain: String, total: Int32, blocked: Int32, lastModified: Timestamp
-	var options: FilterOptions? = nil
-}
 
 struct FilterOptions: OptionSet {
     let rawValue: Int32
@@ -196,6 +192,11 @@ private struct DNSQueryT: SQLTable {
 	}
 }
 
+struct GroupedDomain {
+	let domain: String, total: Int32, blocked: Int32, lastModified: Timestamp
+	var options: FilterOptions? = nil
+}
+
 extension SQLiteDatabase {
 	
 	// MARK: insert
@@ -251,13 +252,17 @@ extension SQLiteDatabase {
 		allDomainsGrouped("WHERE ts >= ? AND ts < ?", bind: [BindInt64(ts1), BindInt64(ts2)])
 	}
 	
-	func timesForDomain(_ fullDomain: String, since ts: Timestamp = 0) -> [(Timestamp, Bool)]? {
-		try? run(sql: "SELECT ts, logOpt FROM req WHERE ts >= ? AND domain = ?;",
+	func timesForDomain(_ fullDomain: String, since ts: Timestamp = 0) -> [GroupedTsOccurrence]? {
+		try? run(sql: "SELECT ts, COUNT(ts), SUM(logOpt>0) FROM req WHERE ts >= ? AND domain = ? GROUP BY ts;",
 				 bind: [BindInt64(ts), BindText(fullDomain)]) {
-			allRows($0) { (sqlite3_column_int64($0, 0), sqlite3_column_int($0, 1) > 0) }
+			allRows($0) {
+				(sqlite3_column_int64($0, 0), sqlite3_column_int($0, 1), sqlite3_column_int($0, 2))
+			}
 		}
 	}
 }
+
+typealias GroupedTsOccurrence = (ts: Timestamp, total: Int32, blocked: Int32)
 
 
 // MARK: - DNSFilterT

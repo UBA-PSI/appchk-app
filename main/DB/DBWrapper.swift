@@ -40,7 +40,7 @@ class DBWrapper {
 			 $0.1 + ($1.1.contains(.ignored) ? 1 : 0)) }}
 	}
 	
-	func listOfTimes(_ domain: String) -> [(Timestamp, Bool)] {
+	func listOfTimes(_ domain: String) -> [GroupedTsOccurrence] {
 		return AppDB?.timesForDomain(domain, since: earliestEntry)?.reversed() ?? []
 	}
 	
