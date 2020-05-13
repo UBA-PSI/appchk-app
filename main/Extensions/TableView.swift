@@ -103,9 +103,14 @@ extension IncrementalDataSourceUpdate {
 		dataSource.insert(obj, at: to)
 		if shouldLiveUpdateIncrementalDataSource() {
 			DispatchQueue.main.sync {
-				let cell = tableView.cellForRow(at: IndexPath(row: from))
-				cell?.detailTextLabel?.text = obj.detailCellText
-				tableView.safeMoveRow(from, to: to)
+				if tableView.isFrontmost {
+					let source = IndexPath(row: from)
+					let cell = tableView.cellForRow(at: source)
+					cell?.detailTextLabel?.text = obj.detailCellText
+					tableView.moveRow(at: source, to: IndexPath(row: to))
+				} else {
+					tableView.reloadData()
+				}
 			}
 		}
 		didUpdateIncrementalDataSource(.Move, row: from, moveTo: to)
