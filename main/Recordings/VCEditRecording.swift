@@ -43,8 +43,8 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		record.title = (inputTitle.text == "") ? nil : inputTitle.text
 		record.notes = (inputNotes.text == "") ? nil : inputNotes.text
 		dismiss(animated: true) {
-			DBWrp.recordingUpdate(self.record)
-			DBWrp.recordingPersist(self.record)
+			RecordingsDB.update(self.record)
+			RecordingsDB.persist(self.record)
 		}
 	}
 	
@@ -56,7 +56,7 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	override func viewDidDisappear(_ animated: Bool) {
 		if deleteOnCancel {
 			QLog.Debug("deleting record #\(record.id)")
-			DBWrp.recordingDelete(record)
+			RecordingsDB.delete(record)
 			deleteOnCancel = false
 		}
 	}

@@ -1,13 +1,10 @@
 import UIKit
 
-class TVCDomains: UITableViewController, IncrementalDataSourceUpdate, UISearchBarDelegate {
+class TVCDomains: UITableViewController, UISearchBarDelegate, FilterPipelineDelegate {
 	
-	internal var dataSource: [GroupedDomain] = []
-	private func dataSource(at: Int) -> GroupedDomain {
-		dataSource[(searchActive ? searchIndices[at] : at)]
-	}
+	lazy var source = GroupedDomainDataSource(withDelegate: self, parent: nil)
+	
 	private var searchActive: Bool = false
-	private var searchIndices: [Int] = []
 	private var searchTerm: String?
 	private let searchBar: UISearchBar = {
 		let x = UISearchBar(frame: CGRect.init(x: 0, y: 0, width: 20, height: 10))
@@ -22,46 +19,44 @@ class TVCDomains: UITableViewController, IncrementalDataSourceUpdate, UISearchBa
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		if #available(iOS 10.0, *) {
-			tableView.refreshControl = UIRefreshControl(call: #selector(reloadDataSource), on: self)
-		}
-		NotifyLogHistoryReset.observe(call: #selector(reloadDataSource), on: self)
-		reloadDataSource()
-		DBWrp.dataA_delegate = self
 		searchBar.delegate = self
-		NotifyDateFilterChanged.observe(call: #selector(dateFilterChanged), on: self)
-		dateFilterChanged()
+		NotifyDateFilterChanged.observe(call: #selector(didChangeDateFilter), on: self)
+		didChangeDateFilter()
 	}
 	
-	@objc func reloadDataSource() {
-		dataSource = DBWrp.listOfDomains()
-		if searchActive {
-			searchBar(searchBar, textDidChange: "")
-		} else {
-			tableView.reloadData()
+	private var didLoadAlready = false
+	override func viewDidAppear(_ animated: Bool) {
+		if !didLoadAlready {
+			didLoadAlready = true
+			source.reloadFromSource()
 		}
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if let index = tableView.indexPathForSelectedRow?.row {
-			(segue.destination as? TVCHosts)?.parentDomain = dataSource(at: index).domain
+			(segue.destination as? TVCHosts)?.parentDomain = source[index].domain
 		}
 	}
 	
 	
-	// MARK: - Table View Delegate
+	// MARK: - Table View Data Source
 	
-	override func tableView(_ _: UITableView, numberOfRowsInSection _: Int) -> Int {
-		searchActive ? searchIndices.count : dataSource.count
-	}
+	override func tableView(_ _: UITableView, numberOfRowsInSection _: Int) -> Int { source.numberOfRows }
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "DomainCell")!
-		let entry = dataSource(at: indexPath.row)
+		let entry = source[indexPath.row]
 		cell.textLabel?.text = entry.domain
 		cell.detailTextLabel?.text = entry.detailCellText
 		cell.imageView?.image = entry.options?.tableRowImage()
 		return cell
+	}
+	
+	func rowNeedsUpdate(_ row: Int) {
+		let entry = source[row]
+		let cell = tableView.cellForRow(at: IndexPath(row: row))
+		cell?.detailTextLabel?.text = entry.detailCellText
+		cell?.imageView?.image = entry.options?.tableRowImage()
 	}
 	
 	
@@ -77,53 +72,29 @@ class TVCDomains: UITableViewController, IncrementalDataSourceUpdate, UISearchBa
 	
 	private func setSearch(hidden: Bool) {
 		searchActive = !hidden
-		searchIndices = []
 		searchTerm = nil
 		searchBar.text = nil
 		tableView.tableHeaderView = hidden ? nil : searchBar
-		if !hidden { searchBar.becomeFirstResponder() }
+		if searchActive {
+			source.pipeline.addFilter("search") {
+				$0.domain.lowercased().contains(self.searchTerm ?? "")
+			}
+			searchBar.becomeFirstResponder()
+		} else {
+			source.pipeline.removeFilter(withId: "search")
+		}
 		tableView.reloadData()
 	}
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
 		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(performSearch), object: nil)
-		perform(#selector(performSearch), with: nil, afterDelay: 0.3)
+		perform(#selector(performSearch), with: nil, afterDelay: 0.2)
 	}
 	
 	@objc private func performSearch() {
 		searchTerm = searchBar.text?.lowercased() ?? ""
-		searchIndices = dataSource.enumerated().compactMap {
-			if $1.domain.lowercased().contains(searchTerm!) { return $0 }
-			return nil
-		}
+		source.pipeline.reloadFilter(withId: "search")
 		tableView.reloadData()
-	}
-	
-	func shouldLiveUpdateIncrementalDataSource() -> Bool { !searchActive }
-	
-	func didUpdateIncrementalDataSource(_ operation: IncrementalDataSourceUpdateOperation, row: Int, moveTo: Int) {
-		guard searchActive else {
-			return
-		}
-		switch operation {
-		case .ReloadTable:
-			DispatchQueue.main.sync { tableView.reloadData() }
-		case .Insert:
-			if dataSource[row].domain.lowercased().contains(searchTerm ?? "") {
-				searchIndices.insert(row, at: 0)
-				DispatchQueue.main.sync { tableView.safeInsertRow(0, with: .left) }
-			}
-		case .Delete:
-			if let idx = searchIndices.firstIndex(of: row) {
-				searchIndices.remove(at: idx)
-				DispatchQueue.main.sync { tableView.safeDeleteRow(idx) }
-			}
-		case .Update, .Move:
-			if let idx = searchIndices.firstIndex(of: row) {
-				if operation == .Move { searchIndices[idx] = moveTo }
-				DispatchQueue.main.sync { tableView.safeReloadRow(idx) }
-			}
-		}
 	}
 	
 	
@@ -138,7 +109,7 @@ class TVCDomains: UITableViewController, IncrementalDataSourceUpdate, UISearchBa
 		present(vc, animated: true)
 	}
 	
-	@objc private func dateFilterChanged() {
+	@objc private func didChangeDateFilter() {
 		switch Pref.DateFilter.Kind {
 		case .ABRange: // read start/end time
 			self.filterButtonDetail.title = "A – B"

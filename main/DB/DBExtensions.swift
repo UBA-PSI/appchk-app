@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 extension GroupedDomain {
 	/// Return new `GroupedDomain` by adding `total` and `blocked` counts. Set `lastModified` to the maximum of the two.
@@ -13,15 +13,22 @@ extension GroupedDomain {
 	}
 }
 
-extension Array where Element == GroupedDomain {
-	func merge(_ domain: String, options opt: FilterOptions? = nil) -> GroupedDomain {
-		var b: Int32 = 0, t: Int32 = 0, m: Timestamp = 0
-		for x in self {
-			b += x.blocked
-			t += x.total
-			m = Swift.max(m, x.lastModified)
+extension GroupedDomain {
+	var detailCellText: String { get {
+		return blocked > 0
+		? "\(lastModified.asDateTime())   —   \(blocked)/\(total) blocked"
+		: "\(lastModified.asDateTime())   —   \(total)"
 		}
-		return GroupedDomain(domain: domain, total: t, blocked: b, lastModified: m, options: opt)
+	}
+}
+
+extension FilterOptions {
+	func tableRowImage() -> UIImage? {
+		let blocked = contains(.blocked)
+		let ignored = contains(.ignored)
+		if blocked { return UIImage(named: ignored ? "block_ignore" : "shield-x") }
+		if ignored { return UIImage(named: "quicklook-not") }
+		return nil
 	}
 }
 
@@ -31,10 +38,3 @@ extension Recording {
 	var durationString: String? { get { stop == nil ? nil : TimeFormat.from(duration!) } }
 }
 
-extension Timestamp {
-	/// - Returns: Time string with format `yyyy-MM-dd  HH:mm:ss`
-	func asDateTime() -> String { dateTimeFormat.string(from: self) }
-	func toDate() -> Date { Date(timeIntervalSince1970: Double(self)) }
-	static func now() -> Timestamp { Timestamp(Date().timeIntervalSince1970) }
-	static func past(minutes: Int) -> Timestamp { now() - Timestamp(minutes * 60) }
-}

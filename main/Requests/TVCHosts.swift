@@ -1,45 +1,32 @@
 import UIKit
 
-class TVCHosts: UITableViewController, IncrementalDataSourceUpdate {
+class TVCHosts: UITableViewController, FilterPipelineDelegate {
+	
+	lazy var source = GroupedDomainDataSource(withDelegate: self, parent: parentDomain)
 	
 	public var parentDomain: String!
-	internal var dataSource: [GroupedDomain] = []
 	private var isSpecial: Bool = false
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		navigationItem.prompt = parentDomain
 		isSpecial = (parentDomain.first == "#") // aka: "# IP address"
-		if #available(iOS 10.0, *) {
-			tableView.refreshControl = UIRefreshControl(call: #selector(reloadDataSource), on: self)
-		}
-		NotifyLogHistoryReset.observe(call: #selector(reloadDataSource), on: self)
-		reloadDataSource()
-		DBWrp.currentlyOpenParent = parentDomain
-		DBWrp.dataB_delegate = self
-	}
-	deinit {
-		DBWrp.currentlyOpenParent = nil
-	}
-	
-	@objc func reloadDataSource() {
-		dataSource = DBWrp.listOfHosts(parentDomain)
-		tableView.reloadData()
+		source.reloadFromSource() // init lazy var
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if let index = tableView.indexPathForSelectedRow?.row {
-			(segue.destination as? TVCHostDetails)?.fullDomain = dataSource[index].domain
+			(segue.destination as? TVCHostDetails)?.fullDomain = source[index].domain
 		}
 	}
 	
-	// MARK: - Data Source
+	// MARK: - Table View Data Source
 	
-	override func tableView(_ _: UITableView, numberOfRowsInSection _: Int) -> Int { dataSource.count }
+	override func tableView(_ _: UITableView, numberOfRowsInSection _: Int) -> Int { source.numberOfRows }
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "HostCell")!
-		let entry = dataSource[indexPath.row]
+		let entry = source[indexPath.row]
 		if isSpecial {
 			// currently only used for IP addresses
 			cell.textLabel?.text = entry.domain
@@ -50,5 +37,12 @@ class TVCHosts: UITableViewController, IncrementalDataSourceUpdate {
 		cell.detailTextLabel?.text = entry.detailCellText
 		cell.imageView?.image = entry.options?.tableRowImage()
 		return cell
+	}
+	
+	func rowNeedsUpdate(_ row: Int) {
+		let entry = source[row]
+		let cell = tableView.cellForRow(at: IndexPath(row: row))
+		cell?.detailTextLabel?.text = entry.detailCellText
+		cell?.imageView?.image = entry.options?.tableRowImage()
 	}
 }

@@ -1,9 +1,11 @@
 import Foundation
 
 let NotifyVPNStateChanged = NSNotification.Name("GlassVPNStateChanged") // VPNState!
-let NotifyDNSFilterChanged = NSNotification.Name("PSIDNSFilterSettingsChanged") // nil!
+let NotifyDNSFilterChanged = NSNotification.Name("PSIDNSFilterSettingsChanged") // domain: String?
 let NotifyDateFilterChanged = NSNotification.Name("PSIDateFilterSettingsChanged") // nil!
-let NotifyLogHistoryReset = NSNotification.Name("PSILogHistoryReset") // nil!
+let NotifyLogHistoryReset = NSNotification.Name("PSILogHistoryReset") // domain: String?
+let NotifySyncInsert = NSNotification.Name("PSISyncInsert") // SQLiteRowRange!
+let NotifySyncRemove = NSNotification.Name("PSISyncRemove") // SQLiteRowRange!
 let NotifyRecordingChanged = NSNotification.Name("PSIRecordingChanged") // (Recording, deleted: Bool)!
 
 

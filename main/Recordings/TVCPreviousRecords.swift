@@ -4,7 +4,7 @@ class TVCPreviousRecords: UITableViewController, EditActionsRemove {
 	private var dataSource: [Recording] = []
 	
 	override func viewDidLoad() {
-		dataSource = DBWrp.listOfRecordings().reversed() // newest on top
+		dataSource = RecordingsDB.list().reversed() // newest on top
 		NotifyRecordingChanged.observe(call: #selector(recordingDidChange(_:)), on: self)
 	}
 	
@@ -76,8 +76,16 @@ class TVCPreviousRecords: UITableViewController, EditActionsRemove {
 	
 	// MARK: - Editing
 	
+	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+		getRowActionsIOS9(indexPath)
+	}
+	@available(iOS 11.0, *)
+	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+		getRowActionsIOS11(indexPath)
+	}
+	
 	func editableRowCallback(_ index: IndexPath, _ action: RowAction, _ userInfo: Any?) -> Bool {
-		DBWrp.recordingDelete(self.dataSource[index.row])
+		RecordingsDB.delete(self.dataSource[index.row])
 		return true
 	}
 }

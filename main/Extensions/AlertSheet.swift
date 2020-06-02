@@ -1,8 +1,8 @@
 import UIKit
 
 extension UIAlertController {
-	func presentIn(_ viewController: UIViewController?) {
-		viewController?.present(self, animated: true)
+	func presentIn(_ viewController: UIViewController) {
+		viewController.present(self, animated: true)
 	}
 }
 

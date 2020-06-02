@@ -12,13 +12,54 @@ class TVCHostDetails: UITableViewController {
 			tableView.refreshControl = UIRefreshControl(call: #selector(reloadDataSource), on: self)
 		}
 		NotifyLogHistoryReset.observe(call: #selector(reloadDataSource), on: self)
+		NotifySyncInsert.observe(call: #selector(syncInsert), on: self)
+		NotifySyncRemove.observe(call: #selector(syncRemove), on: self)
 		reloadDataSource()
 	}
 	
-	@objc func reloadDataSource() {
-		dataSource = DBWrp.listOfTimes(fullDomain)
-		tableView.reloadData()
+	@objc func reloadDataSource(sender: Any? = nil) {
+		let refreshControl = sender as? UIRefreshControl
+		let notification = sender as? Notification
+		if let affectedDomain = notification?.object as? String {
+			guard fullDomain.isSubdomain(of: affectedDomain) else { return }
+		}
+		DispatchQueue.global().async { [weak self] in
+			self?.dataSource = AppDB?.timesForDomain(self?.fullDomain ?? "", since: sync.tsEarliest) ?? []
+			DispatchQueue.main.sync {
+				self?.tableView.reloadData()
+				refreshControl?.endRefreshing()
+			}
+		}
 	}
+	
+	@objc private func syncInsert(_ notification: Notification) {
+		let range = notification.object as! SQLiteRowRange
+		if let latest = AppDB?.timesForDomain(fullDomain, range: range), latest.count > 0 {
+			dataSource.insert(contentsOf: latest, at: 0)
+			if tableView.isFrontmost {
+				let indices = (0..<latest.count).map { IndexPath(row: $0) }
+				tableView.insertRows(at: indices, with: .left)
+			} else {
+				tableView.reloadData()
+			}
+		}
+	}
+	
+	@objc private func syncRemove(_ notification: Notification) {
+		let earliest = sync.tsEarliest
+		if let i = dataSource.firstIndex(where: { $0.ts < earliest }) {
+			// since they are ordered, we can optimize
+			let indices = (i..<dataSource.endIndex).map { IndexPath(row: $0) }
+			dataSource.removeLast(dataSource.count - i)
+			if tableView.isFrontmost {
+				tableView.deleteRows(at: indices, with: .automatic)
+			} else {
+				tableView.reloadData()
+			}
+		}
+	}
+	
+	// MARK: - Table View Data Source
 	
 	override func tableView(_ _: UITableView, numberOfRowsInSection _: Int) -> Int { dataSource.count }
 	

@@ -852,10 +852,60 @@ Duration:	60:00</string>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Other Settings" id="wLR-T2-Qxm">
+                            <tableViewSection headerTitle="Reset Settings" id="tBs-BI-JqN">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="Uii-Jp-53c">
+                                        <rect key="frame" x="0.0" y="299.5" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Uii-Jp-53c" id="4Fp-Ox-yrk">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6B5-l4-Hgz">
+                                                    <rect key="frame" x="74.5" y="7" width="171" height="30"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                                    <state key="normal" title="Reset Introduction Alerts"/>
+                                                    <connections>
+                                                        <action selector="resetTutorialAlerts:" destination="qdB-ZO-LHY" eventType="touchUpInside" id="hw8-as-4PZ"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="6B5-l4-Hgz" firstAttribute="centerY" secondItem="4Fp-Ox-yrk" secondAttribute="centerY" id="h2Y-P2-Feo"/>
+                                                <constraint firstItem="6B5-l4-Hgz" firstAttribute="centerX" secondItem="4Fp-Ox-yrk" secondAttribute="centerX" id="jpA-gA-3jY"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="Xgc-6Z-IlH">
+                                        <rect key="frame" x="0.0" y="343.5" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Xgc-6Z-IlH" id="efR-vn-6MX">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sE3-Vh-0lM">
+                                                    <rect key="frame" x="111.5" y="7" width="97" height="30"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                                    <state key="normal" title="Delete all logs">
+                                                        <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="clearDatabaseResults:" destination="qdB-ZO-LHY" eventType="touchUpInside" id="adR-Yk-zsB"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="sE3-Vh-0lM" firstAttribute="centerX" secondItem="efR-vn-6MX" secondAttribute="centerX" id="TvC-jA-Wp5"/>
+                                                <constraint firstItem="sE3-Vh-0lM" firstAttribute="centerY" secondItem="efR-vn-6MX" secondAttribute="centerY" id="WoM-cy-cAY"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Advanced" id="wLR-T2-Qxm">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="Qyy-0U-yhd">
-                                        <rect key="frame" x="0.0" y="299.5" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="443.5" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Qyy-0U-yhd" id="Mfs-fu-W5k">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -873,52 +923,6 @@ Duration:	60:00</string>
                                             <constraints>
                                                 <constraint firstItem="9Ko-sD-7x0" firstAttribute="centerX" secondItem="Mfs-fu-W5k" secondAttribute="centerX" id="LzG-xg-XTg"/>
                                                 <constraint firstItem="9Ko-sD-7x0" firstAttribute="centerY" secondItem="Mfs-fu-W5k" secondAttribute="centerY" id="SXw-dC-2kl"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="wzU-8s-HGb">
-                                        <rect key="frame" x="0.0" y="343.5" width="320" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="wzU-8s-HGb" id="aNM-6U-bho">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S6B-i8-CoC">
-                                                    <rect key="frame" x="74.5" y="7" width="171" height="30"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                                    <state key="normal" title="Reset Introduction Alerts"/>
-                                                    <connections>
-                                                        <action selector="resetTutorialAlerts:" destination="qdB-ZO-LHY" eventType="touchUpInside" id="0GX-Ko-bk2"/>
-                                                    </connections>
-                                                </button>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="S6B-i8-CoC" firstAttribute="centerY" secondItem="aNM-6U-bho" secondAttribute="centerY" id="Wet-iT-mke"/>
-                                                <constraint firstItem="S6B-i8-CoC" firstAttribute="centerX" secondItem="aNM-6U-bho" secondAttribute="centerX" id="qM6-0t-1m4"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="a9C-Qy-pOf">
-                                        <rect key="frame" x="0.0" y="387.5" width="320" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="a9C-Qy-pOf" id="cUk-4x-Weg">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="17e-nR-aCh">
-                                                    <rect key="frame" x="111.5" y="7" width="97" height="30"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                                    <state key="normal" title="Delete all logs">
-                                                        <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </state>
-                                                    <connections>
-                                                        <action selector="clearDatabaseResults:" destination="qdB-ZO-LHY" eventType="touchUpInside" id="Rep-Do-4OQ"/>
-                                                    </connections>
-                                                </button>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="17e-nR-aCh" firstAttribute="centerX" secondItem="cUk-4x-Weg" secondAttribute="centerX" id="dU5-1x-ETF"/>
-                                                <constraint firstItem="17e-nR-aCh" firstAttribute="centerY" secondItem="cUk-4x-Weg" secondAttribute="centerY" id="nLq-yi-u2E"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>

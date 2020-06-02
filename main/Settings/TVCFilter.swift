@@ -1,21 +1,34 @@
 import UIKit
 
 class TVCFilter: UITableViewController, EditActionsRemove {
-	var currentFilter: FilterOptions = .none
+	var currentFilter: FilterOptions = .none // set by segue
 	private var dataSource: [String] = []
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-//		if #available(iOS 10.0, *) {
-//			tableView.refreshControl = UIRefreshControl(call: #selector(reloadDataSource), on: self)
-//		}
-		NotifyDNSFilterChanged.observe(call: #selector(reloadDataSource), on: self)
+		NotifyDNSFilterChanged.observe(call: #selector(didChangeDomainFilter), on: self)
 		reloadDataSource()
 	}
 
-	@objc func reloadDataSource() {
-		dataSource = DBWrp.dataF_list(currentFilter)
+	func reloadDataSource() {
+		dataSource = DomainFilter.list(where: currentFilter)
 		tableView.reloadData()
+	}
+	
+	@objc func didChangeDomainFilter(_ notification: Notification) {
+		guard let domain = notification.object as? String else {
+			reloadDataSource()
+			return
+		}
+		if DomainFilter[domain]?.contains(currentFilter) ?? false {
+			let i = dataSource.binTreeIndex(of: domain, compare: (<))!
+			if i >= dataSource.count || dataSource[i] != domain {
+				dataSource.insert(domain, at: i)
+				tableView.safeInsertRow(i)
+			}
+		} else if let i = dataSource.binTreeRemove(domain, compare: (<)) {
+			tableView.safeDeleteRows([i])
+		}
 	}
 	
 	@IBAction private func addNewFilter() {
@@ -33,7 +46,7 @@ class TVCFilter: UITableViewController, EditActionsRemove {
 				ErrorAlert("Entered domain is not valid. Filter can't match country TLD only.").presentIn(self)
 				return
 			}
-			DBWrp.updateFilter(dom, add: self.currentFilter)
+			DomainFilter.update(dom, add: self.currentFilter)
 		}
 		alert.addTextField {
 			$0.placeholder = "cdn.domain.tld"
@@ -42,7 +55,7 @@ class TVCFilter: UITableViewController, EditActionsRemove {
 		alert.presentIn(self)
 	}
 	
-	// MARK: - Table View Delegate
+	// MARK: - Table View Data Source
 	
 	override func tableView(_ _: UITableView, numberOfRowsInSection _: Int) -> Int { dataSource.count }
 	
@@ -57,11 +70,17 @@ class TVCFilter: UITableViewController, EditActionsRemove {
 	
 	// MARK: - Editing
 	
+	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+		getRowActionsIOS9(indexPath)
+	}
+	@available(iOS 11.0, *)
+	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+		getRowActionsIOS11(indexPath)
+	}
+	
 	func editableRowCallback(_ index: IndexPath, _ action: RowAction, _ userInfo: Any?) -> Bool {
 		let domain = dataSource[index.row]
-		DBWrp.updateFilter(domain, remove: currentFilter)
-		dataSource.remove(at: index.row)
-		tableView.deleteRows(at: [index], with: .automatic)
+		DomainFilter.update(domain, remove: currentFilter)
 		return true
 	}
 	

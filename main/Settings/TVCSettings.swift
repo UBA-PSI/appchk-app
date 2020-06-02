@@ -16,11 +16,9 @@ class TVCSettings: UITableViewController {
 	}
 	
 	@objc func reloadDataSource() {
-		let (blocked, ignored) = DBWrp.dataF_counts()
-		DispatchQueue.main.async {
-			self.cellDomainsIgnored.detailTextLabel?.text = "\(ignored) Domains"
-			self.cellDomainsBlocked.detailTextLabel?.text = "\(blocked) Domains"
-		}
+		let (blocked, ignored) = DomainFilter.counts()
+		cellDomainsIgnored.detailTextLabel?.text = "\(ignored) Domains"
+		cellDomainsBlocked.detailTextLabel?.text = "\(blocked) Domains"
 	}
 	
 	@IBAction func toggleVPNProxy(_ sender: UISwitch) {
@@ -28,28 +26,8 @@ class TVCSettings: UITableViewController {
 	}
 	
 	@IBAction func exportDB(_ sender: Any) {
-		// TODO: export partly?
-		// TODO: show header-banner of success
-		// Share Sheet
 		let sheet = UIActivityViewController(activityItems: [URL.internalDB()], applicationActivities: nil)
 		self.present(sheet, animated: true)
-		// Save to Files app
-//		self.present(UIDocumentPickerViewController(url: FileManager.default.internalDB(), in: .exportToService), animated: true)
-		// Shows Alert and exports to Documents directory
-//		AskAlert(title: "Export results?", text: """
-//			This action will copy the internal database to the app's local Documents directory. You can use the Files app to access the database file.
-//
-//			Note: This will make your DNS requests available to other apps!
-//		""", buttonText: "Export") {
-//			do {
-//				let dest = try SQLiteDatabase.export()
-//				let folder = dest.deletingLastPathComponent()
-//				let out = folder.lastPathComponent + "/" + dest.lastPathComponent
-//				Alert(title: "Successful", text: "File exported to '\(out)'", buttonText: "OK").presentIn(self)
-//			} catch {
-//				ErrorAlert(error).presentIn(self)
-//			}
-//		}.presentIn(self)
 	}
 	
 	@IBAction func resetTutorialAlerts(_ sender: UIButton) {
@@ -64,7 +42,10 @@ class TVCSettings: UITableViewController {
 			"You are about to delete all results that have been logged in the past. " +
 			"Your preferences for blocked and ignored domains are preserved.\n" +
 			"Continue?", buttonText: "Delete", buttonStyle: .destructive) { _ in
-			DBWrp.deleteHistory()
+				DispatchQueue.global().async {
+					try? AppDB?.dnsLogsDeleteAll()
+					NotifyLogHistoryReset.postAsyncMain()
+				}
 		}.presentIn(self)
 	}
 	

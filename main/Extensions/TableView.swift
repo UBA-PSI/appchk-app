@@ -1,58 +1,27 @@
 import UIKit
 
-extension GroupedDomain {
-	var detailCellText: String { get {
-		return blocked > 0
-		? "\(lastModified.asDateTime())   —   \(blocked)/\(total) blocked"
-		: "\(lastModified.asDateTime())   —   \(total)"
-		}
-	}
-}
-
-extension FilterOptions {
-	func tableRowImage() -> UIImage? {
-		let blocked = contains(.blocked)
-		let ignored = contains(.ignored)
-		if blocked { return UIImage(named: ignored ? "block_ignore" : "shield-x") }
-		if ignored { return UIImage(named: "quicklook-not") }
-		return nil
-	}
-}
-
-extension NSMutableAttributedString {
-	func withColor(_ color: UIColor, fromBack: Int) -> Self {
-		let l = length - fromBack
-		let r = (l < 0) ? NSMakeRange(0, length) : NSMakeRange(l, fromBack)
-		self.addAttribute(.foregroundColor, value: color, range: r)
-		return self
-	}
-}
-
-// MARK: Pull-to-Refresh
-
-extension UIRefreshControl {
-	convenience init(call: Selector, on: UITableViewController) {
-		self.init()
-		addTarget(on, action: call, for: .valueChanged)
-		addTarget(self, action: #selector(endRefreshing), for: .valueChanged)
-	}
-	
-}
-
-// MARK: TableView extensions
-
 extension IndexPath {
 	/// Convenience init with `section: 0`
 	public init(row: Int) { self.init(row: row, section: 0) }
 }
+
+extension UIRefreshControl {
+	convenience init(call: Selector, on target: Any) {
+		self.init()
+		addTarget(target, action: call, for: .valueChanged)
+	}
+}
+
+
+// MARK: - UITableView
 
 extension UITableView {
 	/// Returns `true` if this `tableView` is the currently frontmost visible
 	var isFrontmost: Bool { window?.isKeyWindow ?? false }
 	
 	/// If frontmost window, perform `deleteRows()`; If not, perform `reloadData()`
-	func safeDeleteRow(_ index: Int, with animation: UITableView.RowAnimation = .automatic) {
-		isFrontmost ? deleteRows(at: [IndexPath(row: index)], with: animation) : reloadData()
+	func safeDeleteRows(_ indices: [Int], with animation: UITableView.RowAnimation = .automatic) {
+		isFrontmost ? deleteRows(at: indices.map {IndexPath(row: $0)}, with: animation) : reloadData()
 	}
 	/// If frontmost window, perform `reloadRows()`; If not, perform `reloadData()`
 	func safeReloadRow(_ index: Int, with animation: UITableView.RowAnimation = .automatic) {
@@ -69,71 +38,44 @@ extension UITableView {
 }
 
 
-// MARK: - Incremental Update Delegate
+// MARK: - EditableRows
 
-enum IncrementalDataSourceUpdateOperation {
-	case ReloadTable, Update, Insert, Delete, Move
+public enum RowAction {
+	case ignore, block, delete
 }
 
-protocol IncrementalDataSourceUpdate : UITableViewController {
-	var dataSource: [GroupedDomain] { get set }
-	func shouldLiveUpdateIncrementalDataSource() -> Bool
-	/// - Warning: Called on a background thread!
-	/// - Parameters:
-	///   - operation: Row update action
-	///   - row: Which row index is affected? `IndexPath(row: row)`
-	///   - moveTo: Only set for `Move` operation, otherwise `-1`
-	func didUpdateIncrementalDataSource(_ operation: IncrementalDataSourceUpdateOperation, row: Int, moveTo: Int)
+protocol EditableRows {
+	func editableRowUserInfo(_ index: IndexPath) -> Any?
+	func editableRowActions(_ index: IndexPath) -> [(RowAction, String)]
+	func editableRowActionColor(_ index: IndexPath, _ action: RowAction) -> UIColor?
+	@discardableResult func editableRowCallback(_ atIndexPath: IndexPath, _ action: RowAction, _ userInfo: Any?) -> Bool
 }
 
-extension IncrementalDataSourceUpdate {
-	func shouldLiveUpdateIncrementalDataSource() -> Bool { true }
-	func didUpdateIncrementalDataSource(_: IncrementalDataSourceUpdateOperation, row: Int, moveTo: Int) {}
-	// TODO: custom handling if cell is being edited
-	
-	func insertRow(_ obj: GroupedDomain, at index: Int) {
-		dataSource.insert(obj, at: index)
-		if shouldLiveUpdateIncrementalDataSource() {
-			DispatchQueue.main.sync { tableView.safeInsertRow(index, with: .left) }
-		}
-		didUpdateIncrementalDataSource(.Insert, row: index, moveTo: -1)
-	}
-	func moveRow(_ obj: GroupedDomain, from: Int, to: Int) {
-		dataSource.remove(at: from)
-		dataSource.insert(obj, at: to)
-		if shouldLiveUpdateIncrementalDataSource() {
-			DispatchQueue.main.sync {
-				if tableView.isFrontmost {
-					let source = IndexPath(row: from)
-					let cell = tableView.cellForRow(at: source)
-					cell?.detailTextLabel?.text = obj.detailCellText
-					tableView.moveRow(at: source, to: IndexPath(row: to))
-				} else {
-					tableView.reloadData()
-				}
+extension EditableRows where Self: UITableViewDelegate {
+	func getRowActionsIOS9(_ index: IndexPath) -> [UITableViewRowAction]? {
+		let userInfo = editableRowUserInfo(index)
+		return editableRowActions(index).compactMap { a,t in
+			let x = UITableViewRowAction(style: a == .delete ? .destructive : .normal, title: t) { self.editableRowCallback($1, a, userInfo) }
+			if let color = editableRowActionColor(index, a) {
+				x.backgroundColor = color
 			}
+			return x
 		}
-		didUpdateIncrementalDataSource(.Move, row: from, moveTo: to)
 	}
-	func replaceRow(_ obj: GroupedDomain, at index: Int) {
-		dataSource[index] = obj
-		if shouldLiveUpdateIncrementalDataSource() {
-			DispatchQueue.main.sync { tableView.safeReloadRow(index) }
-		}
-		didUpdateIncrementalDataSource(.Update, row: index, moveTo: -1)
+	@available(iOS 11.0, *)
+	func getRowActionsIOS11(_ index: IndexPath) -> UISwipeActionsConfiguration? {
+		let userInfo = editableRowUserInfo(index)
+		return UISwipeActionsConfiguration(actions: editableRowActions(index).compactMap { a,t in
+			let x = UIContextualAction(style: a == .delete ? .destructive : .normal, title: t) { $2(self.editableRowCallback(index, a, userInfo)) }
+			x.backgroundColor = editableRowActionColor(index, a)
+			return x
+		})
 	}
-	func deleteRow(at index: Int) {
-		dataSource.remove(at: index)
-		if shouldLiveUpdateIncrementalDataSource() {
-			DispatchQueue.main.sync { tableView.safeDeleteRow(index) }
-		}
-		didUpdateIncrementalDataSource(.Delete, row: index, moveTo: -1)
-	}
-	func replaceData(with newData: [GroupedDomain]) {
-		dataSource = newData
-		if shouldLiveUpdateIncrementalDataSource() {
-			DispatchQueue.main.sync { tableView.reloadData() }
-		}
-		didUpdateIncrementalDataSource(.ReloadTable, row: -1, moveTo: -1)
-	}
+	func editableRowUserInfo(_ index: IndexPath) -> Any? { nil }
+}
+
+protocol EditActionsRemove : EditableRows {}
+extension EditActionsRemove where Self: UITableViewController {
+	func editableRowActions(_: IndexPath) -> [(RowAction, String)] { [(.delete, "Remove")] }
+	func editableRowActionColor(_: IndexPath, _: RowAction) -> UIColor? { nil }
 }

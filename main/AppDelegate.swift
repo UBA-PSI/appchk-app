@@ -14,16 +14,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			UserDefaults.standard.set(false, forKey: "kill_db")
 			SQLiteDatabase.destroyDatabase()
 		}
-		try? SQLiteDatabase.open().initScheme()
+		if let db = AppDB {
+			db.initCommonScheme()
+			db.initAppOnlyScheme()
+		}
 		
-		DBWrp.initContentOfDB()
+		#if IOS_SIMULATOR
+		TestDataSource.load()
+		#endif
 		
 		loadVPN { mgr in
 			self.managerVPN = mgr
 			self.postVPNState()
 		}
 		NSNotification.Name.NEVPNStatusDidChange.observe(call: #selector(vpnStatusChanged(_:)), on: self)
-		NotifyDNSFilterChanged.observe(call: #selector(filterDidChange), on: self)
+		NotifyDNSFilterChanged.observe(call: #selector(didChangeDomainFilter), on: self)
+		
+		sync.start()
 		return true
 	}
 	
@@ -31,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		postRawVPNState((notification.object as? NETunnelProviderSession)?.status ?? .invalid)
 	}
 	
-	@objc private func filterDidChange() {
+	@objc private func didChangeDomainFilter() {
 		// Notify VPN extension about changes
 		if let session = self.managerVPN?.connection as? NETunnelProviderSession,
 			session.status == .connected {

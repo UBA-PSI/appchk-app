@@ -76,7 +76,6 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 			if Pref.DateFilter.Kind != newKind || Pref.DateFilter.LastXMin != newXMin {
 				Pref.DateFilter.Kind = newKind
 				Pref.DateFilter.LastXMin = newXMin
-				DBWrp.reloadAfterDateFilterHasChanged()
 				NotifyDateFilterChanged.post()
 			}
 			dismiss(animated: true)

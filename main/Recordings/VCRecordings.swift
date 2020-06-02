@@ -18,7 +18,7 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		timeLabel.font = UIFont.monospacedDigitSystemFont(ofSize: timeLabel.font.pointSize, weight: UIFont.Weight(rawValue: weight))
 		// hide timer if not running
 		updateUI(setRecording: false, animated: false)
-		currentRecording = DBWrp.recordingGetCurrent()
+		currentRecording = RecordingsDB.getCurrent()
 		
 		if !Pref.DidShowTutorial.Recordings {
 			self.perform(#selector(showTutorial), with: nil, afterDelay: 0.5)
@@ -54,11 +54,11 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 	
 	@IBAction private func startRecordingButtonTapped(_ sender: UIButton) {
 		if recordingTimer == nil {
-			currentRecording = DBWrp.recordingStartNew()
+			currentRecording = RecordingsDB.startNew()
 			startTimer(animate: true)
 		} else {
 			stopTimer(animate: true)
-			DBWrp.recordingStop(&currentRecording!)
+			RecordingsDB.stop(&currentRecording!)
 			prevRecController.popToRootViewController(animated: true)
 			let editVC = (prevRecController.topViewController as! TVCPreviousRecords)
 			editVC.insertAndEditRecording(currentRecording!)
