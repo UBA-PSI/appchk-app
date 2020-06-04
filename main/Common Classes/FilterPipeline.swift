@@ -204,7 +204,10 @@ class FilterPipeline<T> {
 	/// - Complexity: O(*n* + (*m*+1) log *n*), where *m* is the number of filters and *n* the number of elements in each filter / projection.
 	func update(_ obj: T, at index: Int) {
 		let status = processPipeline(with: obj, at: index)
-		guard status.changed else { return }
+		guard status.changed else {
+			dataSource[index] = obj // we need to update anyway
+			return
+		}
 		let oldPos = display.deleteOld(index)
 		dataSource[index] = obj
 		guard status.display else {
@@ -212,16 +215,17 @@ class FilterPipeline<T> {
 			return
 		}
 		let newPos = display.insertNew(index, previousIndex: oldPos)
-		guard cellAnimations else { return }
-		if oldPos == -1 {
-			delegate?.tableView.safeInsertRow(newPos, with: .left)
-		} else {
-			if oldPos == newPos {
-				delegate?.tableView.safeReloadRow(oldPos)
+		if cellAnimations {
+			if oldPos == -1 {
+				delegate?.tableView.safeInsertRow(newPos, with: .left)
 			} else {
-				delegate?.tableView.safeMoveRow(oldPos, to: newPos)
-				if delegate?.tableView.isFrontmost ?? false {
-					delegate?.rowNeedsUpdate(newPos)
+				if oldPos == newPos {
+					delegate?.tableView.safeReloadRow(oldPos)
+				} else {
+					delegate?.tableView.safeMoveRow(oldPos, to: newPos)
+					if delegate?.tableView.isFrontmost ?? false {
+						delegate?.rowNeedsUpdate(newPos)
+					}
 				}
 			}
 		}
