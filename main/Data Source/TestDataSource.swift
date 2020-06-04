@@ -11,7 +11,8 @@ class TestDataSource {
 		QLog.Debug("SQLite path: \(URL.internalDB())")
 		
 		let deleted = db.dnsLogsDelete("test.com", strict: false)
-		QLog.Debug("Deleting \(deleted) rows matching 'test.com'")
+		try? db.run(sql: "DELETE FROM cache;")
+		QLog.Debug("Deleting \(deleted) rows matching 'test.com' (+ \(db.numberOfChanges) in cache)")
 		
 		QLog.Debug("Writing 33 test logs")
 		pStmt = try! db.logWritePrepare()

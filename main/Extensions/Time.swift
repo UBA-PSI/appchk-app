@@ -39,7 +39,27 @@ extension Timer {
 	}
 }
 
+// MARK: - TimeFormat
+
 struct TimeFormat {
+	private var formatter: DateComponentsFormatter
+	
+	/// Init new formatter with exactly 1 unit count. E.g., `61 min -> 1 hr`
+	/// - Parameter allowed: Default: `[.day, .hour, .minute, .second]`
+	init(_ style: DateComponentsFormatter.UnitsStyle, allowed: NSCalendar.Unit = [.day, .hour, .minute, .second]) {
+		formatter = DateComponentsFormatter()
+		formatter.maximumUnitCount = 1
+		formatter.allowedUnits = allowed
+		formatter.unitsStyle = style
+	}
+	
+	/// Formatted duration string, e.g., `20 min` or `7 days`
+	func from(days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0) -> String? {
+		formatter.string(from: DateComponents(day: days, hour: hours, minute: minutes, second: seconds))
+	}
+	
+	// MARK: static
+	
 	/// Time string with format `HH:mm`
 	static func from(_ duration: Timestamp) -> String {
 		String(format: "%02d:%02d", duration / 60, duration % 60)
@@ -58,17 +78,5 @@ struct TimeFormat {
 	/// Duration string with format `HH:mm` or `HH:mm.sss` since reference date
 	static func since(_ date: Date, millis: Bool = false) -> String {
 		from(Date().timeIntervalSince(date), millis: millis)
-	}
-	
-	/// Formatted duration string, e.g., `20 min` or `7 days`
-	/// - Parameters:
-	///   - minutes: Duration in minutes
-	///   - style: Default: `.short`
-	static func short(minutes: Int, style: DateComponentsFormatter.UnitsStyle = .short) -> String? {
-		let dcf = DateComponentsFormatter()
-		dcf.maximumUnitCount = 1
-		dcf.allowedUnits = [.day, .hour, .minute]
-		dcf.unitsStyle = style
-		return dcf.string(from: DateComponents(minute: minutes))
 	}
 }

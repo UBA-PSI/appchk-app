@@ -52,10 +52,10 @@ class GroupedDomainDataSource {
 		sync.pause()
 		if let affectedDomain = notification?.object as? String {
 			partiallyReloadFromSource(affectedDomain)
-			sync.start()
+			sync.continue()
 		} else {
 			pipeline.reload(fromSource: true, whenDone: {
-				sync.start()
+				sync.continue()
 				refreshControl?.endRefreshing()
 			})
 		}
@@ -86,11 +86,14 @@ class GroupedDomainDataSource {
 	
 	/// Callback fired when background sync added new entries to the list. (`NotifySyncInsert` notification)
 	@objc private func syncInsert(_ notification: Notification) {
+		sync.pause()
+		defer { sync.continue() }
 		let range = notification.object as! SQLiteRowRange
 		guard let latest = AppDB?.dnsLogsGrouped(range: range, parentDomain: parent) else {
 			assertionFailure("NotifySyncInsert fired with empty range")
 			return
 		}
+		pipeline.pauseCellAnimations(if: latest.count > 14)
 		for x in latest {
 			if let (i, obj) = pipeline.dataSourceGet(where: { $0.domain == x.domain }) {
 				pipeline.update(obj + x, at: i)
@@ -101,16 +104,19 @@ class GroupedDomainDataSource {
 			}
 			tsLatest = max(tsLatest, x.lastModified)
 		}
+		pipeline.continueCellAnimations(reloadTable: true)
 	}
 	
 	/// Callback fired when background sync removed old entries from the list. (`NotifySyncRemove` notification)
 	@objc private func syncRemove(_ notification: Notification) {
+		sync.pause()
+		defer { sync.continue() }
 		let range = notification.object as! SQLiteRowRange
 		guard let outdated = AppDB?.dnsLogsGrouped(range: range, parentDomain: parent),
 			outdated.count > 0 else {
-				assertionFailure("NotifySyncRemove fired with empty range")
 				return
 		}
+		pipeline.pauseCellAnimations(if: outdated.count > 14)
 		var listOfDeletes: [Int] = []
 		for x in outdated {
 			guard let (i, obj) = pipeline.dataSourceGet(where: { $0.domain == x.domain }) else {
@@ -124,6 +130,7 @@ class GroupedDomainDataSource {
 			}
 		}
 		pipeline.remove(indices: listOfDeletes.sorted())
+		pipeline.continueCellAnimations(reloadTable: true)
 	}
 }
 
@@ -144,11 +151,12 @@ extension GroupedDomainDataSource {
 				return // nothing has changed
 			}
 			db.vacuum()
-			NotifyLogHistoryReset.postAsyncMain(domain) // calls deleteReloadFromSource(:)
+			NotifyLogHistoryReset.postAsyncMain(domain) // calls partiallyReloadFromSource(:)
 		}
 	}
 	
 	/// Reload a single data source entry. Callback fired by `reloadFromSource()`
+	/// Only useful if `affectedFQDN` currently exists in `dataSource`. Can either update or remove entry.
 	private func partiallyReloadFromSource(_ affectedFQDN: String) {
 		let affectedParent = affectedFQDN.extractDomain()
 		guard parent == nil || parent == affectedParent else {
@@ -159,20 +167,14 @@ extension GroupedDomainDataSource {
 			// can only happen if delete sheet is open while background sync removed the element
 			return
 		}
-		var removeOld = true
-		if let new = AppDB?.dnsLogsGrouped(since: sync.tsEarliest, upto: tsLatest, matchingDomain: affected, parentDomain: parent) {
-			assert(new.count < 2)
-			for var x in new {
-				x.options = DomainFilter[x.domain]
-				if old.object.domain == x.domain {
-					pipeline.update(x, at: old.index)
-					removeOld = false
-				} else {
-					pipeline.addNew(x)
-				}
-			}
+		if var updated = AppDB?.dnsLogsGrouped(since: sync.tsEarliest, upto: tsLatest,
+											   matchingDomain: affected, parentDomain: parent)?.first {
+			assert(old.object.domain == updated.domain)
+			updated.options = DomainFilter[updated.domain]
+			pipeline.update(updated, at: old.index)
+		} else {
+			pipeline.remove(indices: [old.index])
 		}
-		if removeOld { pipeline.remove(indices: [old.index]) }
 	}
 }
 

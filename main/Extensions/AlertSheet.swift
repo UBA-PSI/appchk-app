@@ -43,7 +43,7 @@ func AskAlert(title: String?, text: String?, buttonText: String = "Continue", bu
 ///   - buttons: Default: `[]`
 ///   - lastIsDestructive: Default: `false`
 ///   - cancelButtonText: Default: `"Dismiss"`
-func BottomAlert(title: String?, text: String?, buttons: [String] = [], lastIsDestructive: Bool = false, cancelButtonText: String = "Dismiss", callback: @escaping (_ index: Int?) -> Void) -> UIAlertController {
+func BottomAlert(title: String?, text: String?, buttons: [String] = [], lastIsDestructive: Bool = false, cancelButtonText: String = "Cancel", callback: @escaping (_ index: Int?) -> Void) -> UIAlertController {
 	let alert = UIAlertController(title: title, message: text, preferredStyle: .actionSheet)
 	for (i, btn) in buttons.enumerated() {
 		let dangerous = (lastIsDestructive && i + 1 == buttons.count)
@@ -54,21 +54,13 @@ func BottomAlert(title: String?, text: String?, buttons: [String] = [], lastIsDe
 }
 
 func AlertDeleteLogs(_ domain: String, latest: Timestamp, success: @escaping (_ tsMin: Timestamp) -> Void) -> UIAlertController {
-	let sinceNow = Timestamp.now() - latest
-	var buttons = ["Last 5 minutes", "Last 15 minutes", "Last hour", "Last 24 hours", "Delete everything"]
-	var times: [Timestamp] = [300, 900, 3600, 86400]
-	while times.count > 0, times[0] < sinceNow {
-		buttons.removeFirst()
-		times.removeFirst()
-	}
-	return BottomAlert(title: "Delete logs", text: "Delete logs for domain '\(domain)'", buttons: buttons, lastIsDestructive: true, cancelButtonText: "Cancel") {
-		guard let idx = $0 else {
-			return
-		}
-		if idx >= times.count {
-			success(0)
-		} else {
-			success(Timestamp.now() - times[idx])
+	let minutesPassed = (Timestamp.now() - latest) / 60
+	let times: [Int] = [5, 15, 60, 1440].compactMap { minutesPassed < $0 ? $0 : nil }
+	let fmt = TimeFormat(.full, allowed: [.hour, .minute])
+	let labels = times.map { "Last " + (fmt.from(minutes: $0) ?? "?") }
+	return BottomAlert(title: "Delete logs", text: "Delete logs for domain '\(domain)'", buttons: labels + ["Delete everything"], lastIsDestructive: true) {
+		if let i = $0 {
+			success(i < times.count ? Timestamp.past(minutes: times[i]) : 0)
 		}
 	}
 }

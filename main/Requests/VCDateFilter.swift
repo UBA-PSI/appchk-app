@@ -54,7 +54,7 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 		sender.value = Float(i) / 9
 		if sender.tag != durationTimes[i] {
 			sender.tag = durationTimes[i]
-			durationLabel.text = (sender.tag == 0 ? "Off" : TimeFormat.short(minutes: sender.tag))
+			durationLabel.text = (sender.tag == 0 ? "Off" : TimeFormat(.short).from(minutes: sender.tag))
 		}
 	}
 	

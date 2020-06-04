@@ -19,10 +19,13 @@ extension Array {
 	
 	/// Binary tree search operation.
 	/// - Warning: Array must be sorted already.
-	/// - Parameter mustExist: Determine whether to return low index or `nil` if element is missing.
+	/// - Parameters:
+	///   - mustExist: Determine whether to return low index or `nil` if element is missing.
+	///   - first: If `true`, keep searching for first matching element.
 	/// - Returns: Index or `nil` (only  if `mustExist = true` and element does not exist).
 	/// - Complexity: O(log *n*), where *n* is the length of the array.
-	func binTreeIndex(of element: Element, compare fn: CompareFn, mustExist: Bool = false) -> Int? {
+	func binTreeIndex(of element: Element, compare fn: CompareFn, mustExist: Bool = false, findFirst: Bool = false) -> Int? {
+		var found = false
 		var lo = 0, hi = self.count - 1
 		while lo <= hi {
 			let mid = (lo + hi)/2
@@ -31,10 +34,17 @@ extension Array {
 			} else if fn(element, self[mid]) {
 				hi = mid - 1
 			} else {
-				return mid
+				if !findFirst { return mid } // exit early if we dont care about first index
+				hi = mid - 1
+				found = true
 			}
 		}
-		return mustExist ? nil : lo // not found, would be inserted at position lo
+		return (mustExist && !found) ? nil : lo // not found, would be inserted at position lo
+	}
+	
+	/// Binary tree lookup whether element exists. Performs `binTreeIndex(of:compare:mustExist:)` internally.
+	func binTreeExists(_ element: Element, compare fn: CompareFn) -> Bool {
+		binTreeIndex(of: element, compare: fn, mustExist: true) != nil
 	}
 	
 	/// Binary tree  insert operation

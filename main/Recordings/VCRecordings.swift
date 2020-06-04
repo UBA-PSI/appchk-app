@@ -38,6 +38,7 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 	}
 	
 	func navigationController(_ nav: UINavigationController, didShow vc: UIViewController, animated: Bool) {
+		// TODO: use interactive animation handler to dynamically animate "new recording" view
 		hideNewRecording(isRootVC: (vc == nav.viewControllers.first), didShow: true)
 	}
 	

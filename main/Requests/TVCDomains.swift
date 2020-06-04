@@ -117,7 +117,7 @@ class TVCDomains: UITableViewController, UISearchBarDelegate, FilterPipelineDele
 		case .LastXMin: // most recent
 			let lastXMin = Pref.DateFilter.LastXMin
 			if lastXMin == 0 { fallthrough }
-			self.filterButtonDetail.title = TimeFormat.short(minutes: lastXMin, style: .abbreviated)
+			self.filterButtonDetail.title = TimeFormat(.abbreviated).from(minutes: lastXMin)
 			self.filterButton.image = UIImage(named: "filter-filled")
 		default:
 			self.filterButtonDetail.title = ""

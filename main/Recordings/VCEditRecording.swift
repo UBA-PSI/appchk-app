@@ -35,7 +35,8 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	// MARK: Save & Cancel Buttons
 	
 	@IBAction func didTapSave(_ sender: UIBarButtonItem) {
-		if deleteOnCancel { // aka newly created
+		let newlyCreated = deleteOnCancel
+		if newlyCreated {
 			// if remains true, `viewDidDisappear` will delete the record
 			deleteOnCancel = false
 		}
@@ -44,7 +45,9 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		record.notes = (inputNotes.text == "") ? nil : inputNotes.text
 		dismiss(animated: true) {
 			RecordingsDB.update(self.record)
-			RecordingsDB.persist(self.record)
+			if newlyCreated {
+				RecordingsDB.persist(self.record)
+			}
 		}
 	}
 	

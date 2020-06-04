@@ -11,34 +11,45 @@ class SyncUpdate {
 		timer = Timer.repeating(interval, call: #selector(periodicUpdate), on: self)
 	}
 	
+	@objc private func periodicUpdate() { if paused == 0 { syncNow() } }
+	
 	@objc private func didChangeDateFilter() {
 		let lastXFilter = Pref.DateFilter.lastXMinTimestamp() ?? 0
-		if tsEarliest < lastXFilter {
-			if let excess = AppDB?.dnsLogsRowRange(between: tsEarliest, and: lastXFilter) {
-				NotifySyncRemove.post(excess)
+		let before = tsEarliest
+		tsEarliest = lastXFilter
+		if before < lastXFilter {
+			DispatchQueue.global().async {
+				if let excess = AppDB?.dnsLogsRowRange(between: before, and: lastXFilter) {
+					NotifySyncRemove.postAsyncMain(excess)
+				}
 			}
-		} else if tsEarliest > lastXFilter {
-			if let missing = AppDB?.dnsLogsRowRange(between: lastXFilter, and: tsEarliest) {
-				NotifySyncInsert.post(missing)
+		} else if before > lastXFilter {
+			DispatchQueue.global().async {
+				if let missing = AppDB?.dnsLogsRowRange(between: lastXFilter, and: before) {
+					NotifySyncInsert.postAsyncMain(missing)
+				}
 			}
 		}
-		tsEarliest = lastXFilter
 	}
 	
+	func start() { paused = 0 }
 	func pause() { paused += 1 }
-	func start() { if paused > 0 { paused -= 1 } }
+	func `continue`() { if paused > 0 { paused -= 1 } }
 	
-	@objc private func periodicUpdate() {
-		guard paused == 0, let db = AppDB else { return }
-		if let inserted = db.dnsLogsPersist() { // move cache -> heap
+	func syncNow() {
+		self.pause() // reduce concurrent load
+		
+		if let inserted = AppDB?.dnsLogsPersist() { // move cache -> heap
 			NotifySyncInsert.post(inserted)
 		}
 		if let lastXFilter = Pref.DateFilter.lastXMinTimestamp(), tsEarliest < lastXFilter {
-			if let removed = db.dnsLogsRowRange(between: tsEarliest, and: lastXFilter) {
+			if let removed = AppDB?.dnsLogsRowRange(between: tsEarliest, and: lastXFilter) {
 				NotifySyncRemove.post(removed)
 			}
 			tsEarliest = lastXFilter
 		}
 		// TODO: periodic hard delete old logs (will reset rowids!)
+		
+		self.continue()
 	}
 }

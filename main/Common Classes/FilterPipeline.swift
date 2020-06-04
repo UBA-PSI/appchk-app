@@ -17,6 +17,8 @@ class FilterPipeline<T> {
 	private var display: PipelineSorting<T>!
 	private(set) weak var delegate: FilterPipelineDelegate?
 	
+	private var cellAnimations: Bool = true
+	
 	required init(withDelegate: FilterPipelineDelegate) {
 		delegate = withDelegate
 	}
@@ -39,6 +41,8 @@ class FilterPipeline<T> {
 	/// - Returns: Index in `dataSource` and found object or `nil` if no matching item found.
 	/// - Complexity: O(*n*), where *n* is the length of the `dataSource`.
 	func dataSourceGet(where predicate: ((T) -> Bool)) -> (index: Int, object: T)? {
+		// TODO: use sorted dataSource for binary lookup?
+		//       would require to shift filter and sorting indices for every new element
 		guard let i = dataSource.firstIndex(where: predicate) else {
 			return nil
 		}
@@ -166,6 +170,20 @@ class FilterPipeline<T> {
 	
 	// MARK: data updates
 	
+	/// Disable individual cell updates (update, move, insert & remove actions)
+	func pauseCellAnimations(if condition: Bool) {
+		cellAnimations = delegate?.tableView.isFrontmost ?? false && !condition
+	}
+	
+	/// Allow individual cell updates (update, move, insert & remove actions) if tableView `isFrontmost`
+	/// - Parameter reloadTable: If `true` and cell animations are disabled, perform `tableView.reloadData()`
+	func continueCellAnimations(reloadTable: Bool = false) {
+		if !cellAnimations {
+			cellAnimations = true
+			if reloadTable { delegate?.tableView.reloadData() }
+		}
+	}
+	
 	/// Add new element to the original `dataSource` and immediately apply filter and sorting.
 	/// - Complexity: O((*m*+1) log *n*), where *m* is the number of filters and *n* the number of elements in each filter.
 	func addNew(_ obj: T) {
@@ -176,7 +194,7 @@ class FilterPipeline<T> {
 		}
 		// survived all filters
 		let displayIndex = display.insertNew(index)
-		delegate?.tableView.safeInsertRow(displayIndex, with: .left)
+		if cellAnimations { delegate?.tableView.safeInsertRow(displayIndex, with: .left) }
 	}
 	
 	/// Update element at `index` in the original `dataSource` and immediately re-apply filter and sorting.
@@ -190,21 +208,22 @@ class FilterPipeline<T> {
 		let oldPos = display.deleteOld(index)
 		dataSource[index] = obj
 		guard status.display else {
-			if let old = oldPos { delegate?.tableView.safeDeleteRows([old]) }
+			if cellAnimations, oldPos != -1 { delegate?.tableView.safeDeleteRows([oldPos]) }
 			return
 		}
-		let newPos = display.insertNew(index)
-		if let old = oldPos {
-			if old == newPos {
-				delegate?.tableView.safeReloadRow(old)
+		let newPos = display.insertNew(index, previousIndex: oldPos)
+		guard cellAnimations else { return }
+		if oldPos == -1 {
+			delegate?.tableView.safeInsertRow(newPos, with: .left)
+		} else {
+			if oldPos == newPos {
+				delegate?.tableView.safeReloadRow(oldPos)
 			} else {
-				delegate?.tableView.safeMoveRow(old, to: newPos)
+				delegate?.tableView.safeMoveRow(oldPos, to: newPos)
 				if delegate?.tableView.isFrontmost ?? false {
 					delegate?.rowNeedsUpdate(newPos)
 				}
 			}
-		} else {
-			delegate?.tableView.safeInsertRow(newPos, with: .left)
 		}
 	}
 	
@@ -221,7 +240,7 @@ class FilterPipeline<T> {
 			filter.shiftRemove(indices: sorted)
 		}
 		let indices = display.shiftRemove(indices: sorted)
-		delegate?.tableView.safeDeleteRows(indices)
+		if cellAnimations { delegate?.tableView.safeDeleteRows(indices) }
 	}
 }
 
@@ -368,20 +387,29 @@ class PipelineSorting<T> {
 	}
 	
 	/// Add new element and automatically sort according to predicate
-	/// - Parameter index: Index of the element position in the original `dataSource`
+	/// - Parameters:
+	///   - index: Index of the element position in the original `dataSource`
+	///   - prev: If greater than `0`, try re-insert at the same position.
 	/// - Returns: Index in the projection
 	/// - Complexity: O(log *n*), where *n* is the length of the `projection`.
-	@discardableResult fileprivate func insertNew(_ index: Int) -> Int {
-		projection.binTreeInsert(index, compare: comperator)
+	@discardableResult fileprivate func insertNew(_ index: Int, previousIndex prev: Int = -1) -> Int {
+		if prev >= 0, prev < projection.count {
+			if (prev == 0 || !comperator(index, projection[prev - 1])), !comperator(projection[prev], index) {
+				// If element can be inserted at the same position without resorting, do that
+				projection.insert(index, at: prev)
+				return prev
+			}
+		}
+		return projection.binTreeInsert(index, compare: comperator)
 	}
 	
 	/// Remove element from projection
 	/// - Parameter index: Index of the element position in the original `dataSource`
-	/// - Returns: Index in the projection or `nil` if element did not exist
+	/// - Returns: Index in the projection or `-1` if element did not exist
 	/// - Complexity: O(*n*), where *n* is the length of the `projection`.
-	fileprivate func deleteOld(_ index: Int) -> Int? {
+	fileprivate func deleteOld(_ index: Int) -> Int {
 		guard let i = projection.firstIndex(of: index) else {
-			return nil
+			return -1
 		}
 		projection.remove(at: i)
 		return i
