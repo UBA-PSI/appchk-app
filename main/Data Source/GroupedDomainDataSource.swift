@@ -56,6 +56,7 @@ class GroupedDomainDataSource {
 			sync.continue()
 		} else {
 			pipeline.reload(fromSource: true, whenDone: {
+				sync.syncNow() // sync outstanding entries in cache
 				sync.continue()
 				refreshControl?.endRefreshing()
 			})

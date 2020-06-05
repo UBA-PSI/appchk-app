@@ -27,6 +27,7 @@ class TVCHostDetails: UITableViewController {
 			self?.dataSource = AppDB?.timesForDomain(self?.fullDomain ?? "", since: sync.tsEarliest) ?? []
 			DispatchQueue.main.sync {
 				self?.tableView.reloadData()
+				sync.syncNow() // sync outstanding entries in cache
 				refreshControl?.endRefreshing()
 			}
 		}

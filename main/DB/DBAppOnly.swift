@@ -109,9 +109,9 @@ extension SQLiteDatabase {
 		return (before > after) ? nil : (before, after)
 	}
 	
-	/// `DELETE FROM heap; DELETE FROM cache;`
+	/// `DELETE FROM cache; DELETE FROM heap;`
 	func dnsLogsDeleteAll() throws {
-		try? run(sql: "DELETE FROM heap; DELETE FROM cache;")
+		try? run(sql: "DELETE FROM cache; DELETE FROM heap;")
 		vacuum()
 	}
 	

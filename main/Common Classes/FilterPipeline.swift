@@ -24,7 +24,7 @@ class FilterPipeline<T> {
 	}
 	
 	/// Set a new `dataSource` query and immediately apply all filters and sorting.
-	/// - Note: You must call `reload(fromSource:)` manually!
+	/// - Note: You must call `reload(fromSource:whenDone:)` manually!
 	/// - Note: Always use `[unowned self]`
 	func setDataSource(query: @escaping DataSourceQuery) {
 		sourceQuery = query
@@ -49,14 +49,8 @@ class FilterPipeline<T> {
 		return (i, dataSource[i])
 	}
 	
-	/// Search and return list of `dataSource` elements that match the given `predicate`.
-	/// - Returns: Sorted list of indices and objects  in `dataSource`.
-	/// - Complexity: O(*m* + *n*), where *n* is the length of the `dataSource` and *m* is the number of matches.
-//	func dataSourceAll(where predicate: ((T) -> Bool)) -> [(index: Int, object: T)] {
-//		dataSource.enumerated().compactMap { predicate($1) ? ($0, $1) : nil }
-//	}
-	
 	/// Re-query data source and re-built filter and display sorting order.
+	/// - Note: Will call `reloadData()` before `whenDone` closure is executed. But only if `cellAnimations` are enabled.
 	/// - Parameter fromSource: If `false` only re-built filter and sort order
 	func reload(fromSource: Bool, whenDone: @escaping () -> Void) {
 		DispatchQueue.global().async {
@@ -65,7 +59,7 @@ class FilterPipeline<T> {
 			}
 			self.resetFilters()
 			DispatchQueue.main.sync {
-				self.delegate?.tableView.reloadData()
+				self.reloadTableCells()
 				whenDone()
 			}
 		}
@@ -86,6 +80,7 @@ class FilterPipeline<T> {
 	
 	/// Add new filter layer. Each layer is applied upon the previous layer. Therefore, each filter
 	/// can only restrict the display further. A filter cannot introduce previously removed elements.
+	/// - Note: Will call `reloadData()` if `cellAnimations` are enabled.
 	/// - Parameters:
 	///   - identifier: Use this id to find the filter again. For reload and remove operations.
 	///   - otherId: If `nil` or non-existent the new filter will be appended at the end.
@@ -100,10 +95,11 @@ class FilterPipeline<T> {
 			pipeline.append(newFilter)
 			display?.apply(moreRestrictive: newFilter.selection)
 		}
-		if cellAnimations { delegate?.tableView.reloadData() }
+		reloadTableCells()
 	}
 	
 	/// Find and remove filter with given identifier. Will automatically update remaining filters and display sorting.
+	/// - Note: Will call `reloadData()` if `cellAnimations` are enabled.
 	func removeFilter(withId ident: String) {
 		guard let i = indexOfFilter(ident) else { return }
 		pipeline.remove(at: i)
@@ -113,29 +109,23 @@ class FilterPipeline<T> {
 		} else {
 			resetFilters(startingAt: i)
 		}
-		if cellAnimations { delegate?.tableView.reloadData() }
+		reloadTableCells()
 	}
 	
 	/// Start filter evaluation on all entries from previous filter.
+	/// - Note: Will call `reloadData()` if `cellAnimations` are enabled.
 	func reloadFilter(withId ident: String) {
 		guard let i = indexOfFilter(ident) else { return }
 		resetFilters(startingAt: i)
-		if cellAnimations { delegate?.tableView.reloadData() }
+		reloadTableCells()
 	}
 	
-	/// Remove last `k` filters from the filter pipeline. Thus showing more entries from previous layers.
-//	func popLastFilter(k: Int = 1) {
-//		guard k > 0, k <= pipeline.count else { return }
-//		pipeline.removeLast(k)
-//		display?.reset(toLessRestrictive: lastFilterLayerIndices())
-//		if cellAnimations { delegate?.tableView.reloadData() }
-//	}
-	
 	/// Sets the sort and display order. You should set the `delegate` to automatically update your `tableView`.
+	/// - Note: Will call `reloadData()` if `cellAnimations` are enabled.
 	/// - Parameter predicate: Return `true` if first element should be sorted before second element.
 	func setSorting(_ predicate: @escaping PipelineSorting<T>.Predicate) {
 		display = .init(predicate, pipe: self)
-		if cellAnimations { delegate?.tableView.reloadData() }
+		reloadTableCells()
 	}
 	
 	/// Re-built filter and display sorting order.
@@ -186,6 +176,11 @@ class FilterPipeline<T> {
 			cellAnimations = true
 			if reloadTable { delegate?.tableView.reloadData() }
 		}
+	}
+	
+	/// Reload table but only if `cellAnimations` is enabled.
+	func reloadTableCells() {
+		if cellAnimations { delegate?.tableView.reloadData() }
 	}
 	
 	/// Add new element to the original `dataSource` and immediately apply filter and sorting.
@@ -301,14 +296,6 @@ class PipelineFilter<T> {
 		selection.binTreeRemove(index, compare: (<))
 	}
 	
-	/// Find `selection` index for corresponding `dataSource` index
-	/// - Parameter index: Index of object in original `dataSource`
-	/// - Returns: Index in `selection` or `nil` if element does not exist.
-	/// - Complexity: O(log *n*), where *n* is the length of the `selection`.
-	fileprivate func index(ofDataSource index: Int) -> Int? {
-		selection.binTreeIndex(of: index, compare: (<), mustExist: true)
-	}
-	
 	/// Perform filter check and update internal `selection` indices.
 	/// - Parameters:
 	///   - obj: Object that was inserted or updated.
@@ -317,7 +304,7 @@ class PipelineFilter<T> {
 	///            `idx` contains the selection filter index or `nil` if the value should be removed.
 	/// - Complexity: O(log *n*), where *n* is the length of the `selection`.
 	fileprivate func update(_ obj: T, at index: Int) -> (keep: Bool, idx: Int?) {
-		let currentIndex = self.index(ofDataSource: index)
+		let currentIndex = selection.binTreeIndex(of: index, compare: (<), mustExist: true)
 		if shouldPersist(obj) {
 			return (true, currentIndex ?? selection.binTreeInsert(index, compare: (<)))
 		}
