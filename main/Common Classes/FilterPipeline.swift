@@ -100,6 +100,7 @@ class FilterPipeline<T> {
 			pipeline.append(newFilter)
 			display?.apply(moreRestrictive: newFilter)
 		}
+		if cellAnimations { delegate?.tableView.reloadData() }
 	}
 	
 	/// Find and remove filter with given identifier. Will automatically update remaining filters and display sorting.
@@ -113,6 +114,7 @@ class FilterPipeline<T> {
 				resetFilters(startingAt: i)
 			}
 		}
+		if cellAnimations { delegate?.tableView.reloadData() }
 	}
 	
 	/// Start filter evaluation on all entries from previous filter.
@@ -120,19 +122,22 @@ class FilterPipeline<T> {
 		if let i = indexOfFilter(ident) {
 			resetFilters(startingAt: i)
 		}
+		if cellAnimations { delegate?.tableView.reloadData() }
 	}
 	
 	/// Remove last `k` filters from the filter pipeline. Thus showing more entries from previous layers.
-	func popLastFilter(k: Int = 1) {
-		guard k > 0, k <= pipeline.count else { return }
-		pipeline.removeLast(k)
-		display?.reset(toLessRestrictive: pipeline.last)
-	}
+//	func popLastFilter(k: Int = 1) {
+//		guard k > 0, k <= pipeline.count else { return }
+//		pipeline.removeLast(k)
+//		display?.reset(toLessRestrictive: pipeline.last)
+//		if cellAnimations { delegate?.tableView.reloadData() }
+//	}
 	
 	/// Sets the sort and display order. You should set the `delegate` to automatically update your `tableView`.
 	/// - Parameter predicate: Return `true` if first element should be sorted before second element.
 	func setSorting(_ predicate: @escaping PipelineSorting<T>.Predicate) {
 		display = .init(predicate, pipe: self)
+		if cellAnimations { delegate?.tableView.reloadData() }
 	}
 	
 	/// Re-built filter and display sorting order.
@@ -171,13 +176,13 @@ class FilterPipeline<T> {
 	// MARK: data updates
 	
 	/// Disable individual cell updates (update, move, insert & remove actions)
-	func pauseCellAnimations(if condition: Bool) {
-		cellAnimations = delegate?.tableView.isFrontmost ?? false && !condition
+	func pauseCellAnimations(if condition: Bool = true) {
+		cellAnimations = !condition && delegate?.tableView.isFrontmost ?? false
 	}
 	
 	/// Allow individual cell updates (update, move, insert & remove actions) if tableView `isFrontmost`
 	/// - Parameter reloadTable: If `true` and cell animations are disabled, perform `tableView.reloadData()`
-	func continueCellAnimations(reloadTable: Bool = false) {
+	func continueCellAnimations(reloadTable: Bool = true) {
 		if !cellAnimations {
 			cellAnimations = true
 			if reloadTable { delegate?.tableView.reloadData() }

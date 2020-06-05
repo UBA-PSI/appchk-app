@@ -342,7 +342,13 @@
                             <outlet property="delegate" destination="WcC-nb-Vf5" id="sBd-BW-Wg6"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Hosts" prompt="com.app.Example" id="TvD-8U-F05"/>
+                    <navigationItem key="navigationItem" title="Hosts" prompt="com.app.Example" id="TvD-8U-F05">
+                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="cBL-dP-ig1">
+                            <connections>
+                                <action selector="searchButtonTapped:" destination="WcC-nb-Vf5" id="QFl-Me-lc6"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gdi-Xi-JUL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

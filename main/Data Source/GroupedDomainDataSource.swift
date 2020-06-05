@@ -12,6 +12,7 @@ class GroupedDomainDataSource {
 	
 	private let parent: String?
 	let pipeline: FilterPipeline<GroupedDomain>
+	private lazy var search = SearchBarManager(on: pipeline.delegate!.tableView)
 	
 	init(withDelegate tvc: FilterPipelineDelegate, parent p: String?) {
 		parent = p
@@ -174,6 +175,35 @@ extension GroupedDomainDataSource {
 			pipeline.update(updated, at: old.index)
 		} else {
 			pipeline.remove(indices: [old.index])
+		}
+	}
+}
+
+
+// ################################
+// #
+// #    MARK: - Search
+// #
+// ################################
+
+extension GroupedDomainDataSource {
+	func toggleSearch() {
+		if search.active { search.hide() }
+		else {
+			// Pause animations. Otherwise the `scrollToTop` animation is broken.
+			// This is due to `addFilter` calling `reloadData()` before `search.show()` can animate it.
+			pipeline.pauseCellAnimations()
+			var searchTerm = ""
+			pipeline.addFilter("search") {
+				$0.domain.lowercased().contains(searchTerm)
+			}
+			search.show(onHide: { [unowned self] in
+				self.pipeline.removeFilter(withId: "search")
+			}, onChange: { [unowned self] in
+				searchTerm = $0.lowercased()
+				self.pipeline.reloadFilter(withId: "search")
+			})
+			pipeline.continueCellAnimations()
 		}
 	}
 }

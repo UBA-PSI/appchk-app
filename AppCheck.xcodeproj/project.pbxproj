@@ -22,6 +22,7 @@
 		543CDB2523EEE61900B7F323 /* GlassVPN.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 543CDB1D23EEE61900B7F323 /* GlassVPN.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		54448A2E2486464F00771C96 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54448A2D2486464F00771C96 /* Array.swift */; };
 		54448A30248647D900771C96 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54448A2F248647D900771C96 /* Time.swift */; };
+		54448A3224899A4000771C96 /* SearchBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54448A3124899A4000771C96 /* SearchBarManager.swift */; };
 		544C95262407B1C700AB89D0 /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544C95252407B1C700AB89D0 /* SharedState.swift */; };
 		5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */; };
 		545DDDCF243E6267003B6544 /* TutorialSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545DDDCE243E6267003B6544 /* TutorialSheet.swift */; };
@@ -180,6 +181,7 @@
 		543CDB2223EEE61900B7F323 /* GlassVPN.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GlassVPN.entitlements; sourceTree = "<group>"; };
 		54448A2D2486464F00771C96 /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		54448A2F248647D900771C96 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
+		54448A3124899A4000771C96 /* SearchBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarManager.swift; sourceTree = "<group>"; };
 		544C95252407B1C700AB89D0 /* SharedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedState.swift; sourceTree = "<group>"; };
 		5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCRecordingDetails.swift; sourceTree = "<group>"; };
 		545DDDCE243E6267003B6544 /* TutorialSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialSheet.swift; sourceTree = "<group>"; };
@@ -415,6 +417,7 @@
 				545DDDD024436983003B6544 /* QuickUI.swift */,
 				545DDDCE243E6267003B6544 /* TutorialSheet.swift */,
 				54D8B979246C9F2000EB2414 /* FilterPipeline.swift */,
+				54448A3124899A4000771C96 /* SearchBarManager.swift */,
 			);
 			path = "Common Classes";
 			sourceTree = "<group>";
@@ -836,6 +839,7 @@
 				54D8B97C2471A7E000EB2414 /* String.swift in Sources */,
 				54C056DD23E9EEF700214A3F /* BundleIcon.swift in Sources */,
 				542E2A982404973F001462DC /* TBCMain.swift in Sources */,
+				54448A3224899A4000771C96 /* SearchBarManager.swift in Sources */,
 				5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */,
 				5412F8EE24571B8200A63D7A /* VCDateFilter.swift in Sources */,
 				545DDDD124436983003B6544 /* QuickUI.swift in Sources */,

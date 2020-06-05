@@ -20,6 +20,12 @@ class TVCHosts: UITableViewController, FilterPipelineDelegate {
 		}
 	}
 	
+	// MARK: - Search
+	
+	@IBAction private func searchButtonTapped(_ sender: UIBarButtonItem) {
+		source.toggleSearch()
+	}
+	
 	// MARK: - Table View Data Source
 	
 	override func tableView(_ _: UITableView, numberOfRowsInSection _: Int) -> Int { source.numberOfRows }
