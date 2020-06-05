@@ -71,8 +71,8 @@ class FilterPipeline<T> {
 		}
 	}
 	
-	/// Returns the index set of either the last filter layer, or `dataSource` if no filter is set yet.
-	fileprivate func lastFilterLayerIndices() -> [Int] {
+	/// Returns the index set of either the last filter layer, or `dataSource` if no filter is set.
+	fileprivate func lastLayerIndices() -> [Int] {
 		pipeline.last?.selection ?? dataSource.indices.arr()
 	}
 	
@@ -96,32 +96,30 @@ class FilterPipeline<T> {
 			pipeline.insert(newFilter, at: i)
 			resetFilters(startingAt: i)
 		} else {
-			newFilter.reset(to: dataSource, previous: pipeline.last)
+			newFilter.reset(to: dataSource, previous: lastLayerIndices())
 			pipeline.append(newFilter)
-			display?.apply(moreRestrictive: newFilter)
+			display?.apply(moreRestrictive: newFilter.selection)
 		}
 		if cellAnimations { delegate?.tableView.reloadData() }
 	}
 	
 	/// Find and remove filter with given identifier. Will automatically update remaining filters and display sorting.
 	func removeFilter(withId ident: String) {
-		if let i = indexOfFilter(ident) {
-			pipeline.remove(at: i)
-			if i == pipeline.count {
-				// only if we don't reset other layers we can assure `toLessRestrictive`
-				display?.reset(toLessRestrictive: pipeline.last)
-			} else {
-				resetFilters(startingAt: i)
-			}
+		guard let i = indexOfFilter(ident) else { return }
+		pipeline.remove(at: i)
+		if i == pipeline.count {
+			// only if we don't reset other layers we can assure `toLessRestrictive`
+			display?.reset(toLessRestrictive: lastLayerIndices())
+		} else {
+			resetFilters(startingAt: i)
 		}
 		if cellAnimations { delegate?.tableView.reloadData() }
 	}
 	
 	/// Start filter evaluation on all entries from previous filter.
 	func reloadFilter(withId ident: String) {
-		if let i = indexOfFilter(ident) {
-			resetFilters(startingAt: i)
-		}
+		guard let i = indexOfFilter(ident) else { return }
+		resetFilters(startingAt: i)
 		if cellAnimations { delegate?.tableView.reloadData() }
 	}
 	
@@ -129,7 +127,7 @@ class FilterPipeline<T> {
 //	func popLastFilter(k: Int = 1) {
 //		guard k > 0, k <= pipeline.count else { return }
 //		pipeline.removeLast(k)
-//		display?.reset(toLessRestrictive: pipeline.last)
+//		display?.reset(toLessRestrictive: lastFilterLayerIndices())
 //		if cellAnimations { delegate?.tableView.reloadData() }
 //	}
 	
@@ -144,12 +142,13 @@ class FilterPipeline<T> {
 	/// - Parameter index: Must be: `index <= pipeline.count`
 	private func resetFilters(startingAt index: Int = 0) {
 		for i in index..<pipeline.count {
-			pipeline[i].reset(to: dataSource, previous: (i>0) ? pipeline[i-1] : nil)
+			pipeline[i].reset(to: dataSource, previous: (i>0)
+				? pipeline[i-1].selection : dataSource.indices.arr())
 		}
 		// Reset is NOT less-restrictive because filters are dynamic
 		// Calling reset on a filter twice may yield different results
 		// E.g. if filter uses variables outside of scope (current time, search term)
-		display?.reset()
+		display?.reset(to: lastLayerIndices())
 	}
 	
 	/// Push object through filter pipeline to check whether it survives all filters.
@@ -269,10 +268,9 @@ class PipelineFilter<T> {
 		shouldPersist = predicate
 	}
 	
-	/// Reset selection indices by copying the indices from the previous filter or using
-	/// the indices of the data source if no previous filter is present.
-	fileprivate func reset(to dataSource: [T], previous filter: PipelineFilter<T>? = nil) {
-		selection = (filter != nil) ? filter!.selection : dataSource.indices.arr()
+	/// Reset `selection` by copying the indices and applying the filter function
+	fileprivate func reset(to dataSource: [T], previous filterIndices: [Int]) {
+		selection = filterIndices
 		selection.removeAll { !shouldPersist(dataSource[$0]) }
 	}
 	
@@ -356,7 +354,6 @@ class PipelineSorting<T> {
 	
 	private(set) var projection: [Int] = []
 	private let comperator: (Int, Int) -> Bool // links to pipeline.dataSource
-	private let previousLayerIndices: () -> [Int] // links to pipeline
 	
 	/// Create a fresh, already sorted, display order projection.
 	/// - Parameter predicate: Return `true` if first element should be sorted before second element.
@@ -364,34 +361,28 @@ class PipelineSorting<T> {
 		comperator = { [unowned pipe] in
 			predicate(pipe.dataSource[$0], pipe.dataSource[$1])
 		}
-		previousLayerIndices = { [unowned pipe] in
-			pipe.lastFilterLayerIndices()
-		}
-		reset()
+		reset(to: pipe.lastLayerIndices())
 	}
 	
-	/// Apply a new layer of filtering. Every layer can only restrict the display even further.
+	/// Replace current `projection` with new filter indices and apply sorting.
+	/// - Complexity: O(*n* log *n*), where *n* is the length of the `filter`.
+	fileprivate func reset(to filterIndices: [Int]) {
+		projection = filterIndices.sorted(by: comperator)
+	}
+	
+	/// After adding a new layer of filtering the new layer can only restrict the display even further.
 	/// Therefore, indices that were removed in the last layer will be removed from the projection too.
 	/// - Complexity: O(*m* log *n*), where *m* is the length of the `projection` and *n* the length of the `filter`.
-	fileprivate func apply(moreRestrictive filter: PipelineFilter<T>) {
-		projection.removeAll { filter.index(ofDataSource: $0) == nil }
+	fileprivate func apply(moreRestrictive filterIndices: [Int]) {
+		projection.removeAll { !filterIndices.binTreeExists($0, compare: (<)) }
 	}
 	
-	/// Remove a layer of filtering. Previous layers are less restrictive and contain more indices.
+	/// After removing a layer of filtering the previous layers are less restrictive and thus contain more indices.
 	/// Therefore, the difference between both index sets will be inserted into the projection.
-	/// - Parameter filter: If `nil`, reset to last filter layer or `dataSource`
-	/// - Complexity:
-	///   * O(*m* log *n*), if `filter != nil`.
-	///     Where *n* is the length of the `projection` and *m* is the difference between both layers.
-	///   * O(*n* log *n*), if `filter == nil`.
-	///     Where *n* is the length of the previous layer (or `dataSource`).
-	fileprivate func reset(toLessRestrictive filter: PipelineFilter<T>? = nil) {
-		if let indices = filter?.selection.difference(toSubset: projection.sorted(), compare: (<)) {
-			for idx in indices {
-				insertNew(idx)
-			}
-		} else {
-			projection = previousLayerIndices().sorted(by: comperator)
+	/// - Complexity: O(*m* log *n*), where *m* is the difference to the previous layer and *n* is the length of the `projection`.
+	fileprivate func reset(toLessRestrictive filterIndices: [Int]) {
+		for x in filterIndices.difference(toSubset: projection.sorted(), compare: (<)) {
+			insertNew(x)
 		}
 	}
 	
