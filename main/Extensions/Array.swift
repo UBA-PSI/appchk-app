@@ -82,6 +82,7 @@ extension Array {
 				result.append(lhs)
 			}
 		}
+		result.append(contentsOf: iter)
 		return result
 	}
 }
