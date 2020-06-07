@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="sfA-EG-18J">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="sfA-EG-18J">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -56,12 +56,12 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                 <items>
                                     <navigationItem title="Placeholder" id="s5o-aw-nIo">
-                                        <barButtonItem key="rightBarButtonItem" title="Item" image="filter-clear" id="oMW-R3-3Eh"/>
+                                        <barButtonItem key="leftBarButtonItem" title="Item" image="filter-clear" id="oMW-R3-3Eh"/>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pEc-vv-7Ts">
-                                <rect key="frame" x="78.5" y="64" width="233.5" height="217.5"/>
+                                <rect key="frame" x="8" y="64" width="233.5" height="217.5"/>
                                 <subviews>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="UNT-qn-2cg">
                                         <rect key="frame" x="8" y="8" width="217.5" height="32"/>
@@ -182,7 +182,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sAi-8j-0n1" customClass="PopupTriangle" customModule="AppCheck" customModuleProvider="target">
-                                <rect key="frame" x="278" y="46" width="28" height="22"/>
+                                <rect key="frame" x="14" y="46" width="28" height="22"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="22" id="MaD-aD-U8h"/>
@@ -200,11 +200,11 @@
                         <constraints>
                             <constraint firstItem="sAi-8j-0n1" firstAttribute="bottom" secondItem="pEc-vv-7Ts" secondAttribute="top" constant="4" id="DCq-Ps-sQo"/>
                             <constraint firstItem="pEc-vv-7Ts" firstAttribute="top" secondItem="jAM-LN-evh" secondAttribute="bottom" constant="20" id="EdA-nv-DEa"/>
-                            <constraint firstItem="u0F-hK-vVD" firstAttribute="trailing" secondItem="pEc-vv-7Ts" secondAttribute="trailing" constant="8" id="Iow-GV-Lxy"/>
+                            <constraint firstItem="pEc-vv-7Ts" firstAttribute="leading" secondItem="u0F-hK-vVD" secondAttribute="leading" constant="8" id="Iow-GV-Lxy"/>
                             <constraint firstItem="jAM-LN-evh" firstAttribute="trailing" secondItem="u0F-hK-vVD" secondAttribute="trailing" id="Lju-K6-G89"/>
                             <constraint firstItem="jAM-LN-evh" firstAttribute="top" secondItem="u0F-hK-vVD" secondAttribute="top" id="MqW-YU-POp"/>
-                            <constraint firstItem="pEc-vv-7Ts" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="u0F-hK-vVD" secondAttribute="leading" constant="8" id="V9T-2Y-oNy"/>
-                            <constraint firstItem="sAi-8j-0n1" firstAttribute="trailing" secondItem="pEc-vv-7Ts" secondAttribute="trailing" constant="-6" id="cXH-3c-s6t"/>
+                            <constraint firstItem="u0F-hK-vVD" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="pEc-vv-7Ts" secondAttribute="trailing" constant="8" id="V9T-2Y-oNy"/>
+                            <constraint firstItem="sAi-8j-0n1" firstAttribute="leading" secondItem="pEc-vv-7Ts" secondAttribute="leading" constant="6" id="cXH-3c-s6t"/>
                             <constraint firstItem="jAM-LN-evh" firstAttribute="leading" secondItem="u0F-hK-vVD" secondAttribute="leading" id="ula-eW-vAq"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="u0F-hK-vVD"/>
@@ -277,19 +277,19 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Domains" id="nY5-jL-QT9">
-                        <barButtonItem key="leftBarButtonItem" systemItem="search" id="FHY-of-M4V">
-                            <connections>
-                                <action selector="searchButtonTapped:" destination="pdd-aM-sKl" id="HH1-6f-mcM"/>
-                            </connections>
-                        </barButtonItem>
-                        <rightBarButtonItems>
+                        <leftBarButtonItems>
                             <barButtonItem image="filter-clear" id="FZm-Ld-jJE">
                                 <connections>
                                     <action selector="filterButtonTapped:" destination="pdd-aM-sKl" id="Xyy-LF-eCF"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem enabled="NO" title="7 days" id="wxA-bC-1pN"/>
-                        </rightBarButtonItems>
+                        </leftBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="FHY-of-M4V">
+                            <connections>
+                                <action selector="searchButtonTapped:" destination="pdd-aM-sKl" id="HH1-6f-mcM"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="filterButton" destination="FZm-Ld-jJE" id="g96-Q2-cYX"/>
