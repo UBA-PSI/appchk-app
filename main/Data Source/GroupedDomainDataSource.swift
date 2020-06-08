@@ -13,19 +13,20 @@ class GroupedDomainDataSource {
 	private let parent: String?
 	let pipeline: FilterPipeline<GroupedDomain>
 	private lazy var search = SearchBarManager(on: pipeline.delegate!.tableView)
+	private var currentOrder: DateFilterOrderBy = .Date
+	private var orderAsc = false
 	
 	init(withDelegate tvc: FilterPipelineDelegate, parent p: String?) {
 		parent = p
 		pipeline = .init(withDelegate: tvc)
 		pipeline.setDataSource { [unowned self] in self.dataSourceCallback() }
-		pipeline.setSorting {
-			$0.lastModified > $1.lastModified
-		}
+		resetSortingOrder(force: true)
 		if #available(iOS 10.0, *) {
 			tvc.tableView.refreshControl = UIRefreshControl(call: #selector(reloadFromSource), on: self)
 		}
 		NotifyLogHistoryReset.observe(call: #selector(reloadFromSource), on: self)
 		NotifyDNSFilterChanged.observe(call: #selector(didChangeDomainFilter), on: self)
+		NotifySortOrderChanged.observe(call: #selector(didChangeSortOrder), on: self)
 		NotifySyncInsert.observe(call: #selector(syncInsert), on: self)
 		NotifySyncRemove.observe(call: #selector(syncRemove), on: self)
 	}
@@ -41,6 +42,30 @@ class GroupedDomainDataSource {
 			tsLatest = max(tsLatest, val.lastModified)
 		}
 		return log
+	}
+	
+	/// Read user defaults and apply new sorting order. Either by setting a new or reversing the current.
+	/// - Parameter force: If `true` set new sorting even if the type does not differ.
+	private func resetSortingOrder(force: Bool = false) {
+		let orderDidChange = (orderAsc =? Pref.DateFilter.OrderAsc)
+		if currentOrder =? Pref.DateFilter.OrderBy || force {
+			switch currentOrder {
+			case .Date:
+				pipeline.setSorting { [unowned self] in
+					self.orderAsc ? $0.lastModified < $1.lastModified : $0.lastModified > $1.lastModified
+				}
+			case .Name:
+				pipeline.setSorting { [unowned self] in
+					self.orderAsc ? $0.domain < $1.domain : $0.domain > $1.domain
+				}
+			case .Count:
+				pipeline.setSorting { [unowned self] in
+					self.orderAsc ? $0.total < $1.total : $0.total > $1.total
+				}
+			}
+		} else if orderDidChange {
+			pipeline.reverseSorting()
+		}
 	}
 	
 	/// Pause recurring background updates to force reload `dataSource`.
@@ -63,7 +88,7 @@ class GroupedDomainDataSource {
 		}
 	}
 	
-	/// Callback fired when user editslist of `blocked` or `ignored` domains in settings. (`NotifyDNSFilterChanged` notification)
+	/// Callback fired when user edits list of `blocked` or `ignored` domains in settings. (`NotifyDNSFilterChanged` notification)
 	@objc private func didChangeDomainFilter(_ notification: Notification) {
 		guard let domain = notification.object as? String else {
 			reloadFromSource()
@@ -74,6 +99,11 @@ class GroupedDomainDataSource {
 			y.options = DomainFilter[domain]
 			pipeline.update(y, at: i)
 		}
+	}
+	
+	/// Callback fired when user changes date filter settings. (`NotifySortOrderChanged` notification)
+	@objc private func didChangeSortOrder(_ notification: Notification) {
+		resetSortingOrder()
 	}
 	
 	

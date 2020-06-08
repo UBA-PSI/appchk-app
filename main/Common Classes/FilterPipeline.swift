@@ -105,7 +105,7 @@ class FilterPipeline<T> {
 		pipeline.remove(at: i)
 		if i == pipeline.count {
 			// only if we don't reset other layers we can assure `toLessRestrictive`
-			display?.reset(toLessRestrictive: lastLayerIndices())
+			display?.apply(lessRestrictive: lastLayerIndices())
 		} else {
 			resetFilters(startingAt: i)
 		}
@@ -125,6 +125,15 @@ class FilterPipeline<T> {
 	/// - Parameter predicate: Return `true` if first element should be sorted before second element.
 	func setSorting(_ predicate: @escaping PipelineSorting<T>.Predicate) {
 		display = .init(predicate, pipe: self)
+		reloadTableCells()
+	}
+	
+	/// Will reverse the current display order without resorting. This is faster than setting a new sorting `predicate`.
+	/// However, the `predicate` must be dynamic and support a sort order flag.
+	/// - Warning: Make sure `predicate` does reflect the change or it will lead to data inconsistency!
+	func reverseSorting() {
+		// TODO: use semaphore to prevent concurrent edits
+		display?.reverseOrder()
 		reloadTableCells()
 	}
 	
@@ -344,11 +353,18 @@ class PipelineSorting<T> {
 	
 	/// Create a fresh, already sorted, display order projection.
 	/// - Parameter predicate: Return `true` if first element should be sorted before second element.
+	/// - Complexity: O(*n* log *n*), where *n* is the length of the `filter`.
 	required init(_ predicate: @escaping Predicate, pipe: FilterPipeline<T>) {
 		comperator = { [unowned pipe] in
 			predicate(pipe.dataSource[$0], pipe.dataSource[$1])
 		}
 		reset(to: pipe.lastLayerIndices())
+	}
+	
+	/// - Warning: Make sure `predicate` does reflect the change. Or it will lead to data inconsistency.
+	/// - Complexity: O(*n*), where *n* is the length of the `filter`.
+	fileprivate func reverseOrder() {
+		projection.reverse()
 	}
 	
 	/// Replace current `projection` with new filter indices and apply sorting.
@@ -367,7 +383,7 @@ class PipelineSorting<T> {
 	/// After removing a layer of filtering the previous layers are less restrictive and thus contain more indices.
 	/// Therefore, the difference between both index sets will be inserted into the projection.
 	/// - Complexity: O(*m* log *n*), where *m* is the difference to the previous layer and *n* is the length of the `projection`.
-	fileprivate func reset(toLessRestrictive filterIndices: [Int]) {
+	fileprivate func apply(lessRestrictive filterIndices: [Int]) {
 		for x in filterIndices.difference(toSubset: projection.sorted(), compare: (<)) {
 			insertNew(x)
 		}

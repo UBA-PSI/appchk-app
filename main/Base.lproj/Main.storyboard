@@ -49,7 +49,7 @@
             <objects>
                 <viewController storyboardIdentifier="domainFilter" modalTransitionStyle="crossDissolve" id="r7v-PM-PrR" customClass="VCDateFilter" customModule="AppCheck" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QBv-5g-BTH">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <navigationBar hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jAM-LN-evh">
@@ -61,7 +61,7 @@
                                 </items>
                             </navigationBar>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pEc-vv-7Ts">
-                                <rect key="frame" x="8" y="64" width="233.5" height="217.5"/>
+                                <rect key="frame" x="8" y="64" width="233.5" height="391.5"/>
                                 <subviews>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="UNT-qn-2cg">
                                         <rect key="frame" x="8" y="8" width="217.5" height="32"/>
@@ -70,20 +70,20 @@
                                             <segment title="Date Range"/>
                                         </segments>
                                         <connections>
-                                            <action selector="didChangeSegment:" destination="r7v-PM-PrR" eventType="valueChanged" id="cxI-lR-J7y"/>
+                                            <action selector="didChangeFilterBy:" destination="r7v-PM-PrR" eventType="valueChanged" id="kM6-QE-ZGV"/>
                                         </connections>
                                     </segmentedControl>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show entries no older than" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UBq-oH-pKp">
-                                        <rect key="frame" x="10" y="55" width="213.5" height="20.5"/>
-                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="gEf-Ra-RyA">
-                                        <rect key="frame" x="10" y="83.5" width="213.5" height="124"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="gEf-Ra-RyA">
+                                        <rect key="frame" x="10" y="47" width="213.5" height="334.5"/>
                                         <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show entries no older than" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UBq-oH-pKp">
+                                                <rect key="frame" x="0.0" y="0.0" width="213.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ucF-MH-iRP">
-                                                <rect key="frame" x="0.0" y="0.0" width="213.5" height="50"/>
+                                                <rect key="frame" x="0.0" y="35.5" width="213.5" height="50"/>
                                                 <subviews>
                                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="qhe-6d-hGB">
                                                         <rect key="frame" x="-2" y="0.0" width="155.5" height="51"/>
@@ -111,8 +111,14 @@
                                                     <constraint firstItem="qhe-6d-hGB" firstAttribute="top" secondItem="ucF-MH-iRP" secondAttribute="top" id="eJC-d4-zg0"/>
                                                 </constraints>
                                             </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show entries within range" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rtf-o1-gk6">
+                                                <rect key="frame" x="0.0" y="100.5" width="213.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9As-hA-MKt">
-                                                <rect key="frame" x="0.0" y="50" width="213.5" height="74"/>
+                                                <rect key="frame" x="0.0" y="136" width="213.5" height="74"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="From:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wAd-o2-PHY">
                                                         <rect key="frame" x="0.0" y="6.5" width="44" height="20.5"/>
@@ -159,21 +165,54 @@
                                                     <constraint firstItem="wAd-o2-PHY" firstAttribute="leading" secondItem="9As-hA-MKt" secondAttribute="leading" id="zgR-pJ-vFs"/>
                                                 </constraints>
                                             </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Order by" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Fe-5F-TVt">
+                                                <rect key="frame" x="0.0" y="225" width="213.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cWy-un-IHC">
+                                                <rect key="frame" x="0.0" y="260.5" width="213.5" height="74"/>
+                                                <subviews>
+                                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="UKE-MR-kRJ">
+                                                        <rect key="frame" x="-2" y="0.0" width="217.5" height="36"/>
+                                                        <segments>
+                                                            <segment title="Date"/>
+                                                            <segment title="Name"/>
+                                                            <segment title="Count"/>
+                                                        </segments>
+                                                    </segmentedControl>
+                                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="eG2-a4-zm5">
+                                                        <rect key="frame" x="-2" y="43" width="217.5" height="32"/>
+                                                        <segments>
+                                                            <segment title="Ascending"/>
+                                                            <segment title="Descending"/>
+                                                        </segments>
+                                                    </segmentedControl>
+                                                </subviews>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                <constraints>
+                                                    <constraint firstItem="eG2-a4-zm5" firstAttribute="top" secondItem="UKE-MR-kRJ" secondAttribute="bottom" constant="8" symbolic="YES" id="6oC-bZ-XdM"/>
+                                                    <constraint firstItem="eG2-a4-zm5" firstAttribute="leading" secondItem="cWy-un-IHC" secondAttribute="leading" constant="-2" id="7R0-qB-J0u"/>
+                                                    <constraint firstAttribute="bottom" secondItem="eG2-a4-zm5" secondAttribute="bottom" id="JbN-vA-Rd5"/>
+                                                    <constraint firstItem="UKE-MR-kRJ" firstAttribute="top" secondItem="cWy-un-IHC" secondAttribute="top" id="L21-Kf-g2d"/>
+                                                    <constraint firstAttribute="trailing" secondItem="eG2-a4-zm5" secondAttribute="trailing" constant="-2" id="cbD-H9-e1Q"/>
+                                                    <constraint firstItem="UKE-MR-kRJ" firstAttribute="leading" secondItem="cWy-un-IHC" secondAttribute="leading" constant="-2" id="lKB-g4-asw"/>
+                                                    <constraint firstAttribute="trailing" secondItem="UKE-MR-kRJ" secondAttribute="trailing" constant="-2" id="xIa-X2-0Lp"/>
+                                                </constraints>
+                                            </view>
                                         </subviews>
                                     </stackView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstItem="UNT-qn-2cg" firstAttribute="top" secondItem="pEc-vv-7Ts" secondAttribute="top" constant="8" id="Awu-uv-9wF"/>
-                                    <constraint firstItem="UBq-oH-pKp" firstAttribute="top" secondItem="UNT-qn-2cg" secondAttribute="bottom" constant="16" id="FDO-1V-ffl"/>
                                     <constraint firstItem="UNT-qn-2cg" firstAttribute="leading" secondItem="pEc-vv-7Ts" secondAttribute="leading" constant="8" id="Icx-YR-5bc"/>
-                                    <constraint firstItem="UBq-oH-pKp" firstAttribute="leading" secondItem="pEc-vv-7Ts" secondAttribute="leading" constant="10" id="KRb-xo-A9i"/>
-                                    <constraint firstItem="gEf-Ra-RyA" firstAttribute="top" secondItem="UBq-oH-pKp" secondAttribute="bottom" constant="8" symbolic="YES" id="QPi-aa-6ff"/>
+                                    <constraint firstItem="gEf-Ra-RyA" firstAttribute="top" secondItem="UNT-qn-2cg" secondAttribute="bottom" constant="8" symbolic="YES" id="QPi-aa-6ff"/>
                                     <constraint firstItem="UNT-qn-2cg" firstAttribute="trailing" secondItem="pEc-vv-7Ts" secondAttribute="trailing" constant="-8" id="Sof-6L-T2D"/>
                                     <constraint firstItem="gEf-Ra-RyA" firstAttribute="bottom" secondItem="pEc-vv-7Ts" secondAttribute="bottom" constant="-10" id="TMx-5J-z2P"/>
-                                    <constraint firstItem="gEf-Ra-RyA" firstAttribute="leading" secondItem="UBq-oH-pKp" secondAttribute="leading" id="U6l-7M-bm4"/>
-                                    <constraint firstItem="gEf-Ra-RyA" firstAttribute="trailing" secondItem="UBq-oH-pKp" secondAttribute="trailing" id="YKE-TR-fTB"/>
-                                    <constraint firstItem="UBq-oH-pKp" firstAttribute="trailing" secondItem="pEc-vv-7Ts" secondAttribute="trailing" constant="-10" id="yZd-eO-85k"/>
+                                    <constraint firstItem="gEf-Ra-RyA" firstAttribute="leading" secondItem="pEc-vv-7Ts" secondAttribute="leading" constant="10" id="U6l-7M-bm4"/>
+                                    <constraint firstItem="gEf-Ra-RyA" firstAttribute="trailing" secondItem="pEc-vv-7Ts" secondAttribute="trailing" constant="-10" id="YKE-TR-fTB"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -213,16 +252,18 @@
                         </connections>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
-                    <size key="freeformSize" width="320" height="320"/>
                     <connections>
                         <outlet property="buttonRangeEnd" destination="IG3-Wc-UI4" id="wAd-ca-bVQ"/>
                         <outlet property="buttonRangeStart" destination="FVD-kB-91w" id="HbX-Vl-uBE"/>
                         <outlet property="durationLabel" destination="ika-su-PZQ" id="1Br-vu-xir"/>
                         <outlet property="durationSlider" destination="qhe-6d-hGB" id="wph-zX-WIz"/>
+                        <outlet property="durationTitle" destination="UBq-oH-pKp" id="BEd-Lo-a2v"/>
                         <outlet property="durationView" destination="ucF-MH-iRP" id="TCI-Pp-drf"/>
+                        <outlet property="filterBy" destination="UNT-qn-2cg" id="M1J-n8-LHq"/>
+                        <outlet property="orderbyAsc" destination="eG2-a4-zm5" id="II1-hc-pyZ"/>
+                        <outlet property="orderbyType" destination="UKE-MR-kRJ" id="fK7-dW-MLd"/>
+                        <outlet property="rangeTitle" destination="rtf-o1-gk6" id="2DY-xP-VOg"/>
                         <outlet property="rangeView" destination="9As-hA-MKt" id="0Mq-Gi-nF6"/>
-                        <outlet property="sectionTitle" destination="UBq-oH-pKp" id="JG9-aM-n6e"/>
-                        <outlet property="segmentControl" destination="UNT-qn-2cg" id="JKs-2W-IRd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xTS-RW-xLN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -232,7 +273,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="700" y="-1800"/>
+            <point key="canvasLocation" x="700" y="-1950"/>
         </scene>
         <!--Domains-->
         <scene sceneID="MN1-aZ-cZt">

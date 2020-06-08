@@ -26,3 +26,16 @@ extension UIEdgeInsets {
 		self.init(top: top ?? all, left: left ?? all, bottom: bottom ?? all, right: right ?? all)
 	}
 }
+
+infix operator =? : ComparisonPrecedence
+extension Equatable {
+	/// Assign a new value to `lhs` if the `newValue` differs from the previous value. Return whether the new value was set.
+	/// - Returns: `true` if `lhs` was overwritten with another value
+	static func =?(lhs: inout Self, newValue: Self) -> Bool {
+		if lhs != newValue {
+			lhs = newValue
+			return true
+		}
+		return false
+	}
+}

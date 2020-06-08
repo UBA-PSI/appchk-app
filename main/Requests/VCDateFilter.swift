@@ -4,27 +4,32 @@ import UIKit
 
 class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 	
-	@IBOutlet private var segmentControl: UISegmentedControl!
-	@IBOutlet private var sectionTitle: UILabel!
+	@IBOutlet private var filterBy: UISegmentedControl!
 	
 	// entries no older than
+	@IBOutlet private var durationTitle: UILabel!
 	@IBOutlet private var durationView: UIView!
 	@IBOutlet private var durationSlider: UISlider!
 	@IBOutlet private var durationLabel: UILabel!
 	private let durationTimes = [0, 1, 20, 60, 360, 720, 1440, 2880, 4320, 10080]
 	
 	// entries within range
+	@IBOutlet private var rangeTitle: UILabel!
 	@IBOutlet private var rangeView: UIView!
 	@IBOutlet private var buttonRangeStart: UIButton!
 	@IBOutlet private var buttonRangeEnd: UIButton!
+	
+	// order by
+	@IBOutlet private var orderbyType: UISegmentedControl!
+	@IBOutlet private var orderbyAsc: UISegmentedControl!
 	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		segmentControl.selectedSegmentIndex = (Pref.DateFilter.Kind == .ABRange ? 1 : 0)
-		didChangeSegment(segmentControl)
-		segmentControl.setEnabled(false, forSegmentAt: 1) // TODO: until range filter is ready
+		filterBy.selectedSegmentIndex = (Pref.DateFilter.Kind == .ABRange ? 1 : 0)
+		didChangeFilterBy(filterBy)
+		filterBy.setEnabled(false, forSegmentAt: 1) // TODO: until range filter is ready
 		
 		durationSlider.tag = -1 // otherwise wont update because `tag == 0`
 		durationSlider.value = Float(durationTimes.firstIndex(of: Pref.DateFilter.LastXMin) ?? 0) / 9
@@ -36,16 +41,17 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 		b.removeLast(3)
 		buttonRangeStart.setTitle(a, for: .normal)
 		buttonRangeEnd.setTitle(b, for: .normal)
+		
+		orderbyType.selectedSegmentIndex = Pref.DateFilter.OrderBy.rawValue
+		orderbyAsc.selectedSegmentIndex = (Pref.DateFilter.OrderAsc ? 0 : 1)
 	}
 	
-	@IBAction private func didChangeSegment(_ sender: UISegmentedControl) {
-		durationView.isHidden = (sender.selectedSegmentIndex != 0)
-		rangeView.isHidden = (sender.selectedSegmentIndex != 1)
-		switch sender.selectedSegmentIndex {
-		case 0: sectionTitle.text = "Show entries no older than"
-		case 1: sectionTitle.text = "Show entries within range"
-		default: break
-		}
+	@IBAction private func didChangeFilterBy(_ sender: UISegmentedControl) {
+		let firstSelected = (sender.selectedSegmentIndex == 0)
+		durationTitle.isHidden = !firstSelected
+		durationView.isHidden = !firstSelected
+		rangeTitle.isHidden = firstSelected
+		rangeView.isHidden = firstSelected
 	}
 	
 	@IBAction private func durationSliderChanged(_ sender: UISlider) {
@@ -65,16 +71,28 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
 		if gestureRecognizer.view == touch.view {
 			let newXMin = durationSlider.tag
-			let newKind: DateFilterKind
-			if segmentControl.selectedSegmentIndex == 1 {
-				newKind = .ABRange
-			} else if newXMin > 0 {
-				newKind = .LastXMin
-			} else {
-				newKind = .Off
+			let filterType: DateFilterKind
+			let orderType: DateFilterOrderBy
+			
+			switch filterBy.selectedSegmentIndex {
+			case 0: filterType = (newXMin > 0) ? .LastXMin : .Off
+			case 1: filterType = .ABRange
+			default: preconditionFailure()
 			}
-			if Pref.DateFilter.Kind != newKind || Pref.DateFilter.LastXMin != newXMin {
-				Pref.DateFilter.Kind = newKind
+			switch orderbyType.selectedSegmentIndex {
+			case 0: orderType = .Date
+			case 1: orderType = .Name
+			case 2: orderType = .Count
+			default: preconditionFailure()
+			}
+			let orderAsc = (orderbyAsc.selectedSegmentIndex == 0)
+			if Pref.DateFilter.OrderBy != orderType || Pref.DateFilter.OrderAsc != orderAsc {
+				Pref.DateFilter.OrderBy = orderType
+				Pref.DateFilter.OrderAsc = orderAsc
+				NotifySortOrderChanged.post()
+			}
+			if Pref.DateFilter.Kind != filterType || Pref.DateFilter.LastXMin != newXMin {
+				Pref.DateFilter.Kind = filterType
 				Pref.DateFilter.LastXMin = newXMin
 				NotifyDateFilterChanged.post()
 			}
