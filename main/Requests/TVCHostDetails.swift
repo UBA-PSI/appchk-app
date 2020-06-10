@@ -67,7 +67,7 @@ class TVCHostDetails: UITableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "HostDetailCell")!
 		let src = dataSource[indexPath.row]
-		cell.textLabel?.text = src.ts.asDateTime()
+		cell.textLabel?.text = DateFormat.seconds(src.ts)
 		cell.detailTextLabel?.text = (src.total > 1) ? "\(src.total)x" : nil
 		cell.imageView?.image = (src.blocked > 0 ? UIImage(named: "shield-x") : nil)
 		return cell

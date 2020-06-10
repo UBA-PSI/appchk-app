@@ -59,6 +59,7 @@ extension UIView {
 	private static let inverseItem: [NSLayoutConstraint.Attribute] = [.right, .bottom, .trailing, .lastBaseline, .rightMargin, .bottomMargin, .trailingMargin]
 	
 	/// Create and active constraints for provided edges. Constraints will anchor the same edge on both `self` and `other`.
+	/// - Note: Will set `translatesAutoresizingMaskIntoConstraints = false`
 	/// - Parameters:
 	///   - edges: List of constraint attributes, e.g. `[.top, .bottom, .left, .right]`
 	///   - other: Instance to bind to, e.g. `UIView` or `UILayoutGuide`
@@ -66,7 +67,8 @@ extension UIView {
 	///   - rel: Constraint relation. (Default: `.equal`)
 	/// - Returns: List of created and active constraints
 	@discardableResult func anchor(_ edges: [NSLayoutConstraint.Attribute], to other: Any, margin: CGFloat = 0, if rel: NSLayoutConstraint.Relation = .equal) -> [NSLayoutConstraint] {
-		edges.map {
+		translatesAutoresizingMaskIntoConstraints = false
+		return edges.map {
 			let (A, B) = UIView.inverseItem.contains($0) ? (other, self) : (self, other)
 			return NSLayoutConstraint(item: A, attribute: $0, relatedBy: rel, toItem: B, attribute: $0, multiplier: 1, constant: margin).on()
 		}

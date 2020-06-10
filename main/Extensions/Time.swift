@@ -1,7 +1,5 @@
 import Foundation
 
-private let dateTimeFormat = DateFormatter(withFormat: "yyyy-MM-dd  HH:mm:ss")
-
 extension DateFormatter {
 	convenience init(withFormat: String) {
 		self.init()
@@ -9,26 +7,18 @@ extension DateFormatter {
 	}
 }
 
-extension Timestamp {
-	/// Time string with format `yyyy-MM-dd  HH:mm:ss`
-	func asDateTime() -> String {
-		dateTimeFormat.string(from: Date.init(timeIntervalSince1970: Double(self)))
-	}
-	
+extension Date {
 	/// Convert `Timestamp` to `Date`
-	func toDate() -> Date {
-		Date(timeIntervalSince1970: Double(self))
-	}
-	
+	init(_ ts: Timestamp) { self.init(timeIntervalSince1970: Double(ts)) }
+	/// Convert  `Date` to `Timestamp`
+	var timestamp: Timestamp { get { Timestamp(self.timeIntervalSince1970) } }
+}
+
+extension Timestamp {
 	/// Current time as `Timestamp` (second accuracy)
-	static func now() -> Timestamp {
-		Timestamp(Date().timeIntervalSince1970)
-	}
-	
+	static func now() -> Timestamp { Date().timestamp }
 	/// Create `Timestamp` with `now() - minutes * 60`
-	static func past(minutes: Int) -> Timestamp {
-		now() - Timestamp(minutes * 60)
-	}
+	static func past(minutes: Int) -> Timestamp { now() - Timestamp(minutes * 60) }
 }
 
 extension Timer {
@@ -38,6 +28,24 @@ extension Timer {
 							 userInfo: userInfo, repeats: true)
 	}
 }
+
+
+// MARK: - DateFormat
+
+enum DateFormat {
+	private static let _hms = DateFormatter(withFormat: "yyyy-MM-dd  HH:mm:ss")
+	private static let _hm = DateFormatter(withFormat: "yyyy-MM-dd HH:mm")
+	
+	/// Format: `yyyy-MM-dd  HH:mm:ss`
+	static func seconds(_ date: Date) -> String { _hms.string(from: date) }
+	/// Format: `yyyy-MM-dd  HH:mm:ss`
+	static func seconds(_ ts: Timestamp) -> String { _hms.string(from: Date(ts)) }
+	/// Format: `yyyy-MM-dd HH:mm`
+	static func minutes(_ date: Date) -> String { _hm.string(from: date) }
+	/// Format: `yyyy-MM-dd HH:mm`
+	static func minutes(_ ts: Timestamp) -> String { _hm.string(from: Date(ts)) }
+}
+
 
 // MARK: - TimeFormat
 

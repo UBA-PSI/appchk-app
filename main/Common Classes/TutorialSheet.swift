@@ -47,7 +47,6 @@ class TutorialSheet: UIViewController, UIScrollViewDelegate {
 		
 		let content = UIView()
 		x.addSubview(content)
-		content.translatesAutoresizingMaskIntoConstraints = false
 		content.anchor([.left, .right, .top, .bottom], to: x)
 		content.anchor([.width, .height], to: x) | .defaultLow
 		return x
@@ -62,7 +61,7 @@ class TutorialSheet: UIViewController, UIScrollViewDelegate {
 	
 	// MARK: Init
 	
-	required init?(coder: NSCoder) { super.init(coder: coder) }
+	required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 	
 	required init() {
 		super.init(nibName: nil, bundle: nil)
@@ -98,7 +97,6 @@ class TutorialSheet: UIViewController, UIScrollViewDelegate {
 		pager.numberOfPages += 1
 		updateButtonTitle()
 		let x = UIStackView(frame: pageScroll.bounds)
-		x.translatesAutoresizingMaskIntoConstraints = false
 		x.axis = .vertical
 		x.backgroundColor = UIColor.black
 		x.isOpaque = true
@@ -124,8 +122,6 @@ class TutorialSheet: UIViewController, UIScrollViewDelegate {
 		sheetBg.addSubview(pager)
 		sheetBg.addSubview(pageScroll)
 		sheetBg.addSubview(button)
-		
-		for x in sheetBg.subviews { x.translatesAutoresizingMaskIntoConstraints = false }
 		
 		pager.anchor([.top, .left, .right], to: sheetBg)
 		pageScroll.topAnchor =&= pager.bottomAnchor

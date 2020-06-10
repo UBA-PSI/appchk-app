@@ -16,8 +16,8 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		inputTitle.text = record.title
 		inputNotes.text = record.notes
 		inputDetails.text = """
-			Start:		\(record.start.asDateTime())
-			End:		\(record.stop?.asDateTime() ?? "?")
+			Start:		\(DateFormat.seconds(record.start))
+			End:		\(record.stop == nil ? "?" : DateFormat.seconds(record.stop!))
 			Duration:	\(record.durationString ?? "?")
 			"""
 		validateSaveButton()

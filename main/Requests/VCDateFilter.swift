@@ -18,6 +18,8 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 	@IBOutlet private var rangeView: UIView!
 	@IBOutlet private var buttonRangeStart: UIButton!
 	@IBOutlet private var buttonRangeEnd: UIButton!
+	private lazy var tsRangeA: Timestamp = AppDB?.dnsLogsMinDate() ?? 0
+	private lazy var tsRangeB: Timestamp = .now()
 	
 	// order by
 	@IBOutlet private var orderbyType: UISegmentedControl!
@@ -35,12 +37,11 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 		durationSlider.value = Float(durationTimes.firstIndex(of: Pref.DateFilter.LastXMin) ?? 0) / 9
 		durationSliderChanged(durationSlider)
 		
-		var a = Timestamp(4).asDateTime() // TODO: load from preferences
-		var b = Timestamp.now().asDateTime()
-		a.removeLast(3) // remove seconds
-		b.removeLast(3)
-		buttonRangeStart.setTitle(a, for: .normal)
-		buttonRangeEnd.setTitle(b, for: .normal)
+		// Force set seconds to 00 and 59 respectively. Its retained during change.
+		tsRangeA = tsRangeA - tsRangeA % 60 + 00
+		tsRangeB = tsRangeB - tsRangeB % 60 + 59
+		buttonRangeStart.setTitle(DateFormat.minutes(tsRangeA), for: .normal)
+		buttonRangeEnd.setTitle(DateFormat.minutes(tsRangeB), for: .normal)
 		
 		orderbyType.selectedSegmentIndex = Pref.DateFilter.OrderBy.rawValue
 		orderbyAsc.selectedSegmentIndex = (Pref.DateFilter.OrderAsc ? 0 : 1)
@@ -65,7 +66,13 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 	}
 	
 	@IBAction private func didTapRangeButton(_ sender: UIButton) {
-		// TODO: show date picker
+		let flag = (sender == buttonRangeStart)
+		DatePickerAlert(presentIn: self, configure: {
+			$0.setDate(Date(flag ? self.tsRangeA : self.tsRangeB), animated: false)
+		}, onSuccess: {
+			flag ? (self.tsRangeA = $0.timestamp) : (self.tsRangeB = $0.timestamp)
+			sender.setTitle(DateFormat.minutes($0), for: .normal)
+		})
 	}
 	
 	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
@@ -85,6 +92,7 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 			case 2: orderType = .Count
 			default: preconditionFailure()
 			}
+			sync.pause()
 			let orderAsc = (orderbyAsc.selectedSegmentIndex == 0)
 			if Pref.DateFilter.OrderBy != orderType || Pref.DateFilter.OrderAsc != orderAsc {
 				Pref.DateFilter.OrderBy = orderType
@@ -96,6 +104,7 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 				Pref.DateFilter.LastXMin = newXMin
 				NotifyDateFilterChanged.post()
 			}
+			sync.continue()
 			dismiss(animated: true)
 		}
 		return false

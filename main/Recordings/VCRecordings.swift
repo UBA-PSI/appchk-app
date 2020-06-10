@@ -12,10 +12,7 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 	override func viewDidLoad() {
 		prevRecController = (children.first as! UINavigationController)
 		prevRecController.delegate = self
-		// Duplicate font attributes but set monospace
-		let traits = timeLabel.font.fontDescriptor.object(forKey: .traits) as? [UIFontDescriptor.TraitKey: Any] ?? [:]
-		let weight = traits[.weight] as? CGFloat ?? UIFont.Weight.regular.rawValue
-		timeLabel.font = UIFont.monospacedDigitSystemFont(ofSize: timeLabel.font.pointSize, weight: UIFont.Weight(rawValue: weight))
+		timeLabel.font = timeLabel.font.monoSpace()
 		// hide timer if not running
 		updateUI(setRecording: false, animated: false)
 		currentRecording = RecordingsDB.getCurrent()
@@ -71,7 +68,7 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		guard let r = currentRecording, r.stop == nil else {
 			return
 		}
-		recordingTimer = Timer.repeating(0.086, call: #selector(timerCallback(_:)), on: self, userInfo: r.start.toDate())
+		recordingTimer = Timer.repeating(0.086, call: #selector(timerCallback(_:)), on: self, userInfo: Date(r.start))
 		updateUI(setRecording: true, animated: animate)
 	}
 	

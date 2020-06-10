@@ -130,6 +130,13 @@ extension SQLiteDatabase {
 	
 	// MARK: read
 	
+	func dnsLogsMinDate() -> Timestamp? {
+		try? run(sql:"SELECT min(ts) FROM heap") {
+			try ifStep($0, SQLITE_ROW)
+			return sqlite3_column_int64($0, 0)
+		}
+	}
+	
 	/// Select min and max row id with given condition `ts >= ? AND ts < ?`
 	/// - Returns: `nil` in case no rows are matching the condition
 	func dnsLogsRowRange(between ts: Timestamp, and ts2: Timestamp) -> SQLiteRowRange? {

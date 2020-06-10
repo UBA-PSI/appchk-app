@@ -16,8 +16,8 @@ extension GroupedDomain {
 extension GroupedDomain {
 	var detailCellText: String { get {
 		return blocked > 0
-		? "\(lastModified.asDateTime())   —   \(blocked)/\(total) blocked"
-		: "\(lastModified.asDateTime())   —   \(total)"
+		? "\(DateFormat.seconds(lastModified))   —   \(blocked)/\(total) blocked"
+		: "\(DateFormat.seconds(lastModified))   —   \(total)"
 		}
 	}
 }
