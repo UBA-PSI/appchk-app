@@ -4,6 +4,7 @@ class TVCHostDetails: UITableViewController, SyncUpdateDelegate {
 
 	public var fullDomain: String!
 	private var dataSource: [GroupedTsOccurrence] = []
+	// TODO: respect date reverse sort order
 	
 	override func viewDidLoad() {
 		navigationItem.prompt = fullDomain

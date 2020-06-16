@@ -45,8 +45,9 @@ class GroupedDomainDataSource: FilterPipelineDelegate, SyncUpdateDelegate {
 	/// Read user defaults and apply new sorting order. Either by setting a new or reversing the current.
 	/// - Parameter force: If `true` set new sorting even if the type does not differ.
 	private func resetSortingOrder(force: Bool = false) {
-		let orderDidChange = (orderAsc <-? Pref.DateFilter.OrderAsc)
-		if currentOrder <-? Pref.DateFilter.OrderBy || force {
+		let orderAscChanged = (orderAsc <-? Pref.DateFilter.OrderAsc)
+		let orderTypChanged = (currentOrder <-? Pref.DateFilter.OrderBy)
+		if orderTypChanged || force {
 			switch currentOrder {
 			case .Date:
 				pipeline.setSorting { [unowned self] in
@@ -61,7 +62,7 @@ class GroupedDomainDataSource: FilterPipelineDelegate, SyncUpdateDelegate {
 					self.orderAsc ? $0.total < $1.total : $0.total > $1.total
 				}
 			}
-		} else if orderDidChange {
+		} else if orderAscChanged {
 			pipeline.reverseSorting()
 		}
 	}
@@ -223,6 +224,7 @@ extension GroupedDomainDataSource {
 // ################################
 
 extension GroupedDomainDataSource {
+	// TODO: permanently show search bar as table header?
 	func toggleSearch() {
 		if search.active { search.hide() }
 		else {
