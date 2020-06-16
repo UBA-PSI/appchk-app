@@ -18,8 +18,8 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 	@IBOutlet private var rangeView: UIView!
 	@IBOutlet private var buttonRangeStart: UIButton!
 	@IBOutlet private var buttonRangeEnd: UIButton!
-	private lazy var tsRangeA: Timestamp = AppDB?.dnsLogsMinDate() ?? 0
-	private lazy var tsRangeB: Timestamp = .now()
+	private lazy var tsRangeA: Timestamp = Pref.DateFilter.RangeA ?? AppDB?.dnsLogsMinDate() ?? .now()
+	private lazy var tsRangeB: Timestamp = Pref.DateFilter.RangeB ?? .now()
 	
 	// order by
 	@IBOutlet private var orderbyType: UISegmentedControl!
@@ -31,15 +31,11 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 		
 		filterBy.selectedSegmentIndex = (Pref.DateFilter.Kind == .ABRange ? 1 : 0)
 		didChangeFilterBy(filterBy)
-		filterBy.setEnabled(false, forSegmentAt: 1) // TODO: until range filter is ready
 		
 		durationSlider.tag = -1 // otherwise wont update because `tag == 0`
 		durationSlider.value = Float(durationTimes.firstIndex(of: Pref.DateFilter.LastXMin) ?? 0) / 9
 		durationSliderChanged(durationSlider)
 		
-		// Force set seconds to 00 and 59 respectively. Its retained during change.
-		tsRangeA = tsRangeA - tsRangeA % 60 + 00
-		tsRangeB = tsRangeB - tsRangeB % 60 + 59
 		buttonRangeStart.setTitle(DateFormat.minutes(tsRangeA), for: .normal)
 		buttonRangeEnd.setTitle(DateFormat.minutes(tsRangeB), for: .normal)
 		
@@ -70,44 +66,56 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 		DatePickerAlert(presentIn: self, configure: {
 			$0.setDate(Date(flag ? self.tsRangeA : self.tsRangeB), animated: false)
 		}, onSuccess: {
-			flag ? (self.tsRangeA = $0.timestamp) : (self.tsRangeB = $0.timestamp)
-			sender.setTitle(DateFormat.minutes($0), for: .normal)
+			var ts = $0.timestamp
+			ts -= ts % 60 // remove seconds
+			// if one of these is greater than the other, adjust the latter too.
+			if flag || self.tsRangeA > ts {
+				self.tsRangeA = ts // lower end of minute
+				self.buttonRangeStart.setTitle(DateFormat.minutes(ts), for: .normal)
+			}
+			if !flag || ts > self.tsRangeB {
+				self.tsRangeB = ts + 59 // upper end of minute
+				self.buttonRangeEnd.setTitle(DateFormat.minutes(ts + 59), for: .normal)
+			}
 		})
 	}
 	
 	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-		if gestureRecognizer.view == touch.view {
-			let newXMin = durationSlider.tag
-			let filterType: DateFilterKind
-			let orderType: DateFilterOrderBy
-			
-			switch filterBy.selectedSegmentIndex {
-			case 0: filterType = (newXMin > 0) ? .LastXMin : .Off
-			case 1: filterType = .ABRange
-			default: preconditionFailure()
-			}
-			switch orderbyType.selectedSegmentIndex {
-			case 0: orderType = .Date
-			case 1: orderType = .Name
-			case 2: orderType = .Count
-			default: preconditionFailure()
-			}
-			sync.pause()
-			let orderAsc = (orderbyAsc.selectedSegmentIndex == 0)
-			if Pref.DateFilter.OrderBy != orderType || Pref.DateFilter.OrderAsc != orderAsc {
-				Pref.DateFilter.OrderBy = orderType
-				Pref.DateFilter.OrderAsc = orderAsc
-				NotifySortOrderChanged.post()
-			}
-			if Pref.DateFilter.Kind != filterType || Pref.DateFilter.LastXMin != newXMin {
-				Pref.DateFilter.Kind = filterType
-				Pref.DateFilter.LastXMin = newXMin
-				NotifyDateFilterChanged.post()
-			}
-			sync.continue()
+		if gestureRecognizer.view === touch.view {
+			saveSettings()
 			dismiss(animated: true)
 		}
 		return false
+	}
+	
+	private func saveSettings() {
+		let newXMin = durationSlider.tag
+		let filterType: DateFilterKind
+		let orderType: DateFilterOrderBy
+		
+		switch filterBy.selectedSegmentIndex {
+		case 0: filterType = (newXMin > 0) ? .LastXMin : .Off
+		case 1: filterType = .ABRange
+		default: preconditionFailure()
+		}
+		switch orderbyType.selectedSegmentIndex {
+		case 0: orderType = .Date
+		case 1: orderType = .Name
+		case 2: orderType = .Count
+		default: preconditionFailure()
+		}
+		let a = Pref.DateFilter.OrderBy <-? orderType
+		let b = Pref.DateFilter.OrderAsc <-? (orderbyAsc.selectedSegmentIndex == 0)
+		if a || b {
+			NotifySortOrderChanged.post()
+		}
+		let c = Pref.DateFilter.Kind <-? filterType
+		let d = Pref.DateFilter.LastXMin <-? newXMin
+		let e = Pref.DateFilter.RangeA <-? (filterType == .ABRange ? tsRangeA : nil)
+		let f = Pref.DateFilter.RangeB <-? (filterType == .ABRange ? tsRangeB : nil)
+		if c || d || e || f {
+			NotifyDateFilterChanged.post()
+		}
 	}
 }
 

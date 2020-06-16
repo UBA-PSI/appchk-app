@@ -36,7 +36,7 @@ extension String {
 	}
 }
 
-var listOfSLDs: [String : [String : Bool]] = {
+private var listOfSLDs: [String : [String : Bool]] = {
 	let path = Bundle.main.url(forResource: "third-level", withExtension: "txt")
 	let content = try! String(contentsOf: path!)
 	var res: [String : [String : Bool]] = [:]

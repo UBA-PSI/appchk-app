@@ -1,54 +1,52 @@
 import UIKit
 
+protocol GroupedDomainDataSourceDelegate: UITableViewController {
+	/// Currently only called when a row is moved and the `tableView` is frontmost.
+	func groupedDomainDataSource(needsUpdate row: Int)
+}
+
 // ##########################
 // #
 // #    MARK: DataSource
 // #
 // ##########################
 
-class GroupedDomainDataSource {
+class GroupedDomainDataSource: FilterPipelineDelegate, SyncUpdateDelegate {
 	
-	private var tsLatest: Timestamp = 0
-	
-	private let parent: String?
-	let pipeline: FilterPipeline<GroupedDomain>
-	private lazy var search = SearchBarManager(on: pipeline.delegate!.tableView)
+	let parent: String?
+	private let pipeline = FilterPipeline<GroupedDomain>()
+	private lazy var search = SearchBarManager(on: delegate!.tableView)
 	private var currentOrder: DateFilterOrderBy = .Date
 	private var orderAsc = false
 	
-	init(withDelegate tvc: FilterPipelineDelegate, parent p: String?) {
-		parent = p
-		pipeline = .init(withDelegate: tvc)
-		pipeline.setDataSource { [unowned self] in self.dataSourceCallback() }
+	/// Will init `sync.allowPullToRefresh()` on `tableView.refreshControl` as well.
+	weak var delegate: GroupedDomainDataSourceDelegate? {
+		willSet { if #available(iOS 10.0, *), newValue !== delegate {
+			sync.allowPullToRefresh(onTVC: newValue, forObserver: self)
+		}}}
+	
+	/// - Note: Will call `tableview.reloadData()`
+	init(withParent: String?) {
+		parent = withParent
+		pipeline.delegate = self
 		resetSortingOrder(force: true)
-		if #available(iOS 10.0, *) {
-			tvc.tableView.refreshControl = UIRefreshControl(call: #selector(reloadFromSource), on: self)
-		}
-		NotifyLogHistoryReset.observe(call: #selector(reloadFromSource), on: self)
+		
 		NotifyDNSFilterChanged.observe(call: #selector(didChangeDomainFilter), on: self)
 		NotifySortOrderChanged.observe(call: #selector(didChangeSortOrder), on: self)
-		NotifySyncInsert.observe(call: #selector(syncInsert), on: self)
-		NotifySyncRemove.observe(call: #selector(syncRemove), on: self)
+		
+		sync.addObserver(self) // calls syncUpdate(reset:)
 	}
 	
-	/// Callback fired only when pipeline resets data source
-	private func dataSourceCallback() -> [GroupedDomain] {
-		guard let db = AppDB else { return [] }
-		let earliest = sync.tsEarliest
-		tsLatest = earliest
-		var log = db.dnsLogsGrouped(since: earliest, parentDomain: parent) ?? []
-		for (i, val) in log.enumerated() {
-			log[i].options = DomainFilter[val.domain]
-			tsLatest = max(tsLatest, val.lastModified)
-		}
-		return log
+	/// Callback fired when user changes date filter settings. (`NotifySortOrderChanged` notification)
+	@objc private func didChangeSortOrder(_ notification: Notification) {
+		resetSortingOrder()
 	}
 	
 	/// Read user defaults and apply new sorting order. Either by setting a new or reversing the current.
 	/// - Parameter force: If `true` set new sorting even if the type does not differ.
 	private func resetSortingOrder(force: Bool = false) {
-		let orderDidChange = (orderAsc =? Pref.DateFilter.OrderAsc)
-		if currentOrder =? Pref.DateFilter.OrderBy || force {
+		let orderDidChange = (orderAsc <-? Pref.DateFilter.OrderAsc)
+		if currentOrder <-? Pref.DateFilter.OrderBy || force {
 			switch currentOrder {
 			case .Date:
 				pipeline.setSorting { [unowned self] in
@@ -68,42 +66,16 @@ class GroupedDomainDataSource {
 		}
 	}
 	
-	/// Pause recurring background updates to force reload `dataSource`.
-	/// Callback fired on user action `pull-to-refresh`, or another background task triggered `NotifyLogHistoryReset`.
-	/// - Parameter sender: May be either `UIRefreshControl` or `Notification`
-	///                     (optional: pass single domain as the notification object).
-	@objc func reloadFromSource(sender: Any? = nil) {
-		weak var refreshControl = sender as? UIRefreshControl
-		let notification = sender as? Notification
-		sync.pause()
-		if let affectedDomain = notification?.object as? String {
-			partiallyReloadFromSource(affectedDomain)
-			sync.continue()
-		} else {
-			pipeline.reload(fromSource: true, whenDone: {
-				sync.syncNow() // sync outstanding entries in cache
-				sync.continue()
-				refreshControl?.endRefreshing()
-			})
-		}
-	}
-	
 	/// Callback fired when user edits list of `blocked` or `ignored` domains in settings. (`NotifyDNSFilterChanged` notification)
 	@objc private func didChangeDomainFilter(_ notification: Notification) {
 		guard let domain = notification.object as? String else {
-			reloadFromSource()
-			return
+			preconditionFailure("Domain independent filter reset not implemented") // `syncUpdate(reset:)` async!
 		}
-		if let (i, obj) = pipeline.dataSourceGet(where: { $0.domain == domain }) {
-			var y = obj
-			y.options = DomainFilter[domain]
-			pipeline.update(y, at: i)
+		if let x = pipeline.dataSourceGet(where: { $0.domain == domain }) {
+			var obj = x.object
+			obj.options = DomainFilter[domain]
+			pipeline.update(obj, at: x.index)
 		}
-	}
-	
-	/// Callback fired when user changes date filter settings. (`NotifySortOrderChanged` notification)
-	@objc private func didChangeSortOrder(_ notification: Notification) {
-		resetSortingOrder()
 	}
 	
 	
@@ -112,20 +84,31 @@ class GroupedDomainDataSource {
 	@inline(__always) var numberOfRows: Int { get { pipeline.displayObjectCount() } }
 	
 	@inline(__always) subscript(_ row: Int) -> GroupedDomain { pipeline.displayObject(at: row) }
+}
+
+
+// ################################
+// #
+// #    MARK: - Partial Update
+// #
+// ################################
+
+extension GroupedDomainDataSource {
 	
+	func syncUpdate(_: SyncUpdate, reset rows: SQLiteRowRange) {
+		var logs = AppDB?.dnsLogsGrouped(range: rows, parentDomain: parent) ?? []
+		for (i, val) in logs.enumerated() {
+			logs[i].options = DomainFilter[val.domain]
+		}
+		pipeline.reset(dataSource: logs)
+	}
 	
-	// MARK: partial updates
-	
-	/// Callback fired when background sync added new entries to the list. (`NotifySyncInsert` notification)
-	@objc private func syncInsert(_ notification: Notification) {
-		sync.pause()
-		defer { sync.continue() }
-		let range = notification.object as! SQLiteRowRange
-		guard let latest = AppDB?.dnsLogsGrouped(range: range, parentDomain: parent) else {
+	func syncUpdate(_: SyncUpdate, insert rows: SQLiteRowRange) {
+		guard let latest = AppDB?.dnsLogsGrouped(range: rows, parentDomain: parent) else {
 			assertionFailure("NotifySyncInsert fired with empty range")
 			return
 		}
-		pipeline.pauseCellAnimations(if: latest.count > 14)
+		cellAnimationsGroup(if: latest.count > 14)
 		for x in latest {
 			if let (i, obj) = pipeline.dataSourceGet(where: { $0.domain == x.domain }) {
 				pipeline.update(obj + x, at: i)
@@ -134,21 +117,16 @@ class GroupedDomainDataSource {
 				y.options = DomainFilter[x.domain]
 				pipeline.addNew(y)
 			}
-			tsLatest = max(tsLatest, x.lastModified)
 		}
-		pipeline.continueCellAnimations(reloadTable: true)
+		cellAnimationsCommit()
 	}
 	
-	/// Callback fired when background sync removed old entries from the list. (`NotifySyncRemove` notification)
-	@objc private func syncRemove(_ notification: Notification) {
-		sync.pause()
-		defer { sync.continue() }
-		let range = notification.object as! SQLiteRowRange
-		guard let outdated = AppDB?.dnsLogsGrouped(range: range, parentDomain: parent),
+	func syncUpdate(_: SyncUpdate, remove rows: SQLiteRowRange) {
+		guard let outdated = AppDB?.dnsLogsGrouped(range: rows, parentDomain: parent),
 			outdated.count > 0 else {
 				return
 		}
-		pipeline.pauseCellAnimations(if: outdated.count > 14)
+		cellAnimationsGroup(if: outdated.count > 14)
 		var listOfDeletes: [Int] = []
 		for x in outdated {
 			guard let (i, obj) = pipeline.dataSourceGet(where: { $0.domain == x.domain }) else {
@@ -162,34 +140,10 @@ class GroupedDomainDataSource {
 			}
 		}
 		pipeline.remove(indices: listOfDeletes.sorted())
-		pipeline.continueCellAnimations(reloadTable: true)
-	}
-}
-
-
-// ################################
-// #
-// #    MARK: - Delete History
-// #
-// ################################
-
-extension GroupedDomainDataSource {
-	
-	/// Callback fired when user performs row edit -> delete action
-	func deleteHistory(domain: String, since ts: Timestamp) {
-		let flag = (parent != nil)
-		DispatchQueue.global().async {
-			guard let db = AppDB, db.dnsLogsDelete(domain, strict: flag, since: ts) > 0 else {
-				return // nothing has changed
-			}
-			db.vacuum()
-			NotifyLogHistoryReset.postAsyncMain(domain) // calls partiallyReloadFromSource(:)
-		}
+		cellAnimationsCommit()
 	}
 	
-	/// Reload a single data source entry. Callback fired by `reloadFromSource()`
-	/// Only useful if `affectedFQDN` currently exists in `dataSource`. Can either update or remove entry.
-	private func partiallyReloadFromSource(_ affectedFQDN: String) {
+	func syncUpdate(_ sender: SyncUpdate, partialRemove affectedFQDN: String) {
 		let affectedParent = affectedFQDN.extractDomain()
 		guard parent == nil || parent == affectedParent else {
 			return // does not affect current table
@@ -199,13 +153,64 @@ extension GroupedDomainDataSource {
 			// can only happen if delete sheet is open while background sync removed the element
 			return
 		}
-		if var updated = AppDB?.dnsLogsGrouped(since: sync.tsEarliest, upto: tsLatest,
-											   matchingDomain: affected, parentDomain: parent)?.first {
+		if var updated = AppDB?.dnsLogsGrouped(range: sender.rows, matchingDomain: affected,
+											   parentDomain: parent)?.first {
 			assert(old.object.domain == updated.domain)
 			updated.options = DomainFilter[updated.domain]
 			pipeline.update(updated, at: old.index)
 		} else {
 			pipeline.remove(indices: [old.index])
+		}
+	}
+}
+
+
+// #################################
+// #
+// #    MARK: - Cell Animations
+// #
+// #################################
+
+extension GroupedDomainDataSource {
+	/// Sets `pipeline.delegate = nil` to disable individual cell animations (update, insert, delete & move).
+	private func cellAnimationsGroup(if condition: Bool = true) {
+		if condition { pipeline.delegate = nil }
+		if pipeline.delegate != nil {
+			onMain { if !$0.isFrontmost { self.pipeline.delegate = nil } }
+		}
+	}
+	/// No-Op if cell animations are enabled already.
+	/// Else, set `pipeline.delegate = self` and perform `reloadData()`.
+	private func cellAnimationsCommit() {
+		if pipeline.delegate == nil {
+			pipeline.delegate = self
+			onMain { $0.reloadData() }
+		}
+	}
+	/// Perform table view manipulations on main thread.
+	/// Set `delegate = nil` to disable `tableView` animations.
+	private func onMain(_ closure: (UITableView) -> Void) {
+		if Thread.isMainThread {
+			if let tv = delegate?.tableView { closure(tv) }
+		} else {
+			DispatchQueue.main.sync {
+				if let tv = delegate?.tableView { closure(tv) }
+			}
+		}
+	}
+	
+	// TODO: Collect animations and post them in a single animations block.
+	//       This will require enormous work to translate then into a final set.
+	func filterPipelineDidReset() { onMain { $0.reloadData() } }
+	func filterPipeline(delete rows: [Int]) { onMain { $0.safeDeleteRows(rows) } }
+	func filterPipeline(insert row: Int) { onMain { $0.safeInsertRow(row, with: .left) } }
+	func filterPipeline(update row: Int) { onMain { $0.safeReloadRow(row) } }
+	func filterPipeline(move oldRow: Int, to newRow: Int) {
+		onMain {
+			$0.safeMoveRow(oldRow, to: newRow)
+			if $0.isFrontmost { // onMain ensures delegate is set
+				delegate!.groupedDomainDataSource(needsUpdate: newRow)
+			}
 		}
 	}
 }
@@ -221,9 +226,9 @@ extension GroupedDomainDataSource {
 	func toggleSearch() {
 		if search.active { search.hide() }
 		else {
-			// Pause animations. Otherwise the `scrollToTop` animation is broken.
+			// Begin animations group. Otherwise the `scrollToTop` animation is broken.
 			// This is due to `addFilter` calling `reloadData()` before `search.show()` can animate it.
-			pipeline.pauseCellAnimations()
+			cellAnimationsGroup()
 			var searchTerm = ""
 			pipeline.addFilter("search") {
 				$0.domain.lowercased().contains(searchTerm)
@@ -234,7 +239,7 @@ extension GroupedDomainDataSource {
 				searchTerm = $0.lowercased()
 				self.pipeline.reloadFilter(withId: "search")
 			})
-			pipeline.continueCellAnimations()
+			cellAnimationsCommit()
 		}
 	}
 }
@@ -246,8 +251,8 @@ extension GroupedDomainDataSource {
 // #
 // ##########################
 
-protocol GroupedDomainEditRow : EditableRows, FilterPipelineDelegate {
-	var source: GroupedDomainDataSource { get set }
+protocol GroupedDomainEditRow : UIViewController, EditableRows {
+	var source: GroupedDomainDataSource { get }
 }
 
 extension GroupedDomainEditRow  {
@@ -274,8 +279,10 @@ extension GroupedDomainEditRow  {
 		case .ignore: showFilterSheet(entry, .ignored)
 		case .block:  showFilterSheet(entry, .blocked)
 		case .delete:
-			AlertDeleteLogs(entry.domain, latest: entry.lastModified) {
-				self.source.deleteHistory(domain: entry.domain, since: $0)
+			let name = entry.domain
+			let flag = (source.parent != nil)
+			AlertDeleteLogs(name, latest: entry.lastModified) {
+				TheGreatDestroyer.deleteLogs(domain: name, since: $0, strict: flag)
 			}.presentIn(self)
 		}
 		return true

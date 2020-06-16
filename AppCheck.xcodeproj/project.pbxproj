@@ -16,6 +16,7 @@
 		541AC5DD2399498A00A769D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5DB2399498A00A769D7 /* Main.storyboard */; };
 		541AC5DF2399498B00A769D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5DE2399498B00A769D7 /* Assets.xcassets */; };
 		541AC5E22399498B00A769D7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5E02399498B00A769D7 /* LaunchScreen.storyboard */; };
+		541FC9872497D81C00962623 /* TheGreatDestroyer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541FC9862497D81C00962623 /* TheGreatDestroyer.swift */; };
 		542E2A982404973F001462DC /* TBCMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542E2A972404973F001462DC /* TBCMain.swift */; };
 		542E2A9A24051556001462DC /* TVCSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542E2A9924051556001462DC /* TVCSettings.swift */; };
 		543CDB2023EEE61900B7F323 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543CDB1F23EEE61900B7F323 /* PacketTunnelProvider.swift */; };
@@ -175,6 +176,7 @@
 		541AC5DE2399498B00A769D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		541AC5E12399498B00A769D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		541AC5E32399498B00A769D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		541FC9862497D81C00962623 /* TheGreatDestroyer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheGreatDestroyer.swift; sourceTree = "<group>"; };
 		542E2A972404973F001462DC /* TBCMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBCMain.swift; sourceTree = "<group>"; };
 		542E2A9924051556001462DC /* TVCSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCSettings.swift; sourceTree = "<group>"; };
 		543CDB1D23EEE61900B7F323 /* GlassVPN.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GlassVPN.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -434,6 +436,7 @@
 				54D8B97D2471B88900EB2414 /* DBCommon.swift */,
 				54D8B9822471BD8100EB2414 /* DBAppOnly.swift */,
 				54B345AC241BBB00004C53CC /* DBExtensions.swift */,
+				541FC9862497D81C00962623 /* TheGreatDestroyer.swift */,
 			);
 			path = DB;
 			sourceTree = "<group>";
@@ -848,6 +851,7 @@
 				542E2A982404973F001462DC /* TBCMain.swift in Sources */,
 				54448A3224899A4000771C96 /* SearchBarManager.swift in Sources */,
 				5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */,
+				541FC9872497D81C00962623 /* TheGreatDestroyer.swift in Sources */,
 				5412F8EE24571B8200A63D7A /* VCDateFilter.swift in Sources */,
 				545DDDD124436983003B6544 /* QuickUI.swift in Sources */,
 				541AC5D82399498A00A769D7 /* AppDelegate.swift in Sources */,

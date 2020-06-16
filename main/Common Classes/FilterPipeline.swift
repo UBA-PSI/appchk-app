@@ -1,34 +1,36 @@
 import UIKit
 
-protocol FilterPipelineDelegate: UITableViewController {
-	/// Currently only called when a row is moved and the `tableView` is frontmost.
-	func rowNeedsUpdate(_ row: Int)
+protocol FilterPipelineDelegate: AnyObject {
+	/// Call `reloadData()` on main thread.
+	/// - Warning: This function may be called from a background thread.
+	func filterPipelineDidReset()
+	
+	/// Call `safeDeleteRows()` on main thread.
+	/// - Warning: This function may be called from a background thread.
+	func filterPipeline(delete rows: [Int])
+	
+	/// Call `safeInsertRow()` on main thread.
+	/// - Warning: This function may be called from a background thread.
+	func filterPipeline(insert row: Int)
+	
+	/// Call `safeReloadRow()` on main thread.
+	/// - Warning: This function may be called from a background thread.
+	func filterPipeline(update row: Int)
+	
+	/// Call `safeMoveRow()` on main thread.
+	/// - Warning: This function may be called from a background thread.
+	func filterPipeline(move oldRow: Int, to newRow: Int)
 }
 
-// MARK: FilterPipeline
+// MARK: - FilterPipeline
 
 class FilterPipeline<T> {
-	typealias DataSourceQuery = () -> [T]
-
-	private var sourceQuery: DataSourceQuery!
+	
 	private(set) fileprivate var dataSource: [T] = []
 	
 	private var pipeline: [PipelineFilter<T>] = []
 	private var display: PipelineSorting<T>!
-	private(set) weak var delegate: FilterPipelineDelegate?
-	
-	private var cellAnimations: Bool = true
-	
-	required init(withDelegate: FilterPipelineDelegate) {
-		delegate = withDelegate
-	}
-	
-	/// Set a new `dataSource` query and immediately apply all filters and sorting.
-	/// - Note: You must call `reload(fromSource:whenDone:)` manually!
-	/// - Note: Always use `[unowned self]`
-	func setDataSource(query: @escaping DataSourceQuery) {
-		sourceQuery = query
-	}
+	weak var delegate: FilterPipelineDelegate?
 	
 	/// - Returns: Number of elements in `projection`
 	@inline(__always) func displayObjectCount() -> Int { display.projection.count }
@@ -49,20 +51,12 @@ class FilterPipeline<T> {
 		return (i, dataSource[i])
 	}
 	
-	/// Re-query data source and re-built filter and display sorting order.
-	/// - Note: Will call `reloadData()` before `whenDone` closure is executed. But only if `cellAnimations` are enabled.
-	/// - Parameter fromSource: If `false` only re-built filter and sort order
-	func reload(fromSource: Bool, whenDone: @escaping () -> Void) {
-		DispatchQueue.global().async {
-			if fromSource {
-				self.dataSource = self.sourceQuery()
-			}
-			self.resetFilters()
-			DispatchQueue.main.sync {
-				self.reloadTableCells()
-				whenDone()
-			}
-		}
+	/// Set new data source and re-built filter and display sorting order.
+	/// - Note: Will call `filterPipelineDidReset()`
+	func reset(dataSource: [T]) {
+		self.dataSource = dataSource
+		self.resetFilters()
+		delegate?.filterPipelineDidReset()
 	}
 	
 	/// Returns the index set of either the last filter layer, or `dataSource` if no filter is set.
@@ -80,12 +74,14 @@ class FilterPipeline<T> {
 	
 	/// Add new filter layer. Each layer is applied upon the previous layer. Therefore, each filter
 	/// can only restrict the display further. A filter cannot introduce previously removed elements.
-	/// - Note: Will call `reloadData()` if `cellAnimations` are enabled.
+	/// - Warning: Use `[unowned self]` to prevent retain cycles!
+	/// - Note: Will call `filterPipelineDidReset()`
 	/// - Parameters:
 	///   - identifier: Use this id to find the filter again. For reload and remove operations.
 	///   - otherId: If `nil` or non-existent the new filter will be appended at the end.
 	///   - predicate: Return `true` if you want to keep the element.
 	func addFilter(_ identifier: String, before otherId: String? = nil, _ predicate: @escaping PipelineFilter<T>.Predicate) {
+		guard indexOfFilter(identifier) == nil else { return }
 		let newFilter = PipelineFilter(identifier, predicate)
 		if let other = otherId, let i = indexOfFilter(other) {
 			pipeline.insert(newFilter, at: i)
@@ -95,11 +91,11 @@ class FilterPipeline<T> {
 			pipeline.append(newFilter)
 			display?.apply(moreRestrictive: newFilter.selection)
 		}
-		reloadTableCells()
+		delegate?.filterPipelineDidReset()
 	}
 	
 	/// Find and remove filter with given identifier. Will automatically update remaining filters and display sorting.
-	/// - Note: Will call `reloadData()` if `cellAnimations` are enabled.
+	/// - Note: Will call `filterPipelineDidReset()`
 	func removeFilter(withId ident: String) {
 		guard let i = indexOfFilter(ident) else { return }
 		pipeline.remove(at: i)
@@ -109,32 +105,34 @@ class FilterPipeline<T> {
 		} else {
 			resetFilters(startingAt: i)
 		}
-		reloadTableCells()
+		delegate?.filterPipelineDidReset()
 	}
 	
 	/// Start filter evaluation on all entries from previous filter.
-	/// - Note: Will call `reloadData()` if `cellAnimations` are enabled.
+	/// - Note: Will call `filterPipelineDidReset()`
 	func reloadFilter(withId ident: String) {
 		guard let i = indexOfFilter(ident) else { return }
 		resetFilters(startingAt: i)
-		reloadTableCells()
+		delegate?.filterPipelineDidReset()
 	}
 	
 	/// Sets the sort and display order. You should set the `delegate` to automatically update your `tableView`.
-	/// - Note: Will call `reloadData()` if `cellAnimations` are enabled.
+	/// - Warning: Use `[unowned self]` to prevent retain cycles!
+	/// - Note: Will call `filterPipelineDidReset()`
 	/// - Parameter predicate: Return `true` if first element should be sorted before second element.
 	func setSorting(_ predicate: @escaping PipelineSorting<T>.Predicate) {
 		display = .init(predicate, pipe: self)
-		reloadTableCells()
+		delegate?.filterPipelineDidReset()
 	}
 	
 	/// Will reverse the current display order without resorting. This is faster than setting a new sorting `predicate`.
 	/// However, the `predicate` must be dynamic and support a sort order flag.
+	/// - Note: Will call `filterPipelineDidReset()`
 	/// - Warning: Make sure `predicate` does reflect the change or it will lead to data inconsistency!
 	func reverseSorting() {
 		// TODO: use semaphore to prevent concurrent edits
 		display?.reverseOrder()
-		reloadTableCells()
+		delegate?.filterPipelineDidReset()
 	}
 	
 	/// Re-built filter and display sorting order.
@@ -173,26 +171,8 @@ class FilterPipeline<T> {
 	
 	// MARK: data updates
 	
-	/// Disable individual cell updates (update, move, insert & remove actions)
-	func pauseCellAnimations(if condition: Bool = true) {
-		cellAnimations = !condition && delegate?.tableView.isFrontmost ?? false
-	}
-	
-	/// Allow individual cell updates (update, move, insert & remove actions) if tableView `isFrontmost`
-	/// - Parameter reloadTable: If `true` and cell animations are disabled, perform `tableView.reloadData()`
-	func continueCellAnimations(reloadTable: Bool = true) {
-		if !cellAnimations {
-			cellAnimations = true
-			if reloadTable { delegate?.tableView.reloadData() }
-		}
-	}
-	
-	/// Reload table but only if `cellAnimations` is enabled.
-	func reloadTableCells() {
-		if cellAnimations { delegate?.tableView.reloadData() }
-	}
-	
 	/// Add new element to the original `dataSource` and immediately apply filter and sorting.
+	/// - Note: Will call `filterPipeline(insert:)` if not filtered.
 	/// - Complexity: O((*m*+1) log *n*), where *m* is the number of filters and *n* the number of elements in each filter.
 	func addNew(_ obj: T) {
 		let index = dataSource.count
@@ -202,10 +182,11 @@ class FilterPipeline<T> {
 		}
 		// survived all filters
 		let displayIndex = display.insertNew(index)
-		if cellAnimations { delegate?.tableView.safeInsertRow(displayIndex, with: .left) }
+		delegate?.filterPipeline(insert: displayIndex)
 	}
 	
 	/// Update element at `index` in the original `dataSource` and immediately re-apply filter and sorting.
+	/// - Note: Will call `filterPipeline(delete:)`, `(insert:)`, `(update:)`, or `(move:)`
 	/// - Parameters:
 	///   - obj: Element to be added. Will overwrite previous `dataSource` object.
 	///   - index: Index in the original `dataSource`
@@ -219,27 +200,23 @@ class FilterPipeline<T> {
 		let oldPos = display.deleteOld(index)
 		dataSource[index] = obj
 		guard status.display else {
-			if cellAnimations, oldPos != -1 { delegate?.tableView.safeDeleteRows([oldPos]) }
+			if oldPos != -1 { delegate?.filterPipeline(delete: [oldPos]) }
 			return
 		}
 		let newPos = display.insertNew(index, previousIndex: oldPos)
-		if cellAnimations {
-			if oldPos == -1 {
-				delegate?.tableView.safeInsertRow(newPos, with: .left)
+		if oldPos == -1 {
+			delegate?.filterPipeline(insert: newPos)
+		} else {
+			if oldPos == newPos {
+				delegate?.filterPipeline(update: oldPos)
 			} else {
-				if oldPos == newPos {
-					delegate?.tableView.safeReloadRow(oldPos)
-				} else {
-					delegate?.tableView.safeMoveRow(oldPos, to: newPos)
-					if delegate?.tableView.isFrontmost ?? false {
-						delegate?.rowNeedsUpdate(newPos)
-					}
-				}
+				delegate?.filterPipeline(move: oldPos, to: newPos)
 			}
 		}
 	}
 	
 	/// Remove elements from the original `dataSource`, from all filters, and from display sorting.
+	/// - Note: Will call `filterPipeline(delete:)` if `sorted` array is not empty.
 	/// - Parameter sorted: Indices in the original `dataSource`
 	/// - Complexity: O(*t*(*m*+*n*) + *m* log *n*), where *t* is the number of filters,
 	///               *m* the number of elements in each filter / projection, and *n* the length of `sorted` indices.
@@ -252,14 +229,16 @@ class FilterPipeline<T> {
 			filter.shiftRemove(indices: sorted)
 		}
 		let indices = display.shiftRemove(indices: sorted)
-		if cellAnimations { delegate?.tableView.safeDeleteRows(indices) }
+		delegate?.filterPipeline(delete: indices)
 	}
 }
 
 
 // MARK: - Filter
 
-class PipelineFilter<T> {
+class PipelineFilter<T>: CustomStringConvertible {
+	var description: String { "\(Self.self)(id: \(id))" }
+	
 	typealias Predicate = (T) -> Bool
 	
 	let id: String

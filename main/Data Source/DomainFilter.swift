@@ -1,9 +1,7 @@
 import Foundation
 
 enum DomainFilter {
-	static private var data: [String: FilterOptions] = {
-		AppDB?.loadFilters() ?? [:]
-	}()
+	static private var data = AppDB?.loadFilters() ?? [:]
 	
 	/// Get filter with given `domain` name
 	@inline(__always) static subscript(_ domain: String) -> FilterOptions? {
@@ -12,10 +10,10 @@ enum DomainFilter {
 	
 	/// Update local memory object by loading values from persistent db.
 	/// - Note: Will trigger `NotifyDNSFilterChanged` notification.
-	static func reload() {
-		data = AppDB?.loadFilters() ?? [:]
-		NotifyDNSFilterChanged.post()
-	}
+//	static func reload() {
+//		data = AppDB?.loadFilters() ?? [:]
+//		NotifyDNSFilterChanged.post()
+//	}
 	
 	/// Get list of domains (sorted by name) which do contain the given filter
 	static func list(where matching: FilterOptions) -> [String] {

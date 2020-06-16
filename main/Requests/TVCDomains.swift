@@ -1,8 +1,8 @@
 import UIKit
 
-class TVCDomains: UITableViewController, UISearchBarDelegate, FilterPipelineDelegate {
+class TVCDomains: UITableViewController, UISearchBarDelegate, GroupedDomainDataSourceDelegate {
 	
-	lazy var source = GroupedDomainDataSource(withDelegate: self, parent: nil)
+	lazy var source = GroupedDomainDataSource(withParent: nil)
 	
 	@IBOutlet private var filterButton: UIBarButtonItem!
 	@IBOutlet private var filterButtonDetail: UIBarButtonItem!
@@ -11,14 +11,7 @@ class TVCDomains: UITableViewController, UISearchBarDelegate, FilterPipelineDele
 		super.viewDidLoad()
 		NotifyDateFilterChanged.observe(call: #selector(didChangeDateFilter), on: self)
 		didChangeDateFilter()
-	}
-	
-	private var didLoadAlready = false
-	override func viewDidAppear(_ animated: Bool) {
-		if !didLoadAlready {
-			didLoadAlready = true
-			source.reloadFromSource()
-		}
+		source.delegate = self // init lazy var, ready for tableView data source
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -76,7 +69,7 @@ class TVCDomains: UITableViewController, UISearchBarDelegate, FilterPipelineDele
 		return cell
 	}
 	
-	func rowNeedsUpdate(_ row: Int) {
+	func groupedDomainDataSource(needsUpdate row: Int) {
 		let entry = source[row]
 		let cell = tableView.cellForRow(at: IndexPath(row: row))
 		cell?.detailTextLabel?.text = entry.detailCellText

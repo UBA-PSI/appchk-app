@@ -13,6 +13,7 @@ enum SQLiteError: Error {
 /// `try? SQLiteDatabase.open()`
 var AppDB: SQLiteDatabase? { get { try? SQLiteDatabase.open() } }
 typealias SQLiteRowID = sqlite3_int64
+/// `0` indicates an unbound edge.
 typealias SQLiteRowRange = (start: SQLiteRowID, end: SQLiteRowID)
 
 // MARK: - SQLiteDatabase

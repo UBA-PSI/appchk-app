@@ -2,6 +2,10 @@ import UIKit
 
 class DatePickerAlert: UIViewController {
 	
+	override var keyCommands: [UIKeyCommand]? {
+		[UIKeyCommand(input: UIKeyCommand.inputEscape, modifierFlags: [], action: #selector(didTapCancel))]
+	}
+	
 	private var callback: (Date) -> Void
 	private let picker: UIDatePicker = {
 		let x = UIDatePicker()
@@ -23,14 +27,17 @@ class DatePickerAlert: UIViewController {
 	}
 	
 	internal override func loadView() {
-		let cancel = QuickUI.button("Cancel", target: self, action: #selector(didTapCancel))
+		let cancel = QuickUI.button("Discard", target: self, action: #selector(didTapCancel))
 		let save = QuickUI.button("Save", target: self, action: #selector(didTapSave))
+		let now = QuickUI.button("Now", target: self, action: #selector(didTapNow))
 		save.titleLabel?.font = save.titleLabel?.font.bold()
+		now.titleLabel?.font = now.titleLabel?.font.bold()
+		now.setTitleColor(.sysFg, for: .normal)
 		//cancel.setTitleColor(.systemRed, for: .normal)
 		
-		let buttons = UIStackView(arrangedSubviews: [cancel, save])
+		let buttons = UIStackView(arrangedSubviews: [cancel, now, save])
 		buttons.axis = .horizontal
-		buttons.distribution = .fillEqually
+		buttons.distribution = .equalSpacing
 		
 		let bg = UIView(frame: picker.frame)
 		bg.frame.size.height += buttons.frame.height + 15
@@ -45,12 +52,16 @@ class DatePickerAlert: UIViewController {
 		
 		picker.anchor([.leading, .trailing, .top], to: bg)
 		picker.bottomAnchor =&= buttons.topAnchor
-		buttons.anchor([.leading, .trailing], to: bg)
+		buttons.anchor([.leading, .trailing], to: bg, margin: 25)
 		buttons.bottomAnchor =&= bg.bottomAnchor - 15
 		bg.anchor([.leading, .trailing, .bottom], to: clearBg)
 		
 		view = clearBg
 		view.isHidden = true // otherwise picker will flash on present
+	}
+	
+	@objc private func didTapNow() {
+		picker.date = Date()
 	}
 	
 	@objc private func didTapSave() {

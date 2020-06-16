@@ -42,10 +42,7 @@ class TVCSettings: UITableViewController {
 			"You are about to delete all results that have been logged in the past. " +
 			"Your preferences for blocked and ignored domains are preserved.\n" +
 			"Continue?", buttonText: "Delete", buttonStyle: .destructive) { _ in
-				DispatchQueue.global().async {
-					try? AppDB?.dnsLogsDeleteAll()
-					NotifyLogHistoryReset.postAsyncMain()
-				}
+				TheGreatDestroyer.deleteAllLogs()
 		}.presentIn(self)
 	}
 	

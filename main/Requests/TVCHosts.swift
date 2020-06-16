@@ -1,17 +1,17 @@
 import UIKit
 
-class TVCHosts: UITableViewController, FilterPipelineDelegate {
+class TVCHosts: UITableViewController, GroupedDomainDataSourceDelegate {
 	
-	lazy var source = GroupedDomainDataSource(withDelegate: self, parent: parentDomain)
+	lazy var source = GroupedDomainDataSource(withParent: parentDomain)
 	
 	public var parentDomain: String!
 	private var isSpecial: Bool = false
 	
 	override func viewDidLoad() {
-		super.viewDidLoad()
 		navigationItem.prompt = parentDomain
+		super.viewDidLoad()
 		isSpecial = (parentDomain.first == "#") // aka: "# IP address"
-		source.reloadFromSource() // init lazy var
+		source.delegate = self // init lazy var, ready for tableView data source
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -45,7 +45,7 @@ class TVCHosts: UITableViewController, FilterPipelineDelegate {
 		return cell
 	}
 	
-	func rowNeedsUpdate(_ row: Int) {
+	func groupedDomainDataSource(needsUpdate row: Int) {
 		let entry = source[row]
 		let cell = tableView.cellForRow(at: IndexPath(row: row))
 		cell?.detailTextLabel?.text = entry.detailCellText

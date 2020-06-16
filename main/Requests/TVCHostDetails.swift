@@ -1,62 +1,16 @@
 import UIKit
 
-class TVCHostDetails: UITableViewController {
+class TVCHostDetails: UITableViewController, SyncUpdateDelegate {
 
 	public var fullDomain: String!
 	private var dataSource: [GroupedTsOccurrence] = []
 	
 	override func viewDidLoad() {
-		super.viewDidLoad()
 		navigationItem.prompt = fullDomain
+		super.viewDidLoad()
+		sync.addObserver(self) // calls `syncUpdate(reset:)`
 		if #available(iOS 10.0, *) {
-			tableView.refreshControl = UIRefreshControl(call: #selector(reloadDataSource), on: self)
-		}
-		NotifyLogHistoryReset.observe(call: #selector(reloadDataSource), on: self)
-		NotifySyncInsert.observe(call: #selector(syncInsert), on: self)
-		NotifySyncRemove.observe(call: #selector(syncRemove), on: self)
-		reloadDataSource()
-	}
-	
-	@objc func reloadDataSource(sender: Any? = nil) {
-		let refreshControl = sender as? UIRefreshControl
-		let notification = sender as? Notification
-		if let affectedDomain = notification?.object as? String {
-			guard fullDomain.isSubdomain(of: affectedDomain) else { return }
-		}
-		DispatchQueue.global().async { [weak self] in
-			self?.dataSource = AppDB?.timesForDomain(self?.fullDomain ?? "", since: sync.tsEarliest) ?? []
-			DispatchQueue.main.sync {
-				self?.tableView.reloadData()
-				sync.syncNow() // sync outstanding entries in cache
-				refreshControl?.endRefreshing()
-			}
-		}
-	}
-	
-	@objc private func syncInsert(_ notification: Notification) {
-		let range = notification.object as! SQLiteRowRange
-		if let latest = AppDB?.timesForDomain(fullDomain, range: range), latest.count > 0 {
-			dataSource.insert(contentsOf: latest, at: 0)
-			if tableView.isFrontmost {
-				let indices = (0..<latest.count).map { IndexPath(row: $0) }
-				tableView.insertRows(at: indices, with: .left)
-			} else {
-				tableView.reloadData()
-			}
-		}
-	}
-	
-	@objc private func syncRemove(_ notification: Notification) {
-		let earliest = sync.tsEarliest
-		if let i = dataSource.firstIndex(where: { $0.ts < earliest }) {
-			// since they are ordered, we can optimize
-			let indices = (i..<dataSource.endIndex).map { IndexPath(row: $0) }
-			dataSource.removeLast(dataSource.count - i)
-			if tableView.isFrontmost {
-				tableView.deleteRows(at: indices, with: .automatic)
-			} else {
-				tableView.reloadData()
-			}
+			sync.allowPullToRefresh(onTVC: self, forObserver: self)
 		}
 	}
 	
@@ -71,5 +25,57 @@ class TVCHostDetails: UITableViewController {
 		cell.detailTextLabel?.text = (src.total > 1) ? "\(src.total)x" : nil
 		cell.imageView?.image = (src.blocked > 0 ? UIImage(named: "shield-x") : nil)
 		return cell
+	}
+}
+
+// ################################
+// #
+// #    MARK: - Partial Update
+// #
+// ################################
+
+extension TVCHostDetails {
+	
+	func syncUpdate(_ _: SyncUpdate, reset rows: SQLiteRowRange) {
+		dataSource = AppDB?.timesForDomain(fullDomain, range: rows) ?? []
+		DispatchQueue.main.sync { tableView.reloadData() }
+	}
+	
+	func syncUpdate(_ _: SyncUpdate, insert rows: SQLiteRowRange) {
+		guard let latest = AppDB?.timesForDomain(fullDomain, range: rows), latest.count > 0 else {
+			return
+		}
+		// TODO: if filter will be ever editable at this point, we cannot insert at 0
+		dataSource.insert(contentsOf: latest, at: 0)
+		DispatchQueue.main.sync {
+			if tableView.isFrontmost {
+				let indices = (0..<latest.count).map { IndexPath(row: $0) }
+				tableView.insertRows(at: indices, with: .left)
+			} else {
+				tableView.reloadData()
+			}
+		}
+	}
+	
+	func syncUpdate(_ sender: SyncUpdate, remove _: SQLiteRowRange) {
+		let earliest = sender.tsEarliest
+		let latest = sender.tsLatest
+		// Assuming they are ordered by ts and in descending order
+		if let i = dataSource.lastIndex(where: { $0.ts >= earliest }), (i+1) < dataSource.count {
+			let indices = ((i+1)..<dataSource.endIndex).map{ $0 }
+			dataSource.removeLast(dataSource.count - (i+1))
+			DispatchQueue.main.sync { tableView.safeDeleteRows(indices) }
+		}
+		if let i = dataSource.firstIndex(where: { $0.ts <= latest }), i > 0 {
+			let indices = (dataSource.startIndex..<i).map{ $0 }
+			dataSource.removeFirst(i)
+			DispatchQueue.main.sync { tableView.safeDeleteRows(indices) }
+		}
+	}
+	
+	func syncUpdate(_ sender: SyncUpdate, partialRemove affectedDomain: String) {
+		if fullDomain.isSubdomain(of: affectedDomain) {
+			syncUpdate(sender, reset: sender.rows)
+		}
 	}
 }

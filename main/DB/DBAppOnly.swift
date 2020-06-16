@@ -56,14 +56,31 @@ extension SQLiteDatabase {
 	}
 }
 
-struct WhereClauseBuilder: CustomStringConvertible {
+class WhereClauseBuilder: CustomStringConvertible {
 	var description: String = ""
 	private let prefix: String
 	private(set) var bindings: [DBBinding] = []
+	
 	init(prefix p: String = "WHERE") { prefix = "\(p) " }
-	mutating func and(_ clause: String, _ bind: DBBinding ...) {
+	
+	/// Append new clause by either prepending `WHERE` prefix or placing `AND` between clauses.
+	@discardableResult func and(_ clause: String, _ bind: DBBinding ...) -> Self {
 		description.append((description=="" ? prefix : " AND ") + clause)
 		bindings.append(contentsOf: bind)
+		return self
+	}
+	/// Restrict to `rowid >= {range}.start AND rowid <= {range}.end`.
+	/// Omitted if range is `nil` or individually if a value is `0`.
+	@discardableResult func and(in range: SQLiteRowRange) -> Self {
+		if range.start != 0 { and("rowid >= ?", BindInt64(range.start)) }
+		if range.end != 0 { and("rowid <= ?", BindInt64(range.end)) }
+		return self
+	}
+	/// Restrict to `ts >= {min} AND ts < {max}`. Omit one or the other if value is `0`.
+	@discardableResult func and(min: Timestamp = 0, max: Timestamp = 0) -> Self {
+		if min != 0 { and("ts >= ?", BindInt64(min)) }
+		if max != 0 { and("ts < ?", BindInt64(max)) }
+		return self
 	}
 }
 
@@ -119,8 +136,7 @@ extension SQLiteDatabase {
 	/// - Parameter strict: If `true`, use `fqdn` instead of `domain` column
 	/// - Returns: Number of changes aka. Number of rows deleted
 	@discardableResult func dnsLogsDelete(_ domain: String, strict: Bool, since ts: Timestamp = 0) -> Int32 {
-		var Where = WhereClauseBuilder()
-		if ts != 0 { Where.and("ts >= ?", BindInt64(ts)) }
+		let Where = WhereClauseBuilder().and(min: ts)
 		Where.and("\(strict ? "fqdn" : "domain") = ?", BindText(domain)) // (fqdn = ? OR fqdn LIKE '%.' || ?)
 		return (try? run(sql: "DELETE FROM heap \(Where);", bind: Where.bindings) { stmt -> Int32 in
 			try ifStep(stmt, SQLITE_DONE)
@@ -130,6 +146,7 @@ extension SQLiteDatabase {
 	
 	// MARK: read
 	
+	/// `SELECT min(ts) FROM heap`
 	func dnsLogsMinDate() -> Timestamp? {
 		try? run(sql:"SELECT min(ts) FROM heap") {
 			try ifStep($0, SQLITE_ROW)
@@ -138,10 +155,14 @@ extension SQLiteDatabase {
 	}
 	
 	/// Select min and max row id with given condition `ts >= ? AND ts < ?`
+	/// - Parameters:
+	///   - ts1: Restrict min `rowid` to `ts >= ?`. Pass `0` to omit restriction.
+	///   - ts2: Restrict max `rowid` to `ts < ?`. Pass `0` to omit restriction.
+	///   - range: If set, only look at the specified range. Default: `(0,0)`
 	/// - Returns: `nil` in case no rows are matching the condition
-	func dnsLogsRowRange(between ts: Timestamp, and ts2: Timestamp) -> SQLiteRowRange? {
-		try? run(sql:"SELECT min(rowid), max(rowid) FROM heap WHERE ts >= ? AND ts < ?",
-				 bind: [BindInt64(ts), BindInt64(ts2)]) {
+	func dnsLogsRowRange(between ts1: Timestamp, and ts2: Timestamp, within range: SQLiteRowRange = (0,0)) -> SQLiteRowRange? {
+		let Where = WhereClauseBuilder().and(in: range).and(min: ts1, max: ts2)
+		return try? run(sql:"SELECT min(rowid), max(rowid) FROM heap \(Where);", bind: Where.bindings) {
 			try ifStep($0, SQLITE_ROW)
 			let max = sqlite3_column_int64($0, 1)
 			return (max == 0) ? nil : (sqlite3_column_int64($0, 0), max)
@@ -151,19 +172,15 @@ extension SQLiteDatabase {
 	/// Group DNS logs by domain, count occurences and number of blocked requests.
 	/// - Parameters:
 	///   - range: Whenever possible set range to improve SQL lookup times. `start <= rowid <= end `
-	///   - ts: Restrict result set `ts >= ?`
+	///   - ts1: Restrict result set `ts >= ?`
 	///   - ts2: Restrict result set `ts < ?`
 	///   - matchingDomain: Restrict `(fqdn|domain) = ?`. Which column is used is determined by `parentDomain`.
 	///   - parentDomain: If `nil` returns `domain` column. Else returns `fqdn` column with restriction on `domain == parentDomain`.
 	/// - Returns: List of grouped domains with no particular sorting order.
-	func dnsLogsGrouped(range: SQLiteRowRange? = nil, since ts: Timestamp = 0, upto ts2: Timestamp = 0,
+	func dnsLogsGrouped(range: SQLiteRowRange = (0,0), since ts1: Timestamp = 0, upto ts2: Timestamp = 0,
 						matchingDomain: String? = nil, parentDomain: String? = nil) -> [GroupedDomain]?
 	{
-		var Where = WhereClauseBuilder()
-		if let from = range?.start { Where.and("rowid >= ?", BindInt64(from)) }
-		if let to = range?.end { Where.and("rowid <= ?", BindInt64(to)) }
-		if ts != 0 { Where.and("ts >= ?", BindInt64(ts)) }
-		if ts2 != 0 { Where.and("ts < ?", BindInt64(ts2)) }
+		let Where = WhereClauseBuilder().and(in: range).and(min: ts1, max: ts2)
 		let col: String // fqdn or domain
 		if let parent = parentDomain { // is subdomain
 			col = "fqdn"
@@ -188,16 +205,9 @@ extension SQLiteDatabase {
 	/// - Parameters:
 	///   - fqdn: Exact match for domain name `fqdn = ?`
 	///   - range: Whenever possible set range to improve SQL lookup times. `start <= rowid <= end `
-	///   - ts: Restrict result set `ts >= ?`
-	///   - ts2: Restrict result set `ts < ?`
 	/// - Returns: List sorted by reverse timestamp order (newest first)
-	func timesForDomain(_ fqdn: String, range: SQLiteRowRange? = nil, since ts: Timestamp = 0, upto ts2: Timestamp = 0) -> [GroupedTsOccurrence]? {
-		var Where = WhereClauseBuilder()
-		if let from = range?.start { Where.and("rowid >= ?", BindInt64(from)) }
-		if let to = range?.end { Where.and("rowid <= ?", BindInt64(to)) }
-		if ts != 0 { Where.and("ts >= ?", BindInt64(ts)) }
-		if ts2 != 0 { Where.and("ts < ?", BindInt64(ts2)) }
-		Where.and("fqdn = ?", BindText(fqdn))
+	func timesForDomain(_ fqdn: String, range: SQLiteRowRange = (0,0)) -> [GroupedTsOccurrence]? {
+		let Where = WhereClauseBuilder().and(in: range).and("fqdn = ?", BindText(fqdn))
 		return try? run(sql: "SELECT ts, COUNT(ts), COUNT(opt) FROM heap \(Where) GROUP BY ts ORDER BY ts DESC;", bind: Where.bindings) {
 			allRows($0) {
 				(sqlite3_column_int64($0, 0), sqlite3_column_int($0, 1), sqlite3_column_int($0, 2))

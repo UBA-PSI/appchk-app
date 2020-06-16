@@ -15,8 +15,9 @@ enum RecordingsDB {
 	
 	/// Copy log entries from generic `heap` table  to recording specific `recLog` table
 	static func persist(_ r: Recording) {
-		sync.syncNow() // persist changes in cache before copying recording details
-		AppDB?.recordingLogsPersist(r)
+		sync.syncNow { // persist changes in cache before copying recording details
+			AppDB?.recordingLogsPersist(r)
+		}
 	}
 	
 	/// Get list of domains that occured during the recording

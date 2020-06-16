@@ -7,13 +7,15 @@ public enum VPNState : Int {
 	case on = 1, inbetween, off
 }
 
-struct Pref {
+enum Pref {
 	static func Int(_ key: String) -> Int { UserDefaults.standard.integer(forKey: key) }
 	static func Int(_ val: Int, _ key: String) { UserDefaults.standard.set(val, forKey: key) }
 	static func Bool(_ key: String) -> Bool { UserDefaults.standard.bool(forKey: key) }
 	static func Bool(_ val: Bool, _ key: String) { UserDefaults.standard.set(val, forKey: key) }
+	static func `Any`(_ key: String) -> Any? { UserDefaults.standard.object(forKey: key) }
+	static func `Any`(_ val: Any?, _ key: String) { UserDefaults.standard.set(val, forKey: key) }
 	
-	struct DidShowTutorial {
+	enum DidShowTutorial {
 		static var Welcome: Bool {
 			get { Pref.Bool("didShowTutorialAppWelcome") }
 			set { Pref.Bool(newValue, "didShowTutorialAppWelcome") }
@@ -23,7 +25,7 @@ struct Pref {
 			set { Pref.Bool(newValue, "didShowTutorialRecordings") }
 		}
 	}
-	struct DateFilter {
+	enum DateFilter {
 		static var Kind: DateFilterKind {
 			get { DateFilterKind(rawValue: Pref.Int("dateFilterType"))! }
 			set { Pref.Int(newValue.rawValue, "dateFilterType") }
@@ -32,6 +34,16 @@ struct Pref {
 		static var LastXMin: Int {
 			get { Pref.Int("dateFilterLastXMin") }
 			set { Pref.Int(newValue, "dateFilterLastXMin") }
+		}
+		/// Default: `nil` (disabled)
+		static var RangeA: Timestamp? {
+			get { Pref.Any("dateFilterRangeA") as? Timestamp }
+			set { Pref.Any(newValue, "dateFilterRangeA") }
+		}
+		/// Default: `nil` (disabled)
+		static var RangeB: Timestamp? {
+			get { Pref.Any("dateFilterRangeB") as? Timestamp }
+			set { Pref.Any(newValue, "dateFilterRangeB") }
 		}
 		/// default: `.Date`
 		static var OrderBy: DateFilterOrderBy {
@@ -44,11 +56,17 @@ struct Pref {
 			set { Pref.Bool(newValue, "dateFilterOderAsc") }
 		}
 		
-		/// Return selected timestamp filter or `nil` if filtering is disabled.
-		/// - Returns: `Timestamp.now() - LastXMin * 60`
-		static func lastXMinTimestamp() -> Timestamp? {
-			if Kind != .LastXMin { return nil }
-			return Timestamp.past(minutes: Pref.DateFilter.LastXMin)
+		/// - Returns: Timestamp restriction depending on current selected date filter.
+		///   - `Off` : `(0, -1)`
+		///   - `LastXMin` : `(now-LastXMin, -1)`
+		///   - `ABRange` : `(RangeA, RangeB)`
+		static func restrictions() -> (type: DateFilterKind, earliest: Timestamp, latest: Timestamp) {
+			let type = Kind
+			switch type {
+			case .Off:      return (type, 0, -1)
+			case .LastXMin: return (type, Timestamp.past(minutes: Pref.DateFilter.LastXMin), -1)
+			case .ABRange:  return (type, Pref.DateFilter.RangeA ?? 0, Pref.DateFilter.RangeB ?? -1)
+			}
 		}
 	}
 }

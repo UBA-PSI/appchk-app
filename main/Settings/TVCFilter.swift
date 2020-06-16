@@ -2,23 +2,16 @@ import UIKit
 
 class TVCFilter: UITableViewController, EditActionsRemove {
 	var currentFilter: FilterOptions = .none // set by segue
-	private var dataSource: [String] = []
+	private lazy var dataSource = DomainFilter.list(where: currentFilter)
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		NotifyDNSFilterChanged.observe(call: #selector(didChangeDomainFilter), on: self)
-		reloadDataSource()
-	}
-
-	func reloadDataSource() {
-		dataSource = DomainFilter.list(where: currentFilter)
-		tableView.reloadData()
 	}
 	
 	@objc func didChangeDomainFilter(_ notification: Notification) {
 		guard let domain = notification.object as? String else {
-			reloadDataSource()
-			return
+			preconditionFailure("Domain independent filter reset not implemented")
 		}
 		if DomainFilter[domain]?.contains(currentFilter) ?? false {
 			let i = dataSource.binTreeIndex(of: domain, compare: (<))!
