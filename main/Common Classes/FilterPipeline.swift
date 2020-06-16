@@ -375,8 +375,9 @@ class PipelineSorting<T> {
 	/// - Returns: Index in the projection
 	/// - Complexity: O(log *n*), where *n* is the length of the `projection`.
 	@discardableResult fileprivate func insertNew(_ index: Int, previousIndex prev: Int = -1) -> Int {
-		if prev >= 0, prev < projection.count {
-			if (prev == 0 || !comperator(index, projection[prev - 1])), !comperator(projection[prev], index) {
+		if prev >= 0, prev <= projection.count { // '<=' because previous delete removed one element
+			if (prev == 0 || !comperator(index, projection[prev - 1])),
+				(prev == projection.count || !comperator(projection[prev], index)) {
 				// If element can be inserted at the same position without resorting, do that
 				projection.insert(index, at: prev)
 				return prev
