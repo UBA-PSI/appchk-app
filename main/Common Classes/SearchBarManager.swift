@@ -54,12 +54,15 @@ class SearchBarManager: NSObject, UISearchBarDelegate {
 			hideAndRelease()
 			return
 		}
+		let h = searchBar.frame.height
 		if active {
 			tv.scrollToTop(animated: false)
 			tv.tableHeaderView = searchBar
-			tv.frame.origin.y = -searchBar.frame.height
+			tv.frame.origin.y -= h
+			tv.frame.size.height += h
 			UIView.animate(withDuration: 0.3, animations: {
-				tv.frame.origin.y =  0
+				tv.frame.origin.y += h
+				tv.frame.size.height -= h
 			}) { _ in
 				tv.reloadData()
 				self.searchBar.becomeFirstResponder()
@@ -67,10 +70,12 @@ class SearchBarManager: NSObject, UISearchBarDelegate {
 		} else {
 			searchBar.resignFirstResponder()
 			UIView.animate(withDuration: 0.3, animations: {
-				tv.frame.origin.y = -(tv.tableHeaderView?.frame.height ?? 0)
+				tv.frame.origin.y -= h
+				tv.frame.size.height += h
 				tv.scrollToTop(animated: false) // false to let UIView animate the change
 			}) { _ in
-				tv.frame.origin.y = 0
+				tv.frame.origin.y += h
+				tv.frame.size.height -= h
 				self.hideAndRelease()
 				tv.reloadData()
 			}
