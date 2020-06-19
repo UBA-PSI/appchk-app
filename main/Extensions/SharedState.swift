@@ -57,15 +57,15 @@ enum Pref {
 		}
 		
 		/// - Returns: Timestamp restriction depending on current selected date filter.
-		///   - `Off` : `(0, -1)`
-		///   - `LastXMin` : `(now-LastXMin, -1)`
+		///   - `Off` : `(nil, nil)`
+		///   - `LastXMin` : `(now-LastXMin, nil)`
 		///   - `ABRange` : `(RangeA, RangeB)`
-		static func restrictions() -> (type: DateFilterKind, earliest: Timestamp, latest: Timestamp) {
+		static func restrictions() -> (type: DateFilterKind, earliest: Timestamp?, latest: Timestamp?) {
 			let type = Kind
 			switch type {
-			case .Off:      return (type, 0, -1)
-			case .LastXMin: return (type, Timestamp.past(minutes: Pref.DateFilter.LastXMin), -1)
-			case .ABRange:  return (type, Pref.DateFilter.RangeA ?? 0, Pref.DateFilter.RangeB ?? -1)
+			case .Off:      return (type, nil, nil)
+			case .LastXMin: return (type, Timestamp.past(minutes: Pref.DateFilter.LastXMin), nil)
+			case .ABRange:  return (type, Pref.DateFilter.RangeA, Pref.DateFilter.RangeB)
 			}
 		}
 	}

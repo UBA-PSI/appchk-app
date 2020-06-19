@@ -59,15 +59,13 @@ extension TVCHostDetails {
 	}
 	
 	func syncUpdate(_ sender: SyncUpdate, remove _: SQLiteRowRange) {
-		let earliest = sender.tsEarliest
-		let latest = sender.tsLatest
 		// Assuming they are ordered by ts and in descending order
-		if let i = dataSource.lastIndex(where: { $0.ts >= earliest }), (i+1) < dataSource.count {
+		if let t = sender.tsEarliest, let i = dataSource.lastIndex(where: { $0.ts >= t }), (i+1) < dataSource.count {
 			let indices = ((i+1)..<dataSource.endIndex).map{ $0 }
 			dataSource.removeLast(dataSource.count - (i+1))
 			DispatchQueue.main.sync { tableView.safeDeleteRows(indices) }
 		}
-		if let i = dataSource.firstIndex(where: { $0.ts <= latest }), i > 0 {
+		if let t = sender.tsLatest, let i = dataSource.firstIndex(where: { $0.ts <= t }), i > 0 {
 			let indices = (dataSource.startIndex..<i).map{ $0 }
 			dataSource.removeFirst(i)
 			DispatchQueue.main.sync { tableView.safeDeleteRows(indices) }

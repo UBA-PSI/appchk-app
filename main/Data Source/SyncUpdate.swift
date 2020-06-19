@@ -7,11 +7,15 @@ class SyncUpdate {
 	
 	private var filterType: DateFilterKind
 	private var range: SQLiteRowRange? // written in reloadRangeFromDB()
+	/// `tsEarliest ?? 0`
+	private var tsMin: Timestamp { tsEarliest ?? 0 }
+	/// `(tsLatest + 1) ?? 0`
+	private var tsMax: Timestamp { (tsLatest ?? -1) + 1 }
 	
 	/// Returns invalid range `(-1,-1)` if collection contains no rows
 	var rows: SQLiteRowRange { get { range ?? (-1,-1) } }
-	private(set) var tsEarliest: Timestamp // as set per user, not actual earliest
-	private(set) var tsLatest: Timestamp // as set per user, not actual latest
+	private(set) var tsEarliest: Timestamp? // as set per user, not actual earliest
+	private(set) var tsLatest: Timestamp? // as set per user, not actual latest
 	
 	
 	init(periodic interval: TimeInterval) {
@@ -33,12 +37,12 @@ class SyncUpdate {
 		filterType = filter.type
 		DispatchQueue.global().async {
 			// Not necessary, but improve execution order (delete then insert).
-			if self.tsEarliest <= filter.earliest {
-				self.update(newEarliest: filter.earliest)
-				self.update(newLatest: filter.latest)
+			if self.tsMin <= (filter.earliest ?? 0) {
+				self.set(newEarliest: filter.earliest)
+				self.set(newLatest: filter.latest)
 			} else {
-				self.update(newLatest: filter.latest)
-				self.update(newEarliest: filter.earliest)
+				self.set(newLatest: filter.latest)
+				self.set(newEarliest: filter.earliest)
 			}
 			self.continue()
 		}
@@ -94,17 +98,18 @@ class SyncUpdate {
 	private func internalSync() {
 		assert(!Thread.isMainThread)
 		// Always persist logs ...
-		if let inserted = AppDB?.dnsLogsPersist() { // move cache -> heap
+		if let newest = AppDB?.dnsLogsPersist() { // move cache -> heap
 			if filterType == .ABRange {
 				// ... even if we filter a few later
-				publishInsert(front: false, tsEarliest, tsLatest + 1, scope: inserted)
+				if let r = rows(tsMin, tsMax, scope: newest) {
+					notify(insert: r, front: false)
+				}
 			} else {
-				safeSetRange(end: inserted)
-				notifyObservers { $0.syncUpdate(self, insert: inserted) }
+				notify(insert: newest, front: false)
 			}
 		}
 		if filterType == .LastXMin {
-			update(newEarliest: Timestamp.past(minutes: Pref.DateFilter.LastXMin))
+			set(newEarliest: Timestamp.past(minutes: Pref.DateFilter.LastXMin))
 		}
 		// TODO: periodic hard delete old logs (will reset rowids!)
 	}
@@ -115,7 +120,7 @@ class SyncUpdate {
 	private func reloadRangeFromDB() {
 		// `nil` is not SQLiteRowRange(0,0) aka. full collection.
 		// `nil` means invalid range. e.g. ts restriction too high or empty db.
-		range = AppDB?.dnsLogsRowRange(between: tsEarliest, and: tsLatest + 1)
+		range = rows(tsMin, tsMax)
 	}
 	
 	/// Helper to always set range in case there was none before. Otherwise only update `start`.
@@ -130,47 +135,60 @@ class SyncUpdate {
 	
 	/// Update internal `tsEarliest`, then post `NotifySyncInsert` or `NotifySyncRemove` notification with row ids.
 	/// - Warning: Always call from a background thread!
-	private func update(newEarliest: Timestamp) {
+	private func set(newEarliest: Timestamp?) {
+		func from(_ t: Timestamp?) -> Timestamp { t ?? 0 }
+		func to(_ t: Timestamp) -> Timestamp { tsLatest == nil ? t : min(t, tsMax) }
+		
 		if let (old, new) = tsEarliest <-/ newEarliest {
-			if new < old {
-				publishInsert(front: true, new, (tsLatest == -1 ? old : min(old, tsLatest + 1)), scope: (0, range?.start ?? 0))
+			if old != nil, (new == nil || new! < old!) {
+				if let r = rows(from(new), to(old!), scope: (0, range?.start ?? 0)) {
+					notify(insert: r, front: true)
+				}
 			} else if range != nil {
-				publishRemove(front: true, old, (tsLatest == -1 ? new : min(new, tsLatest + 1)), scope: range!)
+				if let r = rows(from(old), to(new!), scope: range!) {
+					notify(remove: r, front: true)
+				}
 			}
 		}
 	}
 	
 	/// Update internal `tsLatest`, then post `NotifySyncInsert` or `NotifySyncRemove` notification with row ids.
 	/// - Warning: Always call from a background thread!
-	private func update(newLatest: Timestamp) {
+	private func set(newLatest: Timestamp?) {
+		func from(_ t: Timestamp) -> Timestamp { max(t + 1, tsMin) }
+		func to(_ t: Timestamp?) -> Timestamp { t == nil ? 0 : t! + 1 }
+		// +1: include upper end because `dnsLogsRowRange` selects `ts < X`
+		
 		if let (old, new) = tsLatest <-/ newLatest {
-			// +1: include upper end because `dnsLogsRowRange` selects `ts < X`
-			if (old < new || new == -1), old != -1 {
-				publishInsert(front: false, max(old + 1, tsEarliest), new + 1, scope: (range?.end ?? 0, 0))
+			if old != nil, (new == nil || old! < new!) {
+				if let r = rows(from(old!), to(new), scope: (range?.end ?? 0, 0)) {
+					notify(insert: r, front: false)
+				}
 			} else if range != nil {
 				// FIXME: removing latest entries will invalidate "last changed" label
-				publishRemove(front: false, max(new + 1, tsEarliest), old + 1, scope: range!)
+				if let r = rows(from(new!), to(old), scope: range!) {
+					notify(remove: r, front: false)
+				}
 			}
 		}
 	}
 	
+	private func rows(_ ts1: Timestamp, _ ts2: Timestamp, scope: SQLiteRowRange = (0,0)) -> SQLiteRowRange? {
+		AppDB?.dnsLogsRowRange(between: ts1, and: ts2, within: scope)
+	}
+	
 	/// - Warning: Always call from a background thread!
-	private func publishInsert(front: Bool, _ ts1: Timestamp, _ ts2: Timestamp, scope: SQLiteRowRange) {
-		if let r = AppDB?.dnsLogsRowRange(between: ts1, and: ts2, within: scope) {
-			front ? safeSetRange(start: r) : safeSetRange(end: r)
-			notifyObservers { $0.syncUpdate(self, insert: r) }
-		}
+	private func notify(insert r: SQLiteRowRange, front: Bool) {
+		front ? safeSetRange(start: r) : safeSetRange(end: r)
+		notifyObservers { $0.syncUpdate(self, insert: r) }
 	}
 	
 	/// - Warning: `range` must not be `nil`!
 	/// - Warning: Always call from a background thread!
-	private func publishRemove(front: Bool, _ ts1: Timestamp, _ ts2: Timestamp, scope: SQLiteRowRange) {
-		assert(range != nil)
-		if let r = AppDB?.dnsLogsRowRange(between: ts1, and: ts2, within: scope) {
-			front ? (range!.start = r.end + 1) : (range!.end = r.start - 1)
-			if range!.start > range!.end { range = nil }
-			notifyObservers { $0.syncUpdate(self, remove: r) }
-		}
+	private func notify(remove r: SQLiteRowRange, front: Bool) {
+		front ? (range!.start = r.end + 1) : (range!.end = r.start - 1)
+		if range!.start > range!.end { range = nil }
+		notifyObservers { $0.syncUpdate(self, remove: r) }
 	}
 	
 	
