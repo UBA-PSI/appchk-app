@@ -104,7 +104,7 @@ extension GroupedDomainDataSource {
 		pipeline.reset(dataSource: logs)
 	}
 	
-	func syncUpdate(_: SyncUpdate, insert rows: SQLiteRowRange) {
+	func syncUpdate(_: SyncUpdate, insert rows: SQLiteRowRange, affects: SyncUpdateEnd) {
 		guard let latest = AppDB?.dnsLogsGrouped(range: rows, parentDomain: parent) else {
 			assertionFailure("NotifySyncInsert fired with empty range")
 			return
@@ -122,7 +122,12 @@ extension GroupedDomainDataSource {
 		cellAnimationsCommit()
 	}
 	
-	func syncUpdate(_: SyncUpdate, remove rows: SQLiteRowRange) {
+	func syncUpdate(_ sender: SyncUpdate, remove rows: SQLiteRowRange, affects: SyncUpdateEnd) {
+		if affects == .Latest {
+			// TODO: alternatively query last modified from db (last entry _before_ range)
+			syncUpdate(sender, reset: sender.rows)
+			return
+		}
 		guard let outdated = AppDB?.dnsLogsGrouped(range: rows, parentDomain: parent),
 			outdated.count > 0 else {
 				return

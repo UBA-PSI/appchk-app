@@ -42,34 +42,41 @@ extension TVCHostDetails {
 		DispatchQueue.main.sync { tableView.reloadData() }
 	}
 	
-	func syncUpdate(_ _: SyncUpdate, insert rows: SQLiteRowRange) {
+	func syncUpdate(_ _: SyncUpdate, insert rows: SQLiteRowRange, affects: SyncUpdateEnd) {
 		guard let latest = AppDB?.timesForDomain(fullDomain, range: rows), latest.count > 0 else {
 			return
 		}
-		// TODO: if filter will be ever editable at this point, we cannot insert at 0
-		dataSource.insert(contentsOf: latest, at: 0)
-		DispatchQueue.main.sync {
-			if tableView.isFrontmost {
-				let indices = (0..<latest.count).map { IndexPath(row: $0) }
-				tableView.insertRows(at: indices, with: .left)
-			} else {
-				tableView.reloadData()
-			}
+		// Assuming they are ordered by ts and in descending order
+		let range: Range<Int>
+		switch affects {
+		case .Earliest:
+			range = dataSource.endIndex..<(dataSource.endIndex + latest.count)
+			dataSource.append(contentsOf: latest)
+		case .Latest:
+			range = dataSource.startIndex..<(dataSource.startIndex + latest.count)
+			dataSource.insert(contentsOf: latest, at: 0)
 		}
+		DispatchQueue.main.sync { tableView.safeInsertRows(range, with: .left) }
 	}
 	
-	func syncUpdate(_ sender: SyncUpdate, remove _: SQLiteRowRange) {
+	func syncUpdate(_ sender: SyncUpdate, remove _: SQLiteRowRange, affects: SyncUpdateEnd) {
 		// Assuming they are ordered by ts and in descending order
-		if let t = sender.tsEarliest, let i = dataSource.lastIndex(where: { $0.ts >= t }), (i+1) < dataSource.count {
-			let indices = ((i+1)..<dataSource.endIndex).map{ $0 }
+		let range: Range<Int>
+		switch affects {
+		case .Earliest:
+			guard let t = sender.tsEarliest,
+				let i = dataSource.lastIndex(where: { $0.ts >= t }),
+				(i+1) < dataSource.count else { return }
+			range = (i+1)..<dataSource.endIndex
 			dataSource.removeLast(dataSource.count - (i+1))
-			DispatchQueue.main.sync { tableView.safeDeleteRows(indices) }
-		}
-		if let t = sender.tsLatest, let i = dataSource.firstIndex(where: { $0.ts <= t }), i > 0 {
-			let indices = (dataSource.startIndex..<i).map{ $0 }
+		case .Latest:
+			guard let t = sender.tsLatest,
+				let i = dataSource.firstIndex(where: { $0.ts <= t }),
+				i > 0 else { return }
+			range = dataSource.startIndex..<i
 			dataSource.removeFirst(i)
-			DispatchQueue.main.sync { tableView.safeDeleteRows(indices) }
 		}
+		DispatchQueue.main.sync { tableView.safeDeleteRows(range) }
 	}
 	
 	func syncUpdate(_ sender: SyncUpdate, partialRemove affectedDomain: String) {

@@ -102,10 +102,10 @@ class SyncUpdate {
 			if filterType == .ABRange {
 				// ... even if we filter a few later
 				if let r = rows(tsMin, tsMax, scope: newest) {
-					notify(insert: r, front: false)
+					notify(insert: r, .Latest)
 				}
 			} else {
-				notify(insert: newest, front: false)
+				notify(insert: newest, .Latest)
 			}
 		}
 		if filterType == .LastXMin {
@@ -116,6 +116,10 @@ class SyncUpdate {
 	
 	
 	// MARK: - Internal
+	
+	private func rows(_ ts1: Timestamp, _ ts2: Timestamp, scope: SQLiteRowRange = (0,0)) -> SQLiteRowRange? {
+		AppDB?.dnsLogsRowRange(between: ts1, and: ts2, within: scope)
+	}
 	
 	private func reloadRangeFromDB() {
 		// `nil` is not SQLiteRowRange(0,0) aka. full collection.
@@ -132,11 +136,11 @@ class SyncUpdate {
 		if let (old, new) = tsEarliest <-/ newEarliest {
 			if old != nil, (new == nil || new! < old!) {
 				if let r = rows(from(new), to(old!), scope: (0, range?.start ?? 0)) {
-					notify(insert: r, front: true)
+					notify(insert: r, .Earliest)
 				}
 			} else if range != nil {
 				if let r = rows(from(old), to(new!), scope: range!) {
-					notify(remove: r, front: true)
+					notify(remove: r, .Earliest)
 				}
 			}
 		}
@@ -152,34 +156,38 @@ class SyncUpdate {
 		if let (old, new) = tsLatest <-/ newLatest {
 			if old != nil, (new == nil || old! < new!) {
 				if let r = rows(from(old!), to(new), scope: (range?.end ?? 0, 0)) {
-					notify(insert: r, front: false)
+					notify(insert: r, .Latest)
 				}
 			} else if range != nil {
 				// FIXME: removing latest entries will invalidate "last changed" label
 				if let r = rows(from(new!), to(old), scope: range!) {
-					notify(remove: r, front: false)
+					notify(remove: r, .Latest)
 				}
 			}
 		}
 	}
 	
-	private func rows(_ ts1: Timestamp, _ ts2: Timestamp, scope: SQLiteRowRange = (0,0)) -> SQLiteRowRange? {
-		AppDB?.dnsLogsRowRange(between: ts1, and: ts2, within: scope)
-	}
-	
 	/// - Warning: Always call from a background thread!
-	private func notify(insert r: SQLiteRowRange, front: Bool) {
+	private func notify(insert r: SQLiteRowRange, _ end: SyncUpdateEnd) {
 		if range == nil { range = r }
-		else { front ? (range!.start = r.start) : (range!.end = r.end) }
-		notifyObservers { $0.syncUpdate(self, insert: r) }
+		else {
+			switch end {
+			case .Earliest: range!.start = r.start
+			case .Latest:   range!.end = r.end
+			}
+		}
+		notifyObservers { $0.syncUpdate(self, insert: r, affects: end) }
 	}
 	
 	/// - Warning: `range` must not be `nil`!
 	/// - Warning: Always call from a background thread!
-	private func notify(remove r: SQLiteRowRange, front: Bool) {
-		front ? (range!.start = r.end + 1) : (range!.end = r.start - 1)
+	private func notify(remove r: SQLiteRowRange, _ end: SyncUpdateEnd) {
+		switch end {
+		case .Earliest: range!.start = r.end + 1
+		case .Latest:   range!.end = r.start - 1
+		}
 		if range!.start > range!.end { range = nil }
-		notifyObservers { $0.syncUpdate(self, remove: r) }
+		notifyObservers { $0.syncUpdate(self, remove: r, affects: end) }
 	}
 	
 	
@@ -211,6 +219,8 @@ private struct WeakObserver {
 	weak var pullToRefresh: UIRefreshControl?
 }
 
+enum SyncUpdateEnd { case Earliest, Latest }
+
 protocol SyncUpdateDelegate : AnyObject {
 	/// `SyncUpdate` has unpredictable changes. Reload your `dataSource`.
 	/// - Warning: This function will **always** be called from a background thread.
@@ -218,11 +228,11 @@ protocol SyncUpdateDelegate : AnyObject {
 	
 	/// `SyncUpdate` added new `rows` to database. Sync changes to your `dataSource`.
 	/// - Warning: This function will **always** be called from a background thread.
-	func syncUpdate(_ sender: SyncUpdate, insert rows: SQLiteRowRange)
+	func syncUpdate(_ sender: SyncUpdate, insert rows: SQLiteRowRange, affects: SyncUpdateEnd)
 	
 	/// `SyncUpdate` outdated some `rows` in database. Sync changes to your `dataSource`.
 	/// - Warning: This function will **always** be called from a background thread.
-	func syncUpdate(_ sender: SyncUpdate, remove rows: SQLiteRowRange)
+	func syncUpdate(_ sender: SyncUpdate, remove rows: SQLiteRowRange, affects: SyncUpdateEnd)
 	
 	/// Background process did delete some entries in database that match `affectedDomain`.
 	/// Update or remove entries from your `dataSource`.

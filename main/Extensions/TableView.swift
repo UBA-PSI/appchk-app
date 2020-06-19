@@ -19,17 +19,25 @@ extension UITableView {
 	/// Returns `true` if this `tableView` is the currently frontmost visible
 	var isFrontmost: Bool { window?.isKeyWindow ?? false }
 	
+	/// If frontmost window, perform `insertRows()`; If not, perform `reloadData()`
+	func safeInsertRow(_ index: Int, with animation: UITableView.RowAnimation = .automatic) {
+		isFrontmost ? insertRows(at: [IndexPath(row: index)], with: animation) : reloadData()
+	}
+	/// If frontmost window, perform `insertRows()`; If not, perform `reloadData()`
+	func safeInsertRows(_ range: Range<Int>, with animation: UITableView.RowAnimation = .automatic) {
+		isFrontmost ? insertRows(at: range.map {IndexPath(row: $0)}, with: animation) : reloadData()
+	}
 	/// If frontmost window, perform `deleteRows()`; If not, perform `reloadData()`
 	func safeDeleteRows(_ indices: [Int], with animation: UITableView.RowAnimation = .automatic) {
 		isFrontmost ? deleteRows(at: indices.map {IndexPath(row: $0)}, with: animation) : reloadData()
 	}
+	/// If frontmost window, perform `deleteRows()`; If not, perform `reloadData()`
+	func safeDeleteRows(_ range: Range<Int>, with animation: UITableView.RowAnimation = .automatic) {
+		isFrontmost ? deleteRows(at: range.map {IndexPath(row: $0)}, with: animation) : reloadData()
+	}
 	/// If frontmost window, perform `reloadRows()`; If not, perform `reloadData()`
 	func safeReloadRow(_ index: Int, with animation: UITableView.RowAnimation = .automatic) {
 		isFrontmost ? reloadRows(at: [IndexPath(row: index)], with: animation) : reloadData()
-	}
-	/// If frontmost window, perform `insertRows()`; If not, perform `reloadData()`
-	func safeInsertRow(_ index: Int, with animation: UITableView.RowAnimation = .automatic) {
-		isFrontmost ? insertRows(at: [IndexPath(row: index)], with: animation) : reloadData()
 	}
 	/// If frontmost window, perform `moveRow()`; If not, perform `reloadData()`
 	func safeMoveRow(_ from: Int, to: Int) {
