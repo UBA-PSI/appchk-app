@@ -123,16 +123,6 @@ class SyncUpdate {
 		range = rows(tsMin, tsMax)
 	}
 	
-	/// Helper to always set range in case there was none before. Otherwise only update `start`.
-	private func safeSetRange(start r: SQLiteRowRange) {
-		range == nil ? (range = r) : (range!.start = r.start)
-	}
-	
-	/// Helper to always set range in case there was none before. Otherwise only update `end`.
-	private func safeSetRange(end r: SQLiteRowRange) {
-		range == nil ? (range = r) : (range!.end = r.end)
-	}
-	
 	/// Update internal `tsEarliest`, then post `NotifySyncInsert` or `NotifySyncRemove` notification with row ids.
 	/// - Warning: Always call from a background thread!
 	private func set(newEarliest: Timestamp?) {
@@ -179,7 +169,8 @@ class SyncUpdate {
 	
 	/// - Warning: Always call from a background thread!
 	private func notify(insert r: SQLiteRowRange, front: Bool) {
-		front ? safeSetRange(start: r) : safeSetRange(end: r)
+		if range == nil { range = r }
+		else { front ? (range!.start = r.start) : (range!.end = r.end) }
 		notifyObservers { $0.syncUpdate(self, insert: r) }
 	}
 	
