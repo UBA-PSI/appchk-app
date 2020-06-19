@@ -35,7 +35,7 @@ class SQLiteDatabase {
 	}
 	
 	deinit {
-		sqlite3_close(dbPointer)
+		sqlite3_close_v2(dbPointer)
 	}
 	
 	static func destroyDatabase(path: String = URL.internalDB().relativePath) {
@@ -47,15 +47,10 @@ class SQLiteDatabase {
 	
 	static func open(path: String = URL.internalDB().relativePath) throws -> SQLiteDatabase {
 		var db: OpaquePointer?
-		//sqlite3_open_v2(path, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_SHAREDCACHE, nil)
-		if sqlite3_open(path, &db) == SQLITE_OK {
+		if sqlite3_open_v2(path, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, nil) == SQLITE_OK {
 			return SQLiteDatabase(dbPointer: db)
 		} else {
-			defer {
-				if db != nil {
-					sqlite3_close(db)
-				}
-			}
+			defer { sqlite3_close_v2(db) }
 			if let errorPointer = sqlite3_errmsg(db) {
 				let message = String(cString: errorPointer)
 				throw SQLiteError.OpenDatabase(message: message)
@@ -222,6 +217,7 @@ extension SQLiteDatabase {
 	func prepare(sql: String) throws -> OpaquePointer {
 		var pStmt: OpaquePointer?
 		guard sqlite3_prepare_v2(dbPointer, sql, -1, &pStmt, nil) == SQLITE_OK, let S = pStmt else {
+			sqlite3_finalize(pStmt)
 			throw SQLiteError.Prepare(message: errorMessage)
 		}
 		return S

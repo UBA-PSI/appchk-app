@@ -2,25 +2,22 @@ import Foundation
 
 #if IOS_SIMULATOR
 
-private let db = AppDB!
-private var pStmt: OpaquePointer?
-
 class TestDataSource {
 	
 	static func load() {
 		QLog.Debug("SQLite path: \(URL.internalDB())")
 		
+		let db = AppDB!
 		let deleted = db.dnsLogsDelete("test.com", strict: false)
 		try? db.run(sql: "DELETE FROM cache;")
 		QLog.Debug("Deleting \(deleted) rows matching 'test.com' (+ \(db.numberOfChanges) in cache)")
 		
 		QLog.Debug("Writing 33 test logs")
-		pStmt = try! db.logWritePrepare()
-		try? db.logWrite(pStmt, "keeptest.com", blocked: false)
-		for _ in 1...4 { try? db.logWrite(pStmt, "test.com", blocked: false) }
-		for _ in 1...7 { try? db.logWrite(pStmt, "i.test.com", blocked: false) }
-		for i in 1...8 { try? db.logWrite(pStmt, "b.test.com", blocked: i>5) }
-		for i in 1...13 { try? db.logWrite(pStmt, "bi.test.com", blocked: i%2==0) }
+		try? db.logWrite("keeptest.com", blocked: false)
+		for _ in 1...4 { try? db.logWrite("test.com", blocked: false) }
+		for _ in 1...7 { try? db.logWrite("i.test.com", blocked: false) }
+		for i in 1...8 { try? db.logWrite("b.test.com", blocked: i>5) }
+		for i in 1...13 { try? db.logWrite("bi.test.com", blocked: i%2==0) }
 		
 		db.dnsLogsPersist()
 		
@@ -36,7 +33,7 @@ class TestDataSource {
 	
 	@objc static func insertRandom() {
 		//QLog.Debug("Inserting 1 periodic log entry")
-		try? db.logWrite(pStmt, "\(arc4random() % 5).count.test.com", blocked: true)
+		try? AppDB?.logWrite("\(arc4random() % 5).count.test.com", blocked: true)
 	}
 }
 #endif

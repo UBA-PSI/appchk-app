@@ -1,7 +1,5 @@
 import NetworkExtension
 
-fileprivate var db: SQLiteDatabase!
-fileprivate var pStmt: OpaquePointer!
 fileprivate var filterDomains: [String]!
 fileprivate var filterOptions: [(block: Bool, ignore: Bool)]!
 
@@ -9,7 +7,7 @@ fileprivate var filterOptions: [(block: Bool, ignore: Bool)]!
 // MARK: Backward DNS Binary Tree Lookup
 
 fileprivate func reloadDomainFilter() {
-	let tmp = db.loadFilters()?.map({
+	let tmp = AppDB?.loadFilters()?.map({
 		(String($0.reversed()), $1)
 	}).sorted(by: { $0.0 < $1.0 }) ?? []
 	filterDomains = tmp.map { $0.0 }
@@ -35,6 +33,18 @@ fileprivate func filterIndex(for domain: String) -> Int {
 	return -1
 }
 
+private let queue = DispatchQueue.init(label: "PSIGlassDNSQueue", qos: .userInteractive, target: .main)
+
+private func logAsync(_ domain: String, blocked: Bool) {
+	queue.async {
+		do {
+			try AppDB?.logWrite(domain, blocked: blocked)
+		} catch {
+			DDLogWarn("Couldn't write: \(error)")
+		}
+	}
+}
+
 
 // MARK: ObserverFactory
 
@@ -52,11 +62,11 @@ class LDObserverFactory: ObserverFactory {
 				let i = filterIndex(for: session.host)
 				if i >= 0 {
 					let (block, ignore) = filterOptions[i]
-					if !ignore { try? db.logWrite(pStmt, session.host, blocked: block) }
+					if !ignore { logAsync(session.host, blocked: block) }
 					if block { socket.forceDisconnect() }
 				} else {
 					// TODO: disable filter during recordings
-					try? db.logWrite(pStmt, session.host)
+					logAsync(session.host, blocked: false)
 				}
 			default:
 				break
@@ -76,9 +86,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	
 	override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
 		do {
-			db = try SQLiteDatabase.open()
-			db.initCommonScheme()
-			pStmt = try db.logWritePrepare()
+			try SQLiteDatabase.open().initCommonScheme()
 		} catch {
 			completionHandler(error)
 			return
@@ -135,9 +143,6 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 		ObserverFactory.currentFactory = nil
 		proxyServer.stop()
 		proxyServer = nil
-		db.prepared(finalize: pStmt)
-		pStmt = nil
-		db = nil
 		filterDomains = nil
 		filterOptions = nil
 		completionHandler()

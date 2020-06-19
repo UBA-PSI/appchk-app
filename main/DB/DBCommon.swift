@@ -25,16 +25,22 @@ extension CreateTable {
 }
 
 extension SQLiteDatabase {
+//	/// `INSERT INTO cache (dns, opt) VALUES (?, ?);`
+//	func logWritePrepare() throws -> OpaquePointer {
+//		try prepare(sql: "INSERT INTO cache (dns, opt) VALUES (?, ?);")
+//	}
+//	/// `prep` must exist and be initialized with `logWritePrepare()`
+//	func logWrite(_ pStmt: OpaquePointer!, _ domain: String, blocked: Bool = false) throws {
+//		guard let prep = pStmt else {
+//			return
+//		}
+//		try prepared(run: prep, bind: [BindText(domain), BindInt32(blocked ? 1 : 0)])
+//	}
 	/// `INSERT INTO cache (dns, opt) VALUES (?, ?);`
-	func logWritePrepare() throws -> OpaquePointer {
-		try prepare(sql: "INSERT INTO cache (dns, opt) VALUES (?, ?);")
-	}
-	/// `prep` must exist and be initialized with `logWritePrepare()`
-	func logWrite(_ pStmt: OpaquePointer!, _ domain: String, blocked: Bool = false) throws {
-		guard let prep = pStmt else {
-			return
-		}
-		try prepared(run: prep, bind: [BindText(domain), BindInt32(blocked ? 1 : 0)])
+	func logWrite(_ domain: String, blocked: Bool = false) throws {
+		try self.run(sql: "INSERT INTO cache (dns, opt) VALUES (?, ?);",
+			bind: [BindText(domain), BindInt32(blocked ? 1 : 0)])
+		{ try ifStep($0, SQLITE_DONE) }
 	}
 }
 
@@ -52,10 +58,10 @@ extension CreateTable {
 }
 
 struct FilterOptions: OptionSet {
-    let rawValue: Int32
+	let rawValue: Int32
 	static let none    = FilterOptions([])
-    static let blocked = FilterOptions(rawValue: 1 << 0)
-    static let ignored = FilterOptions(rawValue: 1 << 1)
+	static let blocked = FilterOptions(rawValue: 1 << 0)
+	static let ignored = FilterOptions(rawValue: 1 << 1)
 	static let any     = FilterOptions(rawValue: 0b11)
 }
 
