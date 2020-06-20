@@ -237,8 +237,9 @@ extension GroupedDomainDataSource {
 			// This is due to `addFilter` calling `reloadData()` before `search.show()` can animate it.
 			cellAnimationsGroup()
 			var searchTerm = ""
+			let len = parent?.count ?? 0
 			pipeline.addFilter("search") {
-				$0.domain.lowercased().contains(searchTerm)
+				$0.domain.prefix($0.domain.count - len).lowercased().contains(searchTerm)
 			}
 			search.show(onHide: { [unowned self] in
 				self.pipeline.removeFilter(withId: "search")
