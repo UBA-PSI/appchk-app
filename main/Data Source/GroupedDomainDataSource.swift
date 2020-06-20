@@ -101,7 +101,9 @@ extension GroupedDomainDataSource {
 		for (i, val) in logs.enumerated() {
 			logs[i].options = DomainFilter[val.domain]
 		}
-		pipeline.reset(dataSource: logs)
+		DispatchQueue.main.sync {
+			pipeline.reset(dataSource: logs)
+		}
 	}
 	
 	func syncUpdate(_: SyncUpdate, insert rows: SQLiteRowRange, affects: SyncUpdateEnd) {
@@ -109,17 +111,19 @@ extension GroupedDomainDataSource {
 			assertionFailure("NotifySyncInsert fired with empty range")
 			return
 		}
-		cellAnimationsGroup(if: latest.count > 14)
-		for x in latest {
-			if let (i, obj) = pipeline.dataSourceGet(where: { $0.domain == x.domain }) {
-				pipeline.update(obj + x, at: i)
-			} else {
-				var y = x
-				y.options = DomainFilter[x.domain]
-				pipeline.addNew(y)
+		DispatchQueue.main.sync {
+			cellAnimationsGroup(if: latest.count > 14)
+			for x in latest {
+				if let (i, obj) = pipeline.dataSourceGet(where: { $0.domain == x.domain }) {
+					pipeline.update(obj + x, at: i)
+				} else {
+					var y = x
+					y.options = DomainFilter[x.domain]
+					pipeline.addNew(y)
+				}
 			}
+			cellAnimationsCommit()
 		}
-		cellAnimationsCommit()
 	}
 	
 	func syncUpdate(_ sender: SyncUpdate, remove rows: SQLiteRowRange, affects: SyncUpdateEnd) {
@@ -132,21 +136,23 @@ extension GroupedDomainDataSource {
 			outdated.count > 0 else {
 				return
 		}
-		cellAnimationsGroup(if: outdated.count > 14)
-		var listOfDeletes: [Int] = []
-		for x in outdated {
-			guard let (i, obj) = pipeline.dataSourceGet(where: { $0.domain == x.domain }) else {
-				assertionFailure("Try to remove non-existent element")
-				continue // should never happen
+		DispatchQueue.main.sync {
+			cellAnimationsGroup(if: outdated.count > 14)
+			var listOfDeletes: [Int] = []
+			for x in outdated {
+				guard let (i, obj) = pipeline.dataSourceGet(where: { $0.domain == x.domain }) else {
+					assertionFailure("Try to remove non-existent element")
+					continue // should never happen
+				}
+				if obj.total > x.total {
+					pipeline.update(obj - x, at: i)
+				} else {
+					listOfDeletes.append(i)
+				}
 			}
-			if obj.total > x.total {
-				pipeline.update(obj - x, at: i)
-			} else {
-				listOfDeletes.append(i)
-			}
+			pipeline.remove(indices: listOfDeletes.sorted())
+			cellAnimationsCommit()
 		}
-		pipeline.remove(indices: listOfDeletes.sorted())
-		cellAnimationsCommit()
 	}
 	
 	func syncUpdate(_ sender: SyncUpdate, partialRemove affectedFQDN: String) {
@@ -155,17 +161,19 @@ extension GroupedDomainDataSource {
 			return // does not affect current table
 		}
 		let affected = (parent == nil ? affectedParent : affectedFQDN)
-		guard let old = pipeline.dataSourceGet(where: { $0.domain == affected }) else {
-			// can only happen if delete sheet is open while background sync removed the element
-			return
-		}
-		if var updated = AppDB?.dnsLogsGrouped(range: sender.rows, matchingDomain: affected,
-											   parentDomain: parent)?.first {
-			assert(old.object.domain == updated.domain)
-			updated.options = DomainFilter[updated.domain]
-			pipeline.update(updated, at: old.index)
-		} else {
-			pipeline.remove(indices: [old.index])
+		let updated = AppDB?.dnsLogsGrouped(range: sender.rows, matchingDomain: affected, parentDomain: parent)?.first
+		DispatchQueue.main.sync {
+			guard let old = pipeline.dataSourceGet(where: { $0.domain == affected }) else {
+				// can only happen if delete sheet is open while background sync removed the element
+				return
+			}
+			if var updated = updated {
+				assert(old.object.domain == updated.domain)
+				updated.options = DomainFilter[updated.domain]
+				pipeline.update(updated, at: old.index)
+			} else {
+				pipeline.remove(indices: [old.index])
+			}
 		}
 	}
 }
@@ -180,9 +188,8 @@ extension GroupedDomainDataSource {
 extension GroupedDomainDataSource {
 	/// Sets `pipeline.delegate = nil` to disable individual cell animations (update, insert, delete & move).
 	private func cellAnimationsGroup(if condition: Bool = true) {
-		if condition { pipeline.delegate = nil }
-		if pipeline.delegate != nil {
-			onMain { if !$0.isFrontmost { self.pipeline.delegate = nil } }
+		if condition || delegate?.tableView.isFrontmost == false {
+			pipeline.delegate = nil
 		}
 	}
 	/// No-Op if cell animations are enabled already.
@@ -190,33 +197,26 @@ extension GroupedDomainDataSource {
 	private func cellAnimationsCommit() {
 		if pipeline.delegate == nil {
 			pipeline.delegate = self
-			onMain { $0.reloadData() }
-		}
-	}
-	/// Perform table view manipulations on main thread.
-	/// Set `delegate = nil` to disable `tableView` animations.
-	private func onMain(_ closure: (UITableView) -> Void) {
-		if Thread.isMainThread {
-			if let tv = delegate?.tableView { closure(tv) }
-		} else {
-			DispatchQueue.main.sync {
-				if let tv = delegate?.tableView { closure(tv) }
-			}
+			delegate?.tableView.reloadData()
 		}
 	}
 	
 	// TODO: Collect animations and post them in a single animations block.
-	//       This will require enormous work to translate then into a final set.
-	func filterPipelineDidReset() { onMain { $0.reloadData() } }
-	func filterPipeline(delete rows: [Int]) { onMain { $0.safeDeleteRows(rows) } }
-	func filterPipeline(insert row: Int) { onMain { $0.safeInsertRow(row, with: .left) } }
-	func filterPipeline(update row: Int) { onMain { $0.safeReloadRow(row) } }
+	//       This will require enormous work to translate them into a final set.
+	func filterPipelineDidReset() { delegate?.tableView.reloadData() }
+	func filterPipeline(delete rows: [Int]) { delegate?.tableView.safeDeleteRows(rows) }
+	func filterPipeline(insert row: Int) { delegate?.tableView.safeInsertRow(row, with: .left) }
+	func filterPipeline(update row: Int) {
+		guard let tv = delegate?.tableView else { return }
+		if !tv.isEditing { tv.safeReloadRow(row) }
+		else if tv.isFrontmost == true {
+			delegate?.groupedDomainDataSource(needsUpdate: row)
+		}
+	}
 	func filterPipeline(move oldRow: Int, to newRow: Int) {
-		onMain {
-			$0.safeMoveRow(oldRow, to: newRow)
-			if $0.isFrontmost { // onMain ensures delegate is set
-				delegate!.groupedDomainDataSource(needsUpdate: newRow)
-			}
+		delegate?.tableView.safeMoveRow(oldRow, to: newRow)
+		if delegate?.tableView.isFrontmost == true {
+			delegate?.groupedDomainDataSource(needsUpdate: newRow)
 		}
 	}
 }

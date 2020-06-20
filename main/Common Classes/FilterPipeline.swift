@@ -1,24 +1,15 @@
 import UIKit
 
 protocol FilterPipelineDelegate: AnyObject {
-	/// Call `reloadData()` on main thread.
-	/// - Warning: This function may be called from a background thread.
+	/// Call `reloadData()`
 	func filterPipelineDidReset()
-	
-	/// Call `safeDeleteRows()` on main thread.
-	/// - Warning: This function may be called from a background thread.
+	/// Call `safeDeleteRows()`
 	func filterPipeline(delete rows: [Int])
-	
-	/// Call `safeInsertRow()` on main thread.
-	/// - Warning: This function may be called from a background thread.
+	/// Call `safeInsertRow()`
 	func filterPipeline(insert row: Int)
-	
-	/// Call `safeReloadRow()` on main thread.
-	/// - Warning: This function may be called from a background thread.
+	/// Call `safeReloadRow()`
 	func filterPipeline(update row: Int)
-	
-	/// Call `safeMoveRow()` on main thread.
-	/// - Warning: This function may be called from a background thread.
+	/// Call `safeMoveRow()`
 	func filterPipeline(move oldRow: Int, to newRow: Int)
 }
 
