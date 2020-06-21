@@ -12,6 +12,7 @@ class TVCHosts: UITableViewController, GroupedDomainDataSourceDelegate {
 		super.viewDidLoad()
 		isSpecial = (parentDomain.first == "#") // aka: "# IP address"
 		source.delegate = self // init lazy var, ready for tableView data source
+		source.search.fuseWith(tableViewController: self)
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -20,11 +21,6 @@ class TVCHosts: UITableViewController, GroupedDomainDataSourceDelegate {
 		}
 	}
 	
-	// MARK: - Search
-	
-	@IBAction private func searchButtonTapped(_ sender: UIBarButtonItem) {
-		source.toggleSearch()
-	}
 	
 	// MARK: - Table View Data Source
 	

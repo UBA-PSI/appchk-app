@@ -326,11 +326,6 @@
                             </barButtonItem>
                             <barButtonItem enabled="NO" title="7 days" id="wxA-bC-1pN"/>
                         </leftBarButtonItems>
-                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="FHY-of-M4V">
-                            <connections>
-                                <action selector="searchButtonTapped:" destination="pdd-aM-sKl" id="HH1-6f-mcM"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="filterButton" destination="FZm-Ld-jJE" id="g96-Q2-cYX"/>
@@ -383,13 +378,7 @@
                             <outlet property="delegate" destination="WcC-nb-Vf5" id="sBd-BW-Wg6"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Hosts" prompt="com.app.Example" id="TvD-8U-F05">
-                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="cBL-dP-ig1">
-                            <connections>
-                                <action selector="searchButtonTapped:" destination="WcC-nb-Vf5" id="QFl-Me-lc6"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Hosts" prompt="com.app.Example" id="TvD-8U-F05"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gdi-Xi-JUL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

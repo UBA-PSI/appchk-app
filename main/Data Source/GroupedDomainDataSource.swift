@@ -15,9 +15,12 @@ class GroupedDomainDataSource: FilterPipelineDelegate, SyncUpdateDelegate {
 	
 	let parent: String?
 	private let pipeline = FilterPipeline<GroupedDomain>()
-	private lazy var search = SearchBarManager(on: delegate!.tableView)
 	private var currentOrder: DateFilterOrderBy = .Date
 	private var orderAsc = false
+	
+	private(set) lazy var search = SearchBarManager { [unowned self] _ in
+		self.pipeline.reloadFilter(withId: "search")
+	}
 	
 	/// Will init `sync.allowPullToRefresh()` on `tableView.refreshControl` as well.
 	weak var delegate: GroupedDomainDataSourceDelegate? {
@@ -28,6 +31,13 @@ class GroupedDomainDataSource: FilterPipelineDelegate, SyncUpdateDelegate {
 	/// - Note: Will call `tableview.reloadData()`
 	init(withParent: String?) {
 		parent = withParent
+		let len: Int
+		if let p = withParent, p.first != "#" { len = p.count } else { len = 0 }
+		
+		pipeline.addFilter("search") { [unowned self] in
+			!self.search.isActive ||
+				$0.domain.prefix($0.domain.count - len).lowercased().contains(self.search.term)
+		}
 		pipeline.delegate = self
 		resetSortingOrder(force: true)
 		
@@ -217,37 +227,6 @@ extension GroupedDomainDataSource {
 		delegate?.tableView.safeMoveRow(oldRow, to: newRow)
 		if delegate?.tableView.isFrontmost == true {
 			delegate?.groupedDomainDataSource(needsUpdate: newRow)
-		}
-	}
-}
-
-
-// ################################
-// #
-// #    MARK: - Search
-// #
-// ################################
-
-extension GroupedDomainDataSource {
-	// TODO: permanently show search bar as table header?
-	func toggleSearch() {
-		if search.active { search.hide() }
-		else {
-			// Begin animations group. Otherwise the `scrollToTop` animation is broken.
-			// This is due to `addFilter` calling `reloadData()` before `search.show()` can animate it.
-			cellAnimationsGroup()
-			var searchTerm = ""
-			let len = parent?.count ?? 0
-			pipeline.addFilter("search") {
-				$0.domain.prefix($0.domain.count - len).lowercased().contains(searchTerm)
-			}
-			search.show(onHide: { [unowned self] in
-				self.pipeline.removeFilter(withId: "search")
-			}, onChange: { [unowned self] in
-				searchTerm = $0.lowercased()
-				self.pipeline.reloadFilter(withId: "search")
-			})
-			cellAnimationsCommit()
 		}
 	}
 }

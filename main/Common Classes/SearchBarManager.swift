@@ -1,107 +1,48 @@
 import UIKit
 
-/// Assigns a `UISearchBar` to the `tableHeaderView` property of a `UITableView`.
-class SearchBarManager: NSObject, UISearchBarDelegate {
+class SearchBarManager: NSObject, UISearchResultsUpdating {
 	
-	private weak var tableView: UITableView?
-	private let searchBar: UISearchBar
-	private(set) var active: Bool = false
-	
-	typealias OnChange = (String) -> Void
-	typealias OnHide = () -> Void
-	private var onChangeCallback: OnChange!
-	private var onHideCallback: OnHide?
+	private(set) var isActive = false
+	private(set) var term = ""
+	private lazy var controller: UISearchController = {
+		let x = UISearchController(searchResultsController: nil)
+		x.searchBar.autocapitalizationType = .none
+		x.searchBar.autocorrectionType = .no
+		x.obscuresBackgroundDuringPresentation = false
+		x.searchResultsUpdater = self
+		return x
+	}()
+	private weak var tvc: UITableViewController?
+	private let onChangeCallback: (String) -> Void
 	
 	/// Prepare `UISearchBar` for user input
-	/// - Parameter tableView: The `tableHeaderView` property is used for display.
-	required init(on tableView: UITableView) {
-		self.tableView = tableView
-		searchBar = UISearchBar(frame: CGRect.init(x: 0, y: 0, width: 20, height: 10))
-		searchBar.sizeToFit() // sets height, width is set by table view header
-		searchBar.showsCancelButton = true
-		searchBar.autocapitalizationType = .none
-		searchBar.autocorrectionType = .no
+	/// - Parameter onChange: Code that will be executed every time the user changes the text (with 0.2s delay)
+	required init(onChange: @escaping (String) -> Void) {
+		onChangeCallback = onChange
 		super.init()
-		searchBar.delegate = self
 		
 		UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self])
 			.defaultTextAttributes = [.font: UIFont.preferredFont(forTextStyle: .body)]
 	}
 	
-	
-	// MARK: Show & Hide
-	
-	/// Insert search bar in `tableView` and call `reloadData()` after animation.
-	/// - Parameters:
-	///   - onHide: Code that will be executed once the search bar is dismissed.
-	///   - onChange: Code that will be executed every time the user changes the text (with 0.2s delay)
-	func show(onHide: OnHide? = nil, onChange: @escaping OnChange) {
-		onChangeCallback = onChange
-		onHideCallback = onHide
-		setSearchBarHidden(false)
-	}
-	
-	/// Remove search bar from `tableView` and call `reloadData()` after animation.
-	func hide() {
-		setSearchBarHidden(true)
-	}
-	
-	/// Internal method to insert or remove the `UISearchBar` as `tableHeaderView`
-	private func setSearchBarHidden(_ flag: Bool) {
-		active = !flag
-		searchBar.text = nil
-		guard let tv = tableView else {
-			hideAndRelease()
-			return
-		}
-		let h = searchBar.frame.height
-		if active {
-			tv.scrollToTop(animated: false)
-			tv.tableHeaderView = searchBar
-			tv.frame.origin.y -= h
-			tv.frame.size.height += h
-			UIView.animate(withDuration: 0.3, animations: {
-				tv.frame.origin.y += h
-				tv.frame.size.height -= h
-			}) { _ in
-				tv.reloadData()
-				self.searchBar.becomeFirstResponder()
-			}
+	/// Assigns the `UISearchBar` to `tableView.tableHeaderView` (iOS 9) or `navigationItem.searchController` (iOS 11).
+	func fuseWith(tableViewController: UITableViewController?) {
+		guard tvc !== tableViewController else { return }
+		tvc = tableViewController
+		
+		if #available(iOS 11.0, *) {
+			tvc?.navigationItem.searchController = controller
 		} else {
-			searchBar.resignFirstResponder()
-			UIView.animate(withDuration: 0.3, animations: {
-				tv.frame.origin.y -= h
-				tv.frame.size.height += h
-				tv.scrollToTop(animated: false) // false to let UIView animate the change
-			}) { _ in
-				tv.frame.origin.y += h
-				tv.frame.size.height -= h
-				self.hideAndRelease()
-				tv.reloadData()
-			}
+			controller.loadViewIfNeeded() // Fix: "Attempting to load the view of a view controller while it is deallocating"
+			tvc?.definesPresentationContext = true // make search bar disappear if user changes scene (eg. select cell)
+			//tvc?.tableView.backgroundView = UIView() // iOS 11+ bug: bright white background in dark mode
+			tvc?.tableView.tableHeaderView = controller.searchBar
+			tvc?.tableView.setContentOffset(.init(x: 0, y: controller.searchBar.frame.height), animated: false)
 		}
 	}
 	
-	/// Call `OnHide` closure (if set), then release strong closure references.
-	private func hideAndRelease() {
-		tableView?.tableHeaderView = nil
-		onHideCallback?()
-		onHideCallback = nil
-		onChangeCallback = nil
-	}
-	
-	
-	// MARK: Search Bar Delegate
-	
-	func searchBarCancelButtonClicked(_ _: UISearchBar) {
-		setSearchBarHidden(true)
-	}
-	
-	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-		searchBar.resignFirstResponder()
-	}
-	
-	func searchBar(_ _: UISearchBar, textDidChange _: String) {
+	/// Search callback
+	func updateSearchResults(for controller: UISearchController) {
 		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(performSearch), object: nil)
 		perform(#selector(performSearch), with: nil, afterDelay: 0.2)
 	}
@@ -109,7 +50,8 @@ class SearchBarManager: NSObject, UISearchBarDelegate {
 	/// Internal callback function for delayed text evaluation.
 	/// This way we can avoid unnecessary searches while user is typing.
 	@objc private func performSearch() {
-		onChangeCallback(searchBar.text ?? "")
-		tableView?.reloadData()
+		term = controller.searchBar.text?.lowercased() ?? ""
+		isActive = term.count > 0
+		onChangeCallback(term)
 	}
 }

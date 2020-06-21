@@ -14,17 +14,15 @@ class TVCDomains: UITableViewController, UISearchBarDelegate, GroupedDomainDataS
 		source.delegate = self // init lazy var, ready for tableView data source
 	}
 	
+	override func viewDidAppear(_ animated: Bool) {
+		// iOS 11+ fix: fuse after `didAppear` to hide on app launch
+		source.search.fuseWith(tableViewController: self)
+	}
+	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if let index = tableView.indexPathForSelectedRow?.row {
 			(segue.destination as? TVCHosts)?.parentDomain = source[index].domain
 		}
-	}
-	
-	
-	// MARK: - Search
-	
-	@IBAction private func searchButtonTapped(_ sender: UIBarButtonItem) {
-		source.toggleSearch()
 	}
 	
 	
