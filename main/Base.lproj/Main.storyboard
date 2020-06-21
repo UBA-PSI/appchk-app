@@ -160,7 +160,7 @@
                                                     <constraint firstItem="FVD-kB-91w" firstAttribute="trailing" secondItem="9As-hA-MKt" secondAttribute="trailing" id="a6D-1D-HvF"/>
                                                     <constraint firstItem="wAd-o2-PHY" firstAttribute="leading" secondItem="fzL-94-c0l" secondAttribute="leading" id="bM0-gJ-IW5"/>
                                                     <constraint firstItem="wAd-o2-PHY" firstAttribute="centerY" secondItem="FVD-kB-91w" secondAttribute="centerY" id="g7F-LP-PQQ"/>
-                                                    <constraint firstItem="IG3-Wc-UI4" firstAttribute="bottom" secondItem="9As-hA-MKt" secondAttribute="bottom" id="jlK-69-8hl"/>
+                                                    <constraint firstItem="IG3-Wc-UI4" firstAttribute="bottom" secondItem="9As-hA-MKt" secondAttribute="bottom" priority="750" id="jlK-69-8hl"/>
                                                     <constraint firstItem="IG3-Wc-UI4" firstAttribute="leading" secondItem="fzL-94-c0l" secondAttribute="trailing" constant="8" symbolic="YES" id="pcE-Gv-oj7"/>
                                                     <constraint firstItem="wAd-o2-PHY" firstAttribute="leading" secondItem="9As-hA-MKt" secondAttribute="leading" id="zgR-pJ-vFs"/>
                                                 </constraints>
