@@ -43,19 +43,6 @@ extension UITableView {
 	func safeMoveRow(_ from: Int, to: Int) {
 		isFrontmost ? moveRow(at: IndexPath(row: from), to: IndexPath(row: to)) : reloadData()
 	}
-	
-	/// Scroll table to top (while respecting `contentInset`)
-	func scrollToTop(animated: Bool) {
-		let top: CGFloat
-		if #available(iOS 11.0, *) {
-			top = adjustedContentInset.top
-		} else {
-			top = contentInset.top
-		}
-		if contentOffset.y != -top {
-			setContentOffset(.init(x: 0, y: -top), animated: animated)
-		}
-	}
 }
 
 
@@ -73,10 +60,13 @@ protocol EditableRows {
 }
 
 extension EditableRows where Self: UITableViewDelegate {
-	func getRowActionsIOS9(_ index: IndexPath) -> [UITableViewRowAction]? {
+	func getRowActionsIOS9(_ index: IndexPath, _ table: UITableView) -> [UITableViewRowAction]? {
 		let userInfo = editableRowUserInfo(index)
 		return editableRowActions(index).compactMap { a,t in
-			let x = UITableViewRowAction(style: a == .delete ? .destructive : .normal, title: t) { self.editableRowCallback($1, a, userInfo) }
+			let x = UITableViewRowAction(style: a == .delete ? .destructive : .normal, title: t) {
+				self.editableRowCallback($1, a, userInfo)
+				table.isEditing = false
+			}
 			if let color = editableRowActionColor(index, a) {
 				x.backgroundColor = color
 			}

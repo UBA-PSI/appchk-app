@@ -288,7 +288,7 @@ extension GroupedDomainEditRow  {
 // MARK: Extensions
 extension TVCDomains : GroupedDomainEditRow {
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-		getRowActionsIOS9(indexPath)
+		getRowActionsIOS9(indexPath, tableView)
 	}
 	@available(iOS 11.0, *)
 	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -298,7 +298,7 @@ extension TVCDomains : GroupedDomainEditRow {
 
 extension TVCHosts : GroupedDomainEditRow {
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-		getRowActionsIOS9(indexPath)
+		getRowActionsIOS9(indexPath, tableView)
 	}
 	@available(iOS 11.0, *)
 	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
