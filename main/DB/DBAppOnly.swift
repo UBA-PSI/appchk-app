@@ -172,15 +172,11 @@ extension SQLiteDatabase {
 	/// Group DNS logs by domain, count occurences and number of blocked requests.
 	/// - Parameters:
 	///   - range: Whenever possible set range to improve SQL lookup times. `start <= rowid <= end `
-	///   - ts1: Restrict result set `ts >= ?`
-	///   - ts2: Restrict result set `ts < ?`
 	///   - matchingDomain: Restrict `(fqdn|domain) = ?`. Which column is used is determined by `parentDomain`.
 	///   - parentDomain: If `nil` returns `domain` column. Else returns `fqdn` column with restriction on `domain == parentDomain`.
 	/// - Returns: List of grouped domains with no particular sorting order.
-	func dnsLogsGrouped(range: SQLiteRowRange = (0,0), since ts1: Timestamp = 0, upto ts2: Timestamp = 0,
-						matchingDomain: String? = nil, parentDomain: String? = nil) -> [GroupedDomain]?
-	{
-		let Where = WhereClauseBuilder().and(in: range).and(min: ts1, max: ts2)
+	func dnsLogsGrouped(range: SQLiteRowRange, matchingDomain: String? = nil, parentDomain: String? = nil) -> [GroupedDomain]? {
+		let Where = WhereClauseBuilder().and(in: range)
 		let col: String // fqdn or domain
 		if let parent = parentDomain { // is subdomain
 			col = "fqdn"
@@ -206,12 +202,77 @@ extension SQLiteDatabase {
 	///   - fqdn: Exact match for domain name `fqdn = ?`
 	///   - range: Whenever possible set range to improve SQL lookup times. `start <= rowid <= end `
 	/// - Returns: List sorted by reverse timestamp order (newest first)
-	func timesForDomain(_ fqdn: String, range: SQLiteRowRange = (0,0)) -> [GroupedTsOccurrence]? {
+	func timesForDomain(_ fqdn: String, range: SQLiteRowRange) -> [GroupedTsOccurrence]? {
 		let Where = WhereClauseBuilder().and(in: range).and("fqdn = ?", BindText(fqdn))
 		return try? run(sql: "SELECT ts, COUNT(ts), COUNT(opt) FROM heap \(Where) GROUP BY ts ORDER BY ts DESC;", bind: Where.bindings) {
 			allRows($0) {
 				(sqlite3_column_int64($0, 0), sqlite3_column_int($0, 1), sqlite3_column_int($0, 2))
 			}
+		}
+	}
+}
+
+
+
+// MARK: - Context Analysis
+
+typealias ContextAnalysisResult = (domain: String, count: Int32, avg: Double, rank: Double)
+
+extension SQLiteDatabase {
+	/// Number of times how often given `fqdn` appears in the database
+	func dnsLogsCount(fqdn: String) -> Int? {
+		try? run(sql: "SELECT COUNT(*) FROM heap WHERE fqdn = ?;", bind: [BindText(fqdn)]) {
+			try ifStep($0, SQLITE_ROW)
+			return Int(sqlite3_column_int($0, 0))
+		}
+	}
+	
+	/// Get sorted, unique list of `ts` with given `fqdn`.
+	func dnsLogsUniqTs(_ fqdn: String) -> [Timestamp]? {
+		try? run(sql: "SELECT DISTINCT ts FROM heap WHERE fqdn = ? ORDER BY ts;", bind: [BindText(fqdn)]) {
+			allRows($0) { sqlite3_column_int64($0, 0) }
+		}
+	}
+	
+	/// Find other domains occurring regularly at roughly the same time as `fqdn`.
+	/// - Warning: `times` list must be **sorted** by time in ascending order.
+	/// - Parameters:
+	///   - times: List of `ts` from `dnsLogsUniqTs(fqdn)`
+	///   - dt: Search for `ts - dt <= X <= ts + dt`
+	///   - fqdn: Rows matching this domain will be excluded from the result set.
+	/// - Returns: List of tuples ordered by rank (ASC).
+	func contextAnalysis(coOccurrence times: [Timestamp], plusMinus dt: Timestamp, exclude fqdn: String) -> [ContextAnalysisResult]? {
+		guard times.count > 0 else { return nil }
+		createFunction("fnDist") {
+			let x = $0.first as! Timestamp
+			let i = times.binTreeIndex(of: x, compare: <)!
+			let dist: Timestamp
+			switch i {
+			case 0:           dist = times[0] - x
+			case times.count: dist = x - times[i-1]
+			default:          dist = min(times[i] - x, x - times[i-1])
+			}
+			return dist
+		}
+		// `avg ^ 2`:   prefer results that are closer to `times`
+		// `_ / count`: prefer results with higher occurrence count
+		// `time / 2`:  Weighting factor (low: prefer close, high: prefer count)
+		//              `time` helpful esp. for smaller spans. `avg^2` will raise faster anyway.
+		let fnRank = "(avg * avg + (? / 2.0) + 1) / count" // +1 in case time == 0 -> avg^2 == 0
+		// improve query by excluding entries that are: before the first, or after the last ts
+		let low = times.first! - dt
+		let high = times.last! + dt
+		return try? run(sql: """
+			SELECT fqdn, count, avg, (\(fnRank)) rank FROM (
+				SELECT fqdn, COUNT(*) count, AVG(dist) avg FROM (
+					SELECT fqdn, fnDist(ts) dist FROM heap
+					WHERE ts BETWEEN ? AND ? AND fqdn != ? AND dist <= ?
+				) GROUP BY fqdn
+			) ORDER BY rank ASC LIMIT 99;
+			""", bind: [BindInt64(dt), BindInt64(low), BindInt64(high), BindText(fqdn), BindInt64(dt)]) {
+				allRows($0) {
+					(readText($0, 0) ?? "", sqlite3_column_int($0, 1), sqlite3_column_double($0, 2), sqlite3_column_double($0, 3))
+				}
 		}
 	}
 }

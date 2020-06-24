@@ -1,7 +1,9 @@
 import UIKit
 
-class TVCHostDetails: UITableViewController, SyncUpdateDelegate {
+class TVCHostDetails: UITableViewController, SyncUpdateDelegate, UITabBarDelegate {
 
+	@IBOutlet private var actionsBar: UITabBar!
+	
 	public var fullDomain: String!
 	private var dataSource: [GroupedTsOccurrence] = []
 	// TODO: respect date reverse sort order
@@ -12,7 +14,9 @@ class TVCHostDetails: UITableViewController, SyncUpdateDelegate {
 		sync.addObserver(self) // calls `syncUpdate(reset:)`
 		if #available(iOS 10.0, *) {
 			sync.allowPullToRefresh(onTVC: self, forObserver: self)
+			actionsBar.unselectedItemTintColor = .systemBlue
 		}
+		UIDevice.orientationDidChangeNotification.observe(call: #selector(didChangeOrientation), on: self)
 	}
 	
 	// MARK: - Table View Data Source
@@ -26,6 +30,30 @@ class TVCHostDetails: UITableViewController, SyncUpdateDelegate {
 		cell.detailTextLabel?.text = (src.total > 1) ? "\(src.total)x" : nil
 		cell.imageView?.image = (src.blocked > 0 ? UIImage(named: "shield-x") : nil)
 		return cell
+	}
+}
+
+// #########################
+// #
+// #    MARK: - Tab Bar
+// #
+// #########################
+
+extension TVCHostDetails {
+	
+	@objc private func didChangeOrientation(_ sender: Notification) {
+		tableView.sizeHeaderToFit() // otherwise TabBar won't compress
+	}
+	
+	func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+		tabBar.selectedItem = nil
+		performSegue(withIdentifier: "segueAnalysisCoOccurrence", sender: nil)
+	}
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.identifier == "segueAnalysisCoOccurrence" {
+			(segue.destination as? VCCoOccurrence)?.fqdn = fullDomain
+		}
 	}
 }
 

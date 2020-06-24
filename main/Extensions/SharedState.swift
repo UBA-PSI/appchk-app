@@ -25,6 +25,12 @@ enum Pref {
 			set { Pref.Bool(newValue, "didShowTutorialRecordings") }
 		}
 	}
+	enum ContextAnalyis {
+		static var CoOccurrenceTime: Int? {
+			get { Pref.Any("contextAnalyisCoOccurrenceTime") as? Int }
+			set { Pref.Any(newValue, "contextAnalyisCoOccurrenceTime") }
+		}
+	}
 	enum DateFilter {
 		static var Kind: DateFilterKind {
 			get { DateFilterKind(rawValue: Pref.Int("dateFilterType"))! }

@@ -43,6 +43,14 @@ extension UITableView {
 	func safeMoveRow(_ from: Int, to: Int) {
 		isFrontmost ? moveRow(at: IndexPath(row: from), to: IndexPath(row: to)) : reloadData()
 	}
+	
+	/// Recalculate and apply new `tableHeaderView` height.
+	func sizeHeaderToFit() {
+		if let head = tableHeaderView {
+			head.frame.size.height = head.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+			tableHeaderView = head
+		}
+	}
 }
 
 

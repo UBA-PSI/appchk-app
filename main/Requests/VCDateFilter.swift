@@ -118,34 +118,3 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 		}
 	}
 }
-
-
-// MARK: White Triangle Popup Arrow
-
-@IBDesignable
-class PopupTriangle: UIView {
-	@IBInspectable var rotation: CGFloat = 0
-	@IBInspectable var color: UIColor = .black
-	
-	override func draw(_ rect: CGRect) {
-		guard let c = UIGraphicsGetCurrentContext() else { return }
-		let w = rect.width, h = rect.height
-		switch rotation {
-		case 90: // right
-			c.lineFromTo(x1: 0, y1: 0, x2: w, y2: h/2)
-			c.addLine(to: CGPoint(x: 0, y: h))
-		case 180: // bottom
-			c.lineFromTo(x1: w, y1: 0, x2: w/2, y2: h)
-			c.addLine(to: CGPoint(x: 0, y: 0))
-		case 270: // left
-			c.lineFromTo(x1: w, y1: h, x2: 0, y2: h/2)
-			c.addLine(to: CGPoint(x: w, y: 0))
-		default: // top
-			c.lineFromTo(x1: 0, y1: h, x2: w/2, y2: 0)
-			c.addLine(to: CGPoint(x: w, y: h))
-		}
-		c.closePath()
-		c.setFillColor(color.cgColor)
-		c.fillPath()
-	}
-}

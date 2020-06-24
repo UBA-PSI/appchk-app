@@ -138,6 +138,7 @@ extension SQLiteDatabase {
             if let r = result as? Blob        { sqlite3_result_blob(context, r.bytes, Int32(r.bytes.count), nil) }
 			else if let r = result as? Double { sqlite3_result_double(context, r) }
 			else if let r = result as? Int64  { sqlite3_result_int64(context, r) }
+			else if let r = result as? Bool   { sqlite3_result_int(context, r ? 1 : 0) }
 			else if let r = result as? String { sqlite3_result_text(context, r, Int32(r.count), SQLITE_TRANSIENT) }
 			else if result == nil             { sqlite3_result_null(context) }
 			else                              { fatalError("unsupported result type: \(String(describing: result))") }
