@@ -180,7 +180,7 @@ extension SQLiteDatabase {
 		try? run(sql: "SELECT fqdn, ts FROM heap WHERE ts >= ? AND ts <= ? ORDER BY ts DESC, rowid ASC;",
 				 bind: [BindInt64(ts1), BindInt64(ts2)]) {
 			allRows($0) {
-				(readText($0, 0) ?? "", col_ts($0, 1))
+				(col_text($0, 0) ?? "", col_ts($0, 1))
 			}
 		}
 	}
@@ -205,7 +205,7 @@ extension SQLiteDatabase {
 		}
 		return try? run(sql: "SELECT \(col), COUNT(*), COUNT(opt), MAX(ts) FROM heap \(Where) GROUP BY \(col);", bind: Where.bindings) {
 			allRows($0) {
-				GroupedDomain(domain: readText($0, 0) ?? "",
+				GroupedDomain(domain: col_text($0, 0) ?? "",
 							  total: sqlite3_column_int($0, 1),
 							  blocked: sqlite3_column_int($0, 2),
 							  lastModified: col_ts($0, 3))
@@ -287,7 +287,7 @@ extension SQLiteDatabase {
 			) ORDER BY rank ASC LIMIT 99;
 			""", bind: [BindInt64(dt), BindInt64(low), BindInt64(high), BindText(fqdn), BindInt64(dt)]) {
 				allRows($0) {
-					(readText($0, 0) ?? "", sqlite3_column_int($0, 1), sqlite3_column_double($0, 2), sqlite3_column_double($0, 3))
+					(col_text($0, 0) ?? "", sqlite3_column_int($0, 1), sqlite3_column_double($0, 2), sqlite3_column_double($0, 3))
 				}
 		}
 	}
@@ -368,9 +368,9 @@ extension SQLiteDatabase {
 		return Recording(id: sqlite3_column_int64(stmt, 0),
 						 start: col_ts(stmt, 1),
 						 stop: end == 0 ? nil : end,
-						 appId: readText(stmt, 3),
-						 title: readText(stmt, 4),
-						 notes: readText(stmt, 5))
+						 appId: col_text(stmt, 3),
+						 title: col_text(stmt, 4),
+						 notes: col_text(stmt, 5))
 	}
 	
 	/// `WHERE stop IS NULL`
@@ -448,7 +448,7 @@ extension SQLiteDatabase {
 	func recordingLogsGetGrouped(_ r: Recording) -> [RecordLog]? {
 		try? run(sql: "SELECT domain, COUNT() FROM recLog WHERE rid = ? GROUP BY domain;",
 				 bind: [BindInt64(r.id)]) {
-			allRows($0) { (readText($0, 0) ?? "", sqlite3_column_int($0, 1)) }
+			allRows($0) { (col_text($0, 0) ?? "", sqlite3_column_int($0, 1)) }
 		}
 	}
 }

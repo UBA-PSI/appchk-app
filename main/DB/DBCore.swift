@@ -193,7 +193,7 @@ extension SQLiteDatabase {
 	var numberOfChanges: Int32 { get { sqlite3_changes(dbPointer) } }
 	var lastInsertedRow: SQLiteRowID { get { sqlite3_last_insert_rowid(dbPointer) } }
 	
-	func readText(_ stmt: OpaquePointer, _ col: Int32) -> String? {
+	func col_text(_ stmt: OpaquePointer, _ col: Int32) -> String? {
 		let val = sqlite3_column_text(stmt, col)
 		return (val != nil ? String(cString: val!) : nil)
 	}

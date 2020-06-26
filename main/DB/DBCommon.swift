@@ -71,7 +71,7 @@ extension SQLiteDatabase {
 		return try? run(sql: "SELECT domain, opt FROM filter \(rv>0 ? "WHERE opt & ?" : "");",
 						bind: rv>0 ? [BindInt32(rv)] : []) {
 			allRowsKeyed($0) {
-				(key: readText($0, 0) ?? "",
+				(key: col_text($0, 0) ?? "",
 				 value: FilterOptions(rawValue: sqlite3_column_int($0, 1)))
 			}
 		}
