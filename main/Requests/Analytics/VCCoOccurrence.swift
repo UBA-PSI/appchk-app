@@ -33,15 +33,24 @@ class VCCoOccurrence: UIViewController, UITableViewDataSource {
 		let domain = fqdn!
 		let time = Timestamp(selectedTime)
 		DispatchQueue.global().async { [weak self] in
-			guard let db = AppDB, let times = db.dnsLogsUniqTs(domain), times.count > 0 else {
-				return // should never happen, or what did you tap then?
+			let temp: [ContextAnalysisResult]
+			let total: Int32
+			if let db = AppDB,
+				let times = db.dnsLogsUniqTs(domain), times.count > 0,
+				let result = db.contextAnalysis(coOccurrence: times, plusMinus: time, exclude: domain),
+				result.count > 0
+			{
+				temp = result
+				var sum: Int32 = 0
+				for x in result { sum += x.count }
+				total = sum // if statement guarantees >= 1
+			} else {
+				temp = []
+				total = 1
 			}
-			guard let result = db.contextAnalysis(coOccurrence: times, plusMinus: time, exclude: domain) else {
-				return
-			}
-			self?.dataSource = result
-			self?.logMaxCount = log(CGFloat(result.reduce(0) { max($0, $1.count)  }))
 			DispatchQueue.main.sync { [weak self] in
+				self?.dataSource = temp
+				self?.logMaxCount = log(CGFloat(total + 1))
 				self?.tableView.reloadData()
 			}
 		}
@@ -72,7 +81,9 @@ class VCCoOccurrence: UIViewController, UITableViewDataSource {
 		cell.count.text = "\(src.count)"
 		cell.avgdiff.text = String(format: "%.2fs", src.avg)
 		
-		cell.countMeter.percent = (log(CGFloat(src.count)) / logMaxCount)
+		// log percentage of total co-occurrence count + 1 (min: log(2))
+		cell.countMeter.percent = (log(CGFloat(src.count + 1)) / logMaxCount)
+		// log percentage of selected time window (0s/5s/15s/30s) + 1 (min: log(2))
 		cell.avgdiffMeter.percent = 1 - (log(CGFloat(src.avg + 1)) / logTimeDelta)
 		return cell
 	}
@@ -85,4 +96,74 @@ class CoOccurrenceCell: UITableViewCell {
 	@IBOutlet var avgdiff: TagLabel!
 	@IBOutlet var countMeter: MeterBar!
 	@IBOutlet var avgdiffMeter: MeterBar!
+}
+
+
+// MARK: - Tutorial Screen
+
+extension VCCoOccurrence {
+	
+	@IBAction func showInfoScreen() {
+		let sampleCell: UIImage = {
+			let cell = tableView.dequeueReusableCell(withIdentifier: "CoOccurrenceCell") as! CoOccurrenceCell
+			cell.title.text = "example.org"
+			cell.rank.text = "9."
+			cell.count.text = "14"
+			cell.avgdiff.text = String(format: "%.2fs", 0.71)
+			cell.countMeter.percent = 0.35
+			cell.avgdiffMeter.percent = 0.95
+			
+			// Bug: Sometimes dequeue will return a "broken" hidden cell.
+			//      It can't be set visible and thus can't render an image.
+			//      Funnily `cell.contentView` can rendered.
+			let theView = cell.isHidden ? cell.contentView : cell
+			
+			// resize view to fit into tutorial sheet
+			let minWidth = TutorialSheet.verticalWidth - 10 //-> 2 * textContainer.lineFragmentPadding
+			theView.frame.size = theView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+			theView.frame.size.width = min(theView.frame.size.width, minWidth)
+			// set width in two steps because first call may change layoutMargins
+			theView.frame.size.width += theView.layoutMargins.left + theView.layoutMargins.right
+			// FIXME: In case `hidden == false`, backgroundColor will be black in Dark mode.
+			theView.backgroundColor = tableView.backgroundColor
+			return theView.asImage(insets: theView.layoutMargins)
+		}()
+		
+		let x = TutorialSheet()
+		x.addSheet().addArrangedSubview(QuickUI.text(attributed: NSMutableAttributedString()
+			.h3("Co-Occurrence")
+			.normal(" allows you to find requests that happen often at the same time as the selected domain. " +
+					"Hence it will give you a hint what Apps might be involved in the activity." +
+					"\n\nHow do you interpret these results? Lets look at an example:\n\n")
+			.centered(.image(sampleCell))
+			.normal("\n\nThe domain ").bold("example.org").normal(" had ").bold("14").normal(" requests with an ").italic("average time divergence").normal(" of ").bold("0.71 seconds").normal(". " +
+					"That is, these 14 domain calls happend, on average, less then a second before or after the original request of the selected domain." +
+					"\n\nClose temporal proximity and high occurrence counts are both indicators for domain correlation. " +
+					"Results are sorted by a ranking index (").bold("9.").normal(") which strikes a balance between the two. " +
+					"Preferring entries with higher counts as well as low time divergence.")
+			.italic("\n\nTip: ").normal("As a visual guide you can look for the colored bar beside each value. " +
+					"The larger the bar, the greater the correlation.")
+		))
+		
+		x.present(in: self)
+	}
+}
+
+fileprivate extension UIView {
+	func asImage(insets: UIEdgeInsets = .zero) -> UIImage {
+		if #available(iOS 10.0, *) {
+			let renderer = UIGraphicsImageRenderer(bounds: bounds.inset(by: insets))
+			return renderer.image { rendererContext in
+				layer.render(in: rendererContext.cgContext)
+			}
+		} else {
+			UIGraphicsBeginImageContext(bounds.inset(by: insets).size)
+			let ctx = UIGraphicsGetCurrentContext()!
+			ctx.translateBy(x: -insets.left, y: -insets.top)
+			layer.render(in:ctx)
+			let image = UIGraphicsGetImageFromCurrentImageContext()
+			UIGraphicsEndImageContext()
+			return UIImage(cgImage: image!.cgImage!)
+		}
+	}
 }

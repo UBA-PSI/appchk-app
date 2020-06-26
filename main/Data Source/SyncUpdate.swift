@@ -159,7 +159,6 @@ class SyncUpdate {
 					notify(insert: r, .Latest)
 				}
 			} else if range != nil {
-				// FIXME: removing latest entries will invalidate "last changed" label
 				if let r = rows(from(new!), to(old), scope: range!) {
 					notify(remove: r, .Latest)
 				}

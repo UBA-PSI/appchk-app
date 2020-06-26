@@ -36,6 +36,8 @@ struct QuickUI {
 	static func text(attributed: NSAttributedString, frame: CGRect = CGRect.zero) -> UITextView {
 		let txt = self.text("", frame: frame)
 		txt.attributedText = attributed
+		txt.textContainerInset = .zero
+		//txt.textContainer.lineFragmentPadding = 0 // remove left right padding
 		return txt
 	}
 }

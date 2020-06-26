@@ -13,6 +13,14 @@ extension UIFont {
 	}
 }
 
+extension NSAttributedString {
+	static func image(_ img: UIImage) -> Self {
+		let att = NSTextAttachment()
+		att.image = img
+		return self.init(attachment: att)
+	}
+}
+
 extension NSMutableAttributedString {
 	static private var def: UIFont = .preferredFont(forTextStyle: .body)
 	
@@ -29,6 +37,15 @@ extension NSMutableAttributedString {
 			.font : withFont,
 			.foregroundColor : UIColor.sysFg
 		]))
+		return self
+	}
+	
+	func centered(_ content: NSAttributedString) -> Self {
+		let before = length
+		append(content)
+		let ps = NSMutableParagraphStyle()
+		ps.alignment = .center
+		addAttribute(.paragraphStyle, value: ps, range: .init(location: before, length: content.length))
 		return self
 	}
 }

@@ -1,10 +1,17 @@
 import UIKit
 
-fileprivate let margin: CGFloat = 20
-fileprivate let cornerRadius: CGFloat = 15
-fileprivate let uniRect = CGRect(x: 0, y: 0, width: 500, height: 500)
+fileprivate var margin: CGFloat { 20 }
+fileprivate var sheetInset: CGFloat { cornerRadius/2 }
+fileprivate var cornerRadius: CGFloat { 15 }
+fileprivate var uniRect: CGRect { CGRect(x: 0, y: 0, width: 500, height: 500) }
 
 class TutorialSheet: UIViewController, UIScrollViewDelegate {
+	
+	/// Maximum displayable width of a Tutorial Sheet in portrait mode.
+	public static var verticalWidth: CGFloat {
+		let s = UIScreen.main.bounds.size
+		return min(s.width, s.height) - 2 * (margin + sheetInset)
+	}
 	
 	public var buttonTitleNext: String = "Next"
 	public var buttonTitleDone: String = "Close"
@@ -105,7 +112,8 @@ class TutorialSheet: UIViewController, UIScrollViewDelegate {
 		}
 		let prev = content.subviews.last
 		content.addSubview(x)
-		x.anchor([.top, .width, .height], to: pageScroll)
+		x.anchor([.top, .height], to: pageScroll)
+		x.widthAnchor =&= sheetBg.widthAnchor - 2 * sheetInset
 		x.leadingAnchor =&= (prev==nil ? content.leadingAnchor : prev!.trailingAnchor)
 		lastAnchor?.isActive = false
 		lastAnchor = (x.trailingAnchor =&= pageScroll.trailingAnchor)
@@ -125,7 +133,7 @@ class TutorialSheet: UIViewController, UIScrollViewDelegate {
 		
 		pager.anchor([.top, .left, .right], to: sheetBg)
 		pageScroll.topAnchor =&= pager.bottomAnchor
-		pageScroll.anchor([.left, .right, .top, .bottom], to: sheetBg, margin: cornerRadius/2) | .defaultHigh
+		pageScroll.anchor([.left, .right, .top, .bottom], to: sheetBg, margin: sheetInset) | .defaultHigh
 		button.topAnchor =&= pageScroll.bottomAnchor
 		button.anchor([.bottom, .centerX], to: sheetBg)
 //		button.bottomAnchor =&= sheetBg.bottomAnchor - 30
