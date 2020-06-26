@@ -25,7 +25,7 @@ class TutorialSheet: UIViewController, UIScrollViewDelegate {
 	private let sheetBg: UIView = {
 		let x = UIView(frame: uniRect)
 		x.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		x.backgroundColor = .sysBg
+		x.backgroundColor = .sysBackground
 		x.layer.cornerRadius = cornerRadius
 		x.layer.shadowColor = UIColor.black.cgColor
 		x.layer.shadowRadius = 10
@@ -37,8 +37,8 @@ class TutorialSheet: UIViewController, UIScrollViewDelegate {
 	private let pager: UIPageControl = {
 		let x = UIPageControl(frame: uniRect)
 		x.frame.size.height = x.size(forNumberOfPages: 1).height
-		x.currentPageIndicatorTintColor = UIColor.sysFg.withAlphaComponent(0.5)
-		x.pageIndicatorTintColor = UIColor.sysFg.withAlphaComponent(0.25)
+		x.currentPageIndicatorTintColor = UIColor.sysLabel.withAlphaComponent(0.5)
+		x.pageIndicatorTintColor = UIColor.sysLabel.withAlphaComponent(0.25)
 		x.numberOfPages = 0
 		x.hidesForSinglePage = true
 		x.addTarget(self, action: #selector(pagerDidChange), for: .valueChanged)

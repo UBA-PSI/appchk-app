@@ -32,7 +32,7 @@ class DatePickerAlert: UIViewController {
 		let now = QuickUI.button("Now", target: self, action: #selector(didTapNow))
 		save.titleLabel?.font = save.titleLabel?.font.bold()
 		now.titleLabel?.font = now.titleLabel?.font.bold()
-		now.setTitleColor(.sysFg, for: .normal)
+		now.setTitleColor(.sysLabel, for: .normal)
 		//cancel.setTitleColor(.systemRed, for: .normal)
 		
 		let buttons = UIStackView(arrangedSubviews: [cancel, now, save])
@@ -42,7 +42,7 @@ class DatePickerAlert: UIViewController {
 		let bg = UIView(frame: picker.frame)
 		bg.frame.size.height += buttons.frame.height + 15
 		bg.frame.origin.y = UIScreen.main.bounds.height - bg.frame.height - 15
-		bg.backgroundColor = .sysBg
+		bg.backgroundColor = .sysBackground
 		bg.addSubview(picker)
 		bg.addSubview(buttons)
 		

@@ -16,6 +16,7 @@
 		541AC5DD2399498A00A769D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5DB2399498A00A769D7 /* Main.storyboard */; };
 		541AC5DF2399498B00A769D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5DE2399498B00A769D7 /* Assets.xcassets */; };
 		541AC5E22399498B00A769D7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5E02399498B00A769D7 /* LaunchScreen.storyboard */; };
+		541DCA6124A6B0F6005F1A4B /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541DCA6024A6B0F6005F1A4B /* Color.swift */; };
 		541FC47624A12D01009154D8 /* IBViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541FC47524A12D01009154D8 /* IBViews.swift */; };
 		541FC47824A1453F009154D8 /* VCCoOccurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541FC47724A1453F009154D8 /* VCCoOccurrence.swift */; };
 		541FC9872497D81C00962623 /* TheGreatDestroyer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541FC9862497D81C00962623 /* TheGreatDestroyer.swift */; };
@@ -179,6 +180,7 @@
 		541AC5DE2399498B00A769D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		541AC5E12399498B00A769D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		541AC5E32399498B00A769D7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		541DCA6024A6B0F6005F1A4B /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		541FC47524A12D01009154D8 /* IBViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IBViews.swift; sourceTree = "<group>"; };
 		541FC47724A1453F009154D8 /* VCCoOccurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCCoOccurrence.swift; sourceTree = "<group>"; };
 		541FC9862497D81C00962623 /* TheGreatDestroyer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheGreatDestroyer.swift; sourceTree = "<group>"; };
@@ -465,6 +467,7 @@
 				54B345A8241BBA0B004C53CC /* Generic.swift */,
 				54B345A5241BB982004C53CC /* Notifications.swift */,
 				54B345AA241BBA5B004C53CC /* AlertSheet.swift */,
+				541DCA6024A6B0F6005F1A4B /* Color.swift */,
 				54448A2F248647D900771C96 /* Time.swift */,
 				54751E502423955000168273 /* URL.swift */,
 				54EFA4E72491A16A0022D618 /* Font.swift */,
@@ -850,6 +853,7 @@
 				541FC47824A1453F009154D8 /* VCCoOccurrence.swift in Sources */,
 				54B345AB241BBA5B004C53CC /* AlertSheet.swift in Sources */,
 				544C95262407B1C700AB89D0 /* SharedState.swift in Sources */,
+				541DCA6124A6B0F6005F1A4B /* Color.swift in Sources */,
 				545DDDCF243E6267003B6544 /* TutorialSheet.swift in Sources */,
 				54B345A9241BBA0B004C53CC /* Generic.swift in Sources */,
 				54B34596240F0513004C53CC /* TableView.swift in Sources */,

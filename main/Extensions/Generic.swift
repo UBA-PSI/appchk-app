@@ -16,23 +16,6 @@ struct QLog {
 	}
 }
 
-// See: https://noahgilmore.com/blog/dark-mode-uicolor-compatibility/
-extension UIColor {
-	/// `.systemBackground ?? .white`
-	static var sysBg: UIColor { if #available(iOS 13.0, *) { return .systemBackground } else { return .white } }
-	/// `.label ?? .black`
-	static var sysFg: UIColor { if #available(iOS 13.0, *) { return .label } else { return .black } }
-	/// `.link ?? .systemBlue`
-	static var sysLink: UIColor { if #available(iOS 13.0, *) { return .link } else { return .systemBlue } }
-	
-	/// `.label ?? .black`
-	static var sysLabel: UIColor { if #available(iOS 13.0, *) { return .label } else { return .black } }
-	/// `.secondaryLabel ?? rgba(60, 60, 67, 0.6)`
-	static var sysLabel2: UIColor { if #available(iOS 13.0, *) { return .secondaryLabel } else { return .init(red: 60/255.0, green: 60/255.0, blue: 67/255.0, alpha: 0.6) } }
-	/// `.tertiaryLabel ?? rgba(60, 60, 67, 0.3)`
-	static var sysLabel3: UIColor { if #available(iOS 13.0, *) { return .tertiaryLabel } else { return .init(red: 60/255.0, green: 60/255.0, blue: 67/255.0, alpha: 0.3) } }
-}
-
 extension UIEdgeInsets {
 	init(all: CGFloat = 0, top: CGFloat? = nil, left: CGFloat? = nil, bottom: CGFloat? = nil, right: CGFloat? = nil) {
 		self.init(top: top ?? all, left: left ?? all, bottom: bottom ?? all, right: right ?? all)

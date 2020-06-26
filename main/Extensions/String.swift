@@ -1,14 +1,5 @@
 import UIKit
 
-extension NSMutableAttributedString {
-	func withColor(_ color: UIColor, fromBack: Int) -> Self {
-		let l = length - fromBack
-		let r = (l < 0) ? NSMakeRange(0, length) : NSMakeRange(l, fromBack)
-		self.addAttribute(.foregroundColor, value: color, range: r)
-		return self
-	}
-}
-
 extension String {
 	/// Check if string is equal to `domain` or ends with `.domain`
 	func isSubdomain(of domain: String) -> Bool { self == domain || self.hasSuffix("." + domain) }

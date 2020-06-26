@@ -35,7 +35,7 @@ extension NSMutableAttributedString {
 	private func append(_ str: String, withFont: UIFont) -> Self {
 		append(NSAttributedString(string: str, attributes: [
 			.font : withFont,
-			.foregroundColor : UIColor.sysFg
+			.foregroundColor : UIColor.sysLabel
 		]))
 		return self
 	}

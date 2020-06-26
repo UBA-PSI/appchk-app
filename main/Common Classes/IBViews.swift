@@ -66,7 +66,7 @@ class TagLabel: UILabel {
 @IBDesignable
 class MeterBar: UIView {
 	@IBInspectable var percent: CGFloat = 0 { didSet { setNeedsDisplay() } }
-	@IBInspectable var barColor: UIColor = .sysFg
+	@IBInspectable var barColor: UIColor = .sysLink
 	@IBInspectable var horizontal: Bool = false
 	
 	private var normPercent: CGFloat { 1 - max(0, min(percent, 1)) }
