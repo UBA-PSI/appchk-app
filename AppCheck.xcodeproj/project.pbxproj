@@ -27,6 +27,7 @@
 		54448A30248647D900771C96 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54448A2F248647D900771C96 /* Time.swift */; };
 		54448A3224899A4000771C96 /* SearchBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54448A3124899A4000771C96 /* SearchBarManager.swift */; };
 		544C95262407B1C700AB89D0 /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544C95252407B1C700AB89D0 /* SharedState.swift */; };
+		544F912024A67EC5001D4B00 /* TVCOccurrenceContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544F911F24A67EC5001D4B00 /* TVCOccurrenceContext.swift */; };
 		5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */; };
 		545DDDCF243E6267003B6544 /* TutorialSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545DDDCE243E6267003B6544 /* TutorialSheet.swift */; };
 		545DDDD124436983003B6544 /* QuickUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545DDDD024436983003B6544 /* QuickUI.swift */; };
@@ -191,6 +192,7 @@
 		54448A2F248647D900771C96 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		54448A3124899A4000771C96 /* SearchBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarManager.swift; sourceTree = "<group>"; };
 		544C95252407B1C700AB89D0 /* SharedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedState.swift; sourceTree = "<group>"; };
+		544F911F24A67EC5001D4B00 /* TVCOccurrenceContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCOccurrenceContext.swift; sourceTree = "<group>"; };
 		5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCRecordingDetails.swift; sourceTree = "<group>"; };
 		545DDDCE243E6267003B6544 /* TutorialSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialSheet.swift; sourceTree = "<group>"; };
 		545DDDD024436983003B6544 /* QuickUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickUI.swift; sourceTree = "<group>"; };
@@ -403,6 +405,7 @@
 			isa = PBXGroup;
 			children = (
 				541FC47724A1453F009154D8 /* VCCoOccurrence.swift */,
+				544F911F24A67EC5001D4B00 /* TVCOccurrenceContext.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -852,6 +855,7 @@
 				54B34596240F0513004C53CC /* TableView.swift in Sources */,
 				540E6780242D2CF100871BBE /* VCRecordings.swift in Sources */,
 				54953E3323DC752E0054345C /* DBCore.swift in Sources */,
+				544F912024A67EC5001D4B00 /* TVCOccurrenceContext.swift in Sources */,
 				54448A30248647D900771C96 /* Time.swift in Sources */,
 				54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */,
 				54751E512423955100168273 /* URL.swift in Sources */,

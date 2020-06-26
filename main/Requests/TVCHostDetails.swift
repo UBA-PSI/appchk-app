@@ -14,14 +14,14 @@ class TVCHostDetails: UITableViewController, SyncUpdateDelegate, UITabBarDelegat
 		sync.addObserver(self) // calls `syncUpdate(reset:)`
 		if #available(iOS 10.0, *) {
 			sync.allowPullToRefresh(onTVC: self, forObserver: self)
-			actionsBar.unselectedItemTintColor = .systemBlue
+			actionsBar.unselectedItemTintColor = .sysLink
 		}
 		UIDevice.orientationDidChangeNotification.observe(call: #selector(didChangeOrientation), on: self)
 	}
 	
 	// MARK: - Table View Data Source
 	
-	override func tableView(_ _: UITableView, numberOfRowsInSection _: Int) -> Int { dataSource.count }
+	override func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int { dataSource.count }
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "HostDetailCell")!
@@ -53,6 +53,10 @@ extension TVCHostDetails {
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.identifier == "segueAnalysisCoOccurrence" {
 			(segue.destination as? VCCoOccurrence)?.fqdn = fullDomain
+		} else if let index = tableView.indexPathForSelectedRow?.row {
+			let tvc = segue.destination as? TVCOccurrenceContext
+			tvc?.domain = fullDomain
+			tvc?.ts = dataSource[index].ts
 		}
 	}
 }

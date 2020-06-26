@@ -54,6 +54,10 @@ extension SQLiteDatabase {
 			return sqlite3_column_int64($0, 0)
 		}) ?? 0
 	}
+	
+	fileprivate func col_ts(_ stmt: OpaquePointer, _ col: Int32) -> Timestamp {
+		sqlite3_column_int64(stmt, col)
+	}
 }
 
 class WhereClauseBuilder: CustomStringConvertible {
@@ -105,6 +109,7 @@ struct GroupedDomain {
 	var options: FilterOptions? = nil
 }
 typealias GroupedTsOccurrence = (ts: Timestamp, total: Int32, blocked: Int32)
+typealias DomainTsPair = (domain: String, ts: Timestamp)
 
 extension SQLiteDatabase {
 	
@@ -150,7 +155,7 @@ extension SQLiteDatabase {
 	func dnsLogsMinDate() -> Timestamp? {
 		try? run(sql:"SELECT min(ts) FROM heap") {
 			try ifStep($0, SQLITE_ROW)
-			return sqlite3_column_int64($0, 0)
+			return col_ts($0, 0)
 		}
 	}
 	
@@ -164,8 +169,19 @@ extension SQLiteDatabase {
 		let Where = WhereClauseBuilder().and(in: range).and(min: ts1, max: ts2)
 		return try? run(sql:"SELECT min(rowid), max(rowid) FROM heap \(Where);", bind: Where.bindings) {
 			try ifStep($0, SQLITE_ROW)
-			let max = sqlite3_column_int64($0, 1)
-			return (max == 0) ? nil : (sqlite3_column_int64($0, 0), max)
+			let max = col_ts($0, 1)
+			return (max == 0) ? nil : (col_ts($0, 0), max)
+		}
+	}
+	
+	/// Get raw logs between two timestamps. `ts >= ? AND ts <= ?`
+	/// - Returns: List sorted by `ts` in descending order (newest entries first).
+	func dnsLogs(between ts1: Timestamp, and ts2: Timestamp) -> [DomainTsPair]? {
+		try? run(sql: "SELECT fqdn, ts FROM heap WHERE ts >= ? AND ts <= ? ORDER BY ts DESC, rowid ASC;",
+				 bind: [BindInt64(ts1), BindInt64(ts2)]) {
+			allRows($0) {
+				(readText($0, 0) ?? "", col_ts($0, 1))
+			}
 		}
 	}
 	
@@ -192,7 +208,7 @@ extension SQLiteDatabase {
 				GroupedDomain(domain: readText($0, 0) ?? "",
 							  total: sqlite3_column_int($0, 1),
 							  blocked: sqlite3_column_int($0, 2),
-							  lastModified: sqlite3_column_int64($0, 3))
+							  lastModified: col_ts($0, 3))
 			}
 		}
 	}
@@ -206,7 +222,7 @@ extension SQLiteDatabase {
 		let Where = WhereClauseBuilder().and(in: range).and("fqdn = ?", BindText(fqdn))
 		return try? run(sql: "SELECT ts, COUNT(ts), COUNT(opt) FROM heap \(Where) GROUP BY ts ORDER BY ts DESC;", bind: Where.bindings) {
 			allRows($0) {
-				(sqlite3_column_int64($0, 0), sqlite3_column_int($0, 1), sqlite3_column_int($0, 2))
+				(col_ts($0, 0), sqlite3_column_int($0, 1), sqlite3_column_int($0, 2))
 			}
 		}
 	}
@@ -230,7 +246,7 @@ extension SQLiteDatabase {
 	/// Get sorted, unique list of `ts` with given `fqdn`.
 	func dnsLogsUniqTs(_ fqdn: String) -> [Timestamp]? {
 		try? run(sql: "SELECT DISTINCT ts FROM heap WHERE fqdn = ? ORDER BY ts;", bind: [BindText(fqdn)]) {
-			allRows($0) { sqlite3_column_int64($0, 0) }
+			allRows($0) { col_ts($0, 0) }
 		}
 	}
 	
@@ -348,9 +364,9 @@ extension SQLiteDatabase {
 	// MARK: read
 	
 	private func readRecording(_ stmt: OpaquePointer) -> Recording {
-		let end = sqlite3_column_int64(stmt, 2)
+		let end = col_ts(stmt, 2)
 		return Recording(id: sqlite3_column_int64(stmt, 0),
-						 start: sqlite3_column_int64(stmt, 1),
+						 start: col_ts(stmt, 1),
 						 stop: end == 0 ? nil : end,
 						 appId: readText(stmt, 3),
 						 title: readText(stmt, 4),
