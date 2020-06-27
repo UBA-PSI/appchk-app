@@ -2,6 +2,17 @@ import UIKit
 
 struct QuickUI {
 	
+	static func label(_ str: String, frame: CGRect = CGRect.zero, align: NSTextAlignment = .natural, style: UIFont.TextStyle = .body) -> UILabel {
+		let x = UILabel(frame: frame)
+		x.text = str
+		x.textAlignment = align
+		x.font = .preferredFont(forTextStyle: style)
+		if #available(iOS 10.0, *) {
+			x.adjustsFontForContentSizeCategory = true
+		}
+		return x
+	}
+	
 	static func button(_ title: String, target: Any? = nil, action: Selector? = nil) -> UIButton {
 		let x = UIButton(type: .roundedRect)
 		x.setTitle(title, for: .normal)

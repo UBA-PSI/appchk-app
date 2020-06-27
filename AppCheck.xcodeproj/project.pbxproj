@@ -41,6 +41,7 @@
 		54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6023E0D69A0054345C /* TVCHosts.swift */; };
 		54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6E23E44CD00054345C /* TVCHostDetails.swift */; };
 		54953E7123E473F10054345C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 54953E7023E473F10054345C /* Settings.bundle */; };
+		549ECD9D24A7AD550097571C /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549ECD9C24A7AD550097571C /* CustomAlert.swift */; };
 		54B34594240E6343004C53CC /* TVCFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B34593240E6343004C53CC /* TVCFilter.swift */; };
 		54B34596240F0513004C53CC /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B34595240F0513004C53CC /* TableView.swift */; };
 		54B345A6241BB982004C53CC /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345A5241BB982004C53CC /* Notifications.swift */; };
@@ -140,7 +141,6 @@
 		54E540F4247D3F2600F7C34A /* TestDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E540F3247D3F2600F7C34A /* TestDataSource.swift */; };
 		54E540F8247DB90F00F7C34A /* RecordingsDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E540F7247DB90F00F7C34A /* RecordingsDB.swift */; };
 		54E540FA2482414800F7C34A /* SyncUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E540F92482414800F7C34A /* SyncUpdate.swift */; };
-		54EFA4E6248EEE240022D618 /* DatePickerAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EFA4E5248EEE240022D618 /* DatePickerAlert.swift */; };
 		54EFA4E82491A16A0022D618 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EFA4E72491A16A0022D618 /* Font.swift */; };
 /* End PBXBuildFile section */
 
@@ -205,6 +205,7 @@
 		54953E6023E0D69A0054345C /* TVCHosts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCHosts.swift; sourceTree = "<group>"; };
 		54953E6E23E44CD00054345C /* TVCHostDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCHostDetails.swift; sourceTree = "<group>"; };
 		54953E7023E473F10054345C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		549ECD9C24A7AD550097571C /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
 		54B34593240E6343004C53CC /* TVCFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCFilter.swift; sourceTree = "<group>"; };
 		54B34595240F0513004C53CC /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
 		54B345A5241BB982004C53CC /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
@@ -307,7 +308,6 @@
 		54E540F3247D3F2600F7C34A /* TestDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDataSource.swift; sourceTree = "<group>"; };
 		54E540F7247DB90F00F7C34A /* RecordingsDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingsDB.swift; sourceTree = "<group>"; };
 		54E540F92482414800F7C34A /* SyncUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncUpdate.swift; sourceTree = "<group>"; };
-		54EFA4E5248EEE240022D618 /* DatePickerAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerAlert.swift; sourceTree = "<group>"; };
 		54EFA4E72491A16A0022D618 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -442,7 +442,7 @@
 				545DDDCE243E6267003B6544 /* TutorialSheet.swift */,
 				54D8B979246C9F2000EB2414 /* FilterPipeline.swift */,
 				54448A3124899A4000771C96 /* SearchBarManager.swift */,
-				54EFA4E5248EEE240022D618 /* DatePickerAlert.swift */,
+				549ECD9C24A7AD550097571C /* CustomAlert.swift */,
 				541FC47524A12D01009154D8 /* IBViews.swift */,
 			);
 			path = "Common Classes";
@@ -869,7 +869,6 @@
 				54D8B98624796E9900EB2414 /* GroupedDomainDataSource.swift in Sources */,
 				54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */,
 				54D8B97C2471A7E000EB2414 /* String.swift in Sources */,
-				54EFA4E6248EEE240022D618 /* DatePickerAlert.swift in Sources */,
 				54C056DD23E9EEF700214A3F /* BundleIcon.swift in Sources */,
 				542E2A982404973F001462DC /* TBCMain.swift in Sources */,
 				54448A3224899A4000771C96 /* SearchBarManager.swift in Sources */,
@@ -883,6 +882,7 @@
 				54EFA4E82491A16A0022D618 /* Font.swift in Sources */,
 				54D8B97A246C9F2000EB2414 /* FilterPipeline.swift in Sources */,
 				54B34594240E6343004C53CC /* TVCFilter.swift in Sources */,
+				549ECD9D24A7AD550097571C /* CustomAlert.swift in Sources */,
 				54E540FA2482414800F7C34A /* SyncUpdate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

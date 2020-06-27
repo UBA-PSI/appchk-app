@@ -63,10 +63,9 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 	
 	@IBAction private func didTapRangeButton(_ sender: UIButton) {
 		let flag = (sender == buttonRangeStart)
-		DatePickerAlert(presentIn: self, configure: {
-			$0.setDate(Date(flag ? self.tsRangeA : self.tsRangeB), animated: false)
-		}, onSuccess: {
-			var ts = $0.timestamp
+		let oldDate = flag ? Date(self.tsRangeA) : Date(self.tsRangeB)
+		DatePickerAlert(initial: oldDate).present(in: self) { (selected: Date) in
+			var ts = selected.timestamp
 			ts -= ts % 60 // remove seconds
 			// if one of these is greater than the other, adjust the latter too.
 			if flag || self.tsRangeA > ts {
@@ -77,7 +76,7 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 				self.tsRangeB = ts + 59 // upper end of minute
 				self.buttonRangeEnd.setTitle(DateFormat.minutes(ts + 59), for: .normal)
 			}
-		})
+		}
 	}
 	
 	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
