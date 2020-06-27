@@ -412,8 +412,6 @@ extension CreateTable {
 		"""}
 }
 
-typealias RecordLog = (domain: String, count: Int32)
-
 extension SQLiteDatabase {
 
 	// MARK: write
@@ -442,13 +440,24 @@ extension SQLiteDatabase {
 		}
 	}
 	
+	/// Delete one recording log entry with given `recording id`, matching `domain`, and `ts`.
+	/// - Returns: `true` if row was deleted
+	func recordingLogsDelete(_ recId: sqlite3_int64, singleEntry ts: Timestamp, domain: String) throws -> Bool {
+		try run(sql: "DELETE FROM recLog WHERE rid = ? AND ts = ? AND domain = ? LIMIT 1;",
+				bind: [BindInt64(recId), BindInt64(ts), BindText(domain)]) {
+			try ifStep($0, SQLITE_DONE)
+			return numberOfChanges > 0
+		}
+	}
+	
 	// MARK: read
 	
 	/// List of domains and count occurences for given recording.
-	func recordingLogsGetGrouped(_ r: Recording) -> [RecordLog]? {
-		try? run(sql: "SELECT domain, COUNT() FROM recLog WHERE rid = ? GROUP BY domain;",
+	/// - Returns: List of `(domain, ts)` pairs. Sorted by `ts` in ascending order (oldest first)
+	func recordingLogsGet(_ r: Recording) -> [DomainTsPair]? {
+		try? run(sql: "SELECT domain, ts FROM recLog WHERE rid = ? ORDER BY ts ASC, rowid DESC;",
 				 bind: [BindInt64(r.id)]) {
-			allRows($0) { (col_text($0, 0) ?? "", sqlite3_column_int($0, 1)) }
+			allRows($0) { (col_text($0, 0) ?? "", col_ts($0, 1)) }
 		}
 	}
 }

@@ -21,8 +21,8 @@ enum RecordingsDB {
 	}
 	
 	/// Get list of domains that occured during the recording
-	static func details(_ r: Recording) -> [RecordLog] {
-		AppDB?.recordingLogsGetGrouped(r) ?? []
+	static func details(_ r: Recording) -> [DomainTsPair] {
+		AppDB?.recordingLogsGet(r) ?? []
 	}
 	
 	/// Update `title`, `appid`, and `notes` and post `NotifyRecordingChanged` notification.
@@ -42,6 +42,12 @@ enum RecordingsDB {
 	/// - Returns: `true` if at least one row is deleted.
 	static func deleteDetails(_ r: Recording, domain: String) -> Bool {
 		((try? AppDB?.recordingLogsDelete(r.id, matchingDomain: domain)) ?? 0) > 0
+	}
+	
+	/// Delete individual entries from recording while keeping the recording alive.
+	/// - Returns: `true` if at least one row is deleted.
+	static func deleteSingle(_ r: Recording, domain: String, ts: Timestamp) -> Bool {
+		(try? AppDB?.recordingLogsDelete(r.id, singleEntry: ts, domain: domain)) ?? false
 	}
 }
 

@@ -19,6 +19,10 @@ extension Timestamp {
 	static func now() -> Timestamp { Date().timestamp }
 	/// Create `Timestamp` with `now() - minutes * 60`
 	static func past(minutes: Int) -> Timestamp { now() - Timestamp(minutes * 60) }
+	/// Create `Timestamp` with `m * 60` seconds
+	static func minutes(_ m: Int) -> Timestamp { Timestamp(m * 60) }
+	/// Create `Timestamp` with `h * 3600` seconds
+	static func hours(_ h: Int) -> Timestamp { Timestamp(h * 3600) }
 }
 
 extension Timer {
@@ -68,12 +72,18 @@ struct TimeFormat {
 	
 	// MARK: static
 	
-	/// Time string with format `HH:mm`
+	/// Time string with format `[HH:]mm:ss` (hours prepended only if duration is 1h+)
 	static func from(_ duration: Timestamp) -> String {
-		String(format: "%02d:%02d", duration / 60, duration % 60)
+		let min = duration / 60
+		let sec = duration % 60
+		if min >= 60 {
+			return String(format: "%02d:%02d:%02d", min / 60, min % 60, sec)
+		} else {
+			return String(format: "%02d:%02d", min, sec)
+		}
 	}
 	
-	/// Duration string with format `HH:mm` or `HH:mm.sss`
+	/// Duration string with format `mm:ss` or `mm:ss.SSS`
 	static func from(_ duration: TimeInterval, millis: Bool = false) -> String {
 		let t = Int(duration)
 		if millis {
@@ -83,7 +93,7 @@ struct TimeFormat {
 		return String(format: "%02d:%02d", t / 60, t % 60)
 	}
 	
-	/// Duration string with format `HH:mm` or `HH:mm.sss` since reference date
+	/// Duration string with format `mm:ss` or `mm:ss.SSS` since reference date
 	static func since(_ date: Date, millis: Bool = false) -> String {
 		from(Date().timeIntervalSince(date), millis: millis)
 	}

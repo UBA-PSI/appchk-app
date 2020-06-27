@@ -18,7 +18,7 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		inputDetails.text = """
 			Start:		\(DateFormat.seconds(record.start))
 			End:		\(record.stop == nil ? "?" : DateFormat.seconds(record.stop!))
-			Duration:	\(record.durationString ?? "?")
+			Duration:	\(TimeFormat.from(record.duration ?? 0))
 			"""
 		validateSaveButton()
 		if deleteOnCancel { // mark as destructive

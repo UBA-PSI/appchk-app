@@ -27,7 +27,7 @@ class TVCHostDetails: UITableViewController, SyncUpdateDelegate, UITabBarDelegat
 		let cell = tableView.dequeueReusableCell(withIdentifier: "HostDetailCell")!
 		let src = dataSource[indexPath.row]
 		cell.textLabel?.text = DateFormat.seconds(src.ts)
-		cell.detailTextLabel?.text = (src.total > 1) ? "\(src.total)x" : nil
+		cell.detailTextLabel?.text = (src.total > 1) ? "\(src.total)×" : nil
 		cell.imageView?.image = (src.blocked > 0 ? UIImage(named: "shield-x") : nil)
 		return cell
 	}

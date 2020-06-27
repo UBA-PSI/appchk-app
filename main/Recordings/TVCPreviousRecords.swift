@@ -69,7 +69,7 @@ class TVCPreviousRecords: UITableViewController, EditActionsRemove {
 		let x = dataSource[indexPath.row]
 		cell.textLabel?.text = x.title ?? x.fallbackTitle
 		cell.textLabel?.textColor = (x.title == nil) ? .systemGray : nil
-		cell.detailTextLabel?.text = "at \(DateFormat.seconds(x.start)),  duration: \(x.durationString  ?? "?")"
+		cell.detailTextLabel?.text = "at \(DateFormat.seconds(x.start)),  duration: \(TimeFormat.from(x.duration ?? 0))"
 		return cell
 	}
 	
