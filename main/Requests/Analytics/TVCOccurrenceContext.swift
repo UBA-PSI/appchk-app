@@ -7,11 +7,8 @@ class TVCOccurrenceContext: UITableViewController {
 	
 	private let dT: Timestamp = 300 // +/- 5 minutes
 	private lazy var dataSource: [DomainTsPair] = {
-		var list: [DomainTsPair] = []
-		list.append(("[…]", ts + dT))
-		list.append(contentsOf: AppDB?.dnsLogs(between: ts - dT, and: ts + dT) ?? [])
-		list.append(("[…]", ts - dT))
-		return list
+		let logs = AppDB?.dnsLogs(between: ts - dT, and: ts + dT) ?? []
+		return [("[…]", ts - dT)] + logs.reversed() + [("[…]", ts + dT)]
 	}()
 	
 	override func viewDidLoad() {
