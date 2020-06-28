@@ -141,7 +141,14 @@ public class NWTCPSocket: NSObject, RawTCPSocketProtocol {
 
         connection!.readMinimumLength(1, maximumLength: Opt.MAXNWTCPSocketReadDataSize) { data, error in
             guard error == nil else {
-                DDLogError("NWTCPSocket got an error when reading data: \(String(describing: error))")
+				let e = error! as NSError
+				let ignore = (
+					e.domain == "kNWErrorDomainPOSIX" && e.code == POSIXError.ECANCELED.rawValue // Operation canceled
+					|| e.domain == NSPOSIXErrorDomain && e.code == POSIXError.ENOTCONN.rawValue // Socket is not connected
+				)
+				if !ignore {
+					DDLogError("NWTCPSocket got an error when reading data: \(String(describing: error))")
+				}
                 self.queueCall {
                     self.disconnect()
                 }
