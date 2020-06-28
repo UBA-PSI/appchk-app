@@ -27,7 +27,6 @@
 		54448A2E2486464F00771C96 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54448A2D2486464F00771C96 /* Array.swift */; };
 		54448A30248647D900771C96 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54448A2F248647D900771C96 /* Time.swift */; };
 		54448A3224899A4000771C96 /* SearchBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54448A3124899A4000771C96 /* SearchBarManager.swift */; };
-		544C95262407B1C700AB89D0 /* SharedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544C95252407B1C700AB89D0 /* SharedState.swift */; };
 		544F912024A67EC5001D4B00 /* TVCOccurrenceContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544F911F24A67EC5001D4B00 /* TVCOccurrenceContext.swift */; };
 		5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */; };
 		545DDDCF243E6267003B6544 /* TutorialSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545DDDCE243E6267003B6544 /* TutorialSheet.swift */; };
@@ -143,6 +142,7 @@
 		54E540FA2482414800F7C34A /* SyncUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E540F92482414800F7C34A /* SyncUpdate.swift */; };
 		54E67E4624A8B0FE0025D261 /* PrefsShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4524A8B0FE0025D261 /* PrefsShared.swift */; };
 		54E67E4924A8B1280025D261 /* Prefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4824A8B1280025D261 /* Prefs.swift */; };
+		54E67E4B24A8C6370025D261 /* GlassVPN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4A24A8C6370025D261 /* GlassVPN.swift */; };
 		54EFA4E82491A16A0022D618 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EFA4E72491A16A0022D618 /* Font.swift */; };
 /* End PBXBuildFile section */
 
@@ -195,7 +195,6 @@
 		54448A2D2486464F00771C96 /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		54448A2F248647D900771C96 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		54448A3124899A4000771C96 /* SearchBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarManager.swift; sourceTree = "<group>"; };
-		544C95252407B1C700AB89D0 /* SharedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedState.swift; sourceTree = "<group>"; };
 		544F911F24A67EC5001D4B00 /* TVCOccurrenceContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCOccurrenceContext.swift; sourceTree = "<group>"; };
 		5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCRecordingDetails.swift; sourceTree = "<group>"; };
 		545DDDCE243E6267003B6544 /* TutorialSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialSheet.swift; sourceTree = "<group>"; };
@@ -312,6 +311,7 @@
 		54E540F92482414800F7C34A /* SyncUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncUpdate.swift; sourceTree = "<group>"; };
 		54E67E4524A8B0FE0025D261 /* PrefsShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefsShared.swift; sourceTree = "<group>"; };
 		54E67E4824A8B1280025D261 /* Prefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prefs.swift; sourceTree = "<group>"; };
+		54E67E4A24A8C6370025D261 /* GlassVPN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassVPN.swift; sourceTree = "<group>"; };
 		54EFA4E72491A16A0022D618 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -393,6 +393,7 @@
 				545DDDD224436A03003B6544 /* Common Classes */,
 				548B1F9423D338EC005B047C /* main.entitlements */,
 				541AC5D72399498A00A769D7 /* AppDelegate.swift */,
+				54E67E4A24A8C6370025D261 /* GlassVPN.swift */,
 				542E2A972404973F001462DC /* TBCMain.swift */,
 				540C6454240D5BAE00E948F9 /* Requests */,
 				540E677E242D2CD200871BBE /* Recordings */,
@@ -469,7 +470,6 @@
 		54B345A4241BB975004C53CC /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				544C95252407B1C700AB89D0 /* SharedState.swift */,
 				54B345A8241BBA0B004C53CC /* Generic.swift */,
 				54B345A5241BB982004C53CC /* Notifications.swift */,
 				54B345AA241BBA5B004C53CC /* AlertSheet.swift */,
@@ -857,9 +857,9 @@
 				540E67842433FAFE00871BBE /* TVCPreviousRecords.swift in Sources */,
 				54B345A6241BB982004C53CC /* Notifications.swift in Sources */,
 				54448A2E2486464F00771C96 /* Array.swift in Sources */,
+				54E67E4B24A8C6370025D261 /* GlassVPN.swift in Sources */,
 				541FC47824A1453F009154D8 /* VCCoOccurrence.swift in Sources */,
 				54B345AB241BBA5B004C53CC /* AlertSheet.swift in Sources */,
-				544C95262407B1C700AB89D0 /* SharedState.swift in Sources */,
 				541DCA6124A6B0F6005F1A4B /* Color.swift in Sources */,
 				545DDDCF243E6267003B6544 /* TutorialSheet.swift in Sources */,
 				54B345A9241BBA0B004C53CC /* Generic.swift in Sources */,

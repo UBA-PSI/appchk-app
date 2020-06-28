@@ -5,15 +5,31 @@ class TBCMain: UITabBarController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		NotifyVPNStateChanged.observe(call: #selector(vpnStateChanged(_:)), on: self)
-		changedState(currentVPNState)
+		reloadTabBarBadge()
+		NotifyVPNStateChanged.observe(call: #selector(reloadTabBarBadge), on: self)
 		
 		if !Prefs.DidShowTutorial.Welcome {
 			self.perform(#selector(showWelcomeMessage), with: nil, afterDelay: 0.5)
 		}
 	}
 	
-	@objc func showWelcomeMessage() {
+	@objc private func reloadTabBarBadge() {
+		let stateView = self.tabBar.items?.last
+		switch GlassVPN.state {
+		case .on:        stateView?.badgeValue = "✓"
+		case .inbetween: stateView?.badgeValue = "⋯"
+		case .off:       stateView?.badgeValue = "✗"
+		}
+		if #available(iOS 10.0, *) {
+			switch GlassVPN.state {
+			case .on:        stateView?.badgeColor = .systemGreen
+			case .inbetween: stateView?.badgeColor = .systemYellow
+			case .off:       stateView?.badgeColor = .systemRed
+			}
+		}
+	}
+	
+	@objc private func showWelcomeMessage() {
 		let x = TutorialSheet()
 		x.addSheet().addArrangedSubview(QuickUI.text(attributed: NSMutableAttributedString()
 			.h1("Welcome\n")
@@ -38,26 +54,6 @@ class TBCMain: UITabBarController {
 		))
 		x.present {
 			Prefs.DidShowTutorial.Welcome = true
-		}
-	}
-	
-	@objc func vpnStateChanged(_ notification: Notification) {
-		changedState(notification.object as! VPNState)
-	}
-	
-	func changedState(_ newState: VPNState) {
-		let stateView = self.tabBar.items?.last
-		switch newState {
-		case .on:        stateView?.badgeValue = "✓"
-		case .inbetween: stateView?.badgeValue = "⋯"
-		case .off:       stateView?.badgeValue = "✗"
-		}
-		if #available(iOS 10.0, *) {
-			switch newState {
-			case .on:        stateView?.badgeColor = .systemGreen
-			case .inbetween: stateView?.badgeColor = .systemYellow
-			case .off:       stateView?.badgeColor = .systemRed
-			}
 		}
 	}
 }

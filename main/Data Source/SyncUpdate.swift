@@ -1,5 +1,7 @@
 import UIKit
 
+let sync = SyncUpdate(periodic: 7)
+
 class SyncUpdate {
 	private var lastSync: TimeInterval = 0
 	private var timer: Timer!
@@ -18,7 +20,7 @@ class SyncUpdate {
 	private(set) var tsLatest: Timestamp? // as set per user, not actual latest
 	
 	
-	init(periodic interval: TimeInterval) {
+	fileprivate init(periodic interval: TimeInterval) {
 		(filterType, tsEarliest, tsLatest) = Prefs.DateFilter.restrictions()
 		reloadRangeFromDB()
 		

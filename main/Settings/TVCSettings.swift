@@ -10,32 +10,28 @@ class TVCSettings: UITableViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		NotifyVPNStateChanged.observe(call: #selector(vpnStateChanged(_:)), on: self)
-		changedState(currentVPNState)
-		NotifyDNSFilterChanged.observe(call: #selector(reloadDataSource), on: self)
+		reloadToggleState()
 		reloadDataSource()
+		NotifyVPNStateChanged.observe(call: #selector(reloadToggleState), on: self)
+		NotifyDNSFilterChanged.observe(call: #selector(reloadDataSource), on: self)
 	}
 	
 	
 	// MARK: - VPN Proxy Settings
 	
 	@IBAction private func toggleVPNProxy(_ sender: UISwitch) {
-		appDelegate.setProxyEnabled(sender.isOn)
+		GlassVPN.setEnabled(sender.isOn)
 	}
 	
-	@objc func vpnStateChanged(_ notification: Notification) {
-		changedState(notification.object as! VPNState)
-	}
-	
-	func changedState(_ newState: VPNState) {
-		vpnToggle.isOn = (newState != .off)
-		vpnToggle.onTintColor = (newState == .inbetween ? .systemYellow : nil)
+	@objc private func reloadToggleState() {
+		vpnToggle.isOn = (GlassVPN.state != .off)
+		vpnToggle.onTintColor = (GlassVPN.state == .inbetween ? .systemYellow : nil)
 	}
 	
 	
 	// MARK: - Logging Filter
 	
-	@objc func reloadDataSource() {
+	@objc private func reloadDataSource() {
 		let (blocked, ignored) = DomainFilter.counts()
 		cellDomainsIgnored.detailTextLabel?.text = "\(ignored) Domains"
 		cellDomainsBlocked.detailTextLabel?.text = "\(blocked) Domains"
