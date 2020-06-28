@@ -43,6 +43,19 @@ final class GlassVPNManager {
 		}
 	}
 	
+	/// Notify VPN extension about changes
+	/// - Returns: `true` on success, `false` if VPN is off or message could not be converted to `.utf8`
+	@discardableResult func send(_ message: VPNAppMessage) -> Bool {
+		if let session = self.managerVPN?.connection as? NETunnelProviderSession,
+			session.status == .connected, let data = message.raw {
+			do {
+				try session.sendProviderMessage(data, responseHandler: nil)
+				return true
+			} catch {}
+		}
+		return false
+	}
+	
 	
 	// MARK: - Notify callback
 	
@@ -50,12 +63,8 @@ final class GlassVPNManager {
 		postRawVPNState((notification.object as? NETunnelProviderSession)?.status ?? .invalid)
 	}
 	
-	@objc private func didChangeDomainFilter() {
-		// Notify VPN extension about changes
-		if let session = self.managerVPN?.connection as? NETunnelProviderSession,
-			session.status == .connected {
-			try? session.sendProviderMessage("filter-update".data(using: .ascii)!, responseHandler: nil)
-		}
+	@objc private func didChangeDomainFilter(_ notification: Notification) {
+		send(.filterUpdate(domain: notification.object as? String))
 	}
 	
 	
@@ -107,5 +116,24 @@ final class GlassVPNManager {
 	private func postProcessedVPNState(_ state: VPNState) {
 		self.state = state
 		NotifyVPNStateChanged.post()
+	}
+}
+
+
+//  ---------------------------------------------------------------
+// |
+// |    MARK: - VPN message
+// |
+//  ---------------------------------------------------------------
+
+struct VPNAppMessage {
+	let raw: Data?
+	init(_ string: String) { raw = string.data(using: .utf8) }
+	
+	static func filterUpdate(domain: String? = nil) -> Self {
+		.init("filter-update:\(domain ?? "")")
+	}
+	static func autoDelete(after interval: Int) -> Self {
+		.init("auto-delete:\(interval)")
 	}
 }

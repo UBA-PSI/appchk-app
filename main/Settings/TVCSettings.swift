@@ -77,14 +77,19 @@ class TVCSettings: UITableViewController {
 			
 			let picker = DurationPickerAlert(
 				title: "Auto-delete logs",
-				detail: "Logs will be deleted on app launch or periodically as long as the VPN is running.",
+				detail: "Warning: Logs older than the selected interval are deleted immediately! " +
+						"Logs are also deleted on each app launch, and periodically in the background as long as the VPN is running.",
 				options: [(0...30).map{"\($0)"}, ["Days", "Weeks", "Months"]],
 				widths: [0.4, 0.6])
 			picker.pickerView.setSelection([min(30, one), two])
-			picker.present(in: self) {
-				PrefsShared.AutoDeleteLogsDays = $1[0] * multiplier[$1[1]]
-				cell.detailTextLabel?.text = autoDeleteString($1[0], unit: $1[1])
-				// TODO: notify VPN and local delete timer
+			picker.present(in: self) { _, idx in
+				cell.detailTextLabel?.text = autoDeleteString(idx[0], unit: idx[1])
+				let asDays = idx[0] * multiplier[idx[1]]
+				PrefsShared.AutoDeleteLogsDays = asDays
+				if !GlassVPN.send(.autoDelete(after: asDays)) {
+					// if VPN isn't active, fallback to immediate local delete
+					TheGreatDestroyer.deleteLogs(olderThan: asDays)
+				}
 			}
 		}
 	}

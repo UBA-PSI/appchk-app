@@ -15,7 +15,7 @@ struct TheGreatDestroyer {
 		}
 	}
 	
-	/// Fired when user taps on Settings -> Delete All Logs
+	/// Fired when user taps on Settings -> "Delete All Logs"
 	static func deleteAllLogs() {
 		sync.pause()
 		DispatchQueue.global().async {
@@ -24,6 +24,20 @@ struct TheGreatDestroyer {
 				try AppDB?.dnsLogsDeleteAll()
 				sync.needsReloadDB()
 			} catch {}
+		}
+	}
+	
+	/// Fired when user changes Settings -> "Auto-delete logs" and every time the App enters foreground
+	static func deleteLogs(olderThan days: Int) {
+		guard days > 0 else { return }
+		sync.pause()
+		DispatchQueue.global().async {
+			defer { sync.continue() }
+			QLog.Info("Auto-delete logs")
+			guard let success = try? AppDB?.dnsLogsDeleteOlderThan(days: days), success else {
+				return // nothing changed
+			}
+			sync.needsReloadDB()
 		}
 	}
 }

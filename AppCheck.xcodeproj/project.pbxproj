@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5404AEEB24A90717003B2F54 /* PrefsShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4524A8B0FE0025D261 /* PrefsShared.swift */; };
 		540E6780242D2CF100871BBE /* VCRecordings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E677F242D2CF100871BBE /* VCRecordings.swift */; };
 		540E67822433483D00871BBE /* VCEditRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E67812433483D00871BBE /* VCEditRecording.swift */; };
 		540E67842433FAFE00871BBE /* TVCPreviousRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */; };
@@ -917,6 +918,7 @@
 				54CA02722426B2FD003A5E04 /* IPInterval.swift in Sources */,
 				54CA029A2426B2FD003A5E04 /* Observer.swift in Sources */,
 				54CA025C2426B2FD003A5E04 /* ConnectSession.swift in Sources */,
+				5404AEEB24A90717003B2F54 /* PrefsShared.swift in Sources */,
 				54CA02C42426DCCD003A5E04 /* GCDAsyncUdpSocket.m in Sources */,
 				54CA02BA2426B2FD003A5E04 /* ProxySocket.swift in Sources */,
 				54CA025E2426B2FD003A5E04 /* ResponseGeneratorFactory.swift in Sources */,

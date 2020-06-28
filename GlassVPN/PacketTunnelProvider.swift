@@ -80,18 +80,26 @@ class LDObserverFactory: ObserverFactory {
 
 class PacketTunnelProvider: NEPacketTunnelProvider {
 	
-	let proxyServerPort: UInt16 = 9090
-	let proxyServerAddress = "127.0.0.1"
-	var proxyServer: GCDHTTPProxyServer!
+	private let proxyServerPort: UInt16 = 9090
+	private let proxyServerAddress = "127.0.0.1"
+	private var proxyServer: GCDHTTPProxyServer!
+	
+	private var autoDeleteTimer: Timer? = nil
+	
+	private func reloadSettings() {
+		reloadDomainFilter()
+		setAutoDelete(PrefsShared.AutoDeleteLogsDays)
+	}
 	
 	override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
+		DDLogVerbose("startTunnel with with options: \(String(describing: options))")
 		do {
 			try SQLiteDatabase.open().initCommonScheme()
 		} catch {
 			completionHandler(error)
 			return
 		}
-		reloadDomainFilter()
+		reloadSettings()
 		
 		if proxyServer != nil {
 			proxyServer.stop()
@@ -145,12 +153,63 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 		proxyServer = nil
 		filterDomains = nil
 		filterOptions = nil
+		autoDeleteTimer?.fire() // one last time before we quit
+		autoDeleteTimer?.invalidate()
 		completionHandler()
 		exit(EXIT_SUCCESS)
 	}
 	
 	override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
-		reloadDomainFilter()
+		let message = String(data: messageData, encoding: .utf8)
+		if let msg = message, let i = msg.firstIndex(of: ":") {
+			let action = msg.prefix(upTo: i)
+			let value = msg.suffix(from: msg.index(after: i))
+			switch action {
+			case "filter-update":
+				reloadDomainFilter() // TODO: reload only selected domain?
+				return
+			case "auto-delete":
+				setAutoDelete(Int(value) ?? PrefsShared.AutoDeleteLogsDays)
+				return
+			default: break
+			}
+		}
+		DDLogWarn("This should never happen! Received unknown handleAppMessage: \(message ?? messageData.base64EncodedString())")
+		reloadSettings() // just in case we fallback to do everything
 	}
 }
 
+
+// ################################################################
+// #
+// #    MARK: - Auto-delete Timer
+// #
+// ################################################################
+
+extension PacketTunnelProvider {
+	
+	private func setAutoDelete(_ days: Int) {
+		autoDeleteTimer?.invalidate()
+		guard days > 0 else { return }
+		// Repeat interval uses days as hours. min 1 hr, max 24 hrs.
+		let interval = TimeInterval(min(24, days) * 60 * 60)
+		autoDeleteTimer = Timer.scheduledTimer(timeInterval: interval,
+											   target: self, selector: #selector(autoDeleteNow),
+											   userInfo: days, repeats: true)
+		autoDeleteTimer!.fire()
+	}
+	
+	@objc private func autoDeleteNow(_ sender: Timer) {
+		DDLogInfo("Auto-delete old logs")
+		queue.async {
+			do {
+				try AppDB?.dnsLogsDeleteOlderThan(days: sender.userInfo as! Int)
+			} catch {
+				DDLogWarn("Couldn't delete logs, will retry in 5 minutes. \(error)")
+				if sender.isValid {
+					sender.fireDate = Date().addingTimeInterval(300) // retry in 5 min
+				}
+			}
+		}
+	}
+}

@@ -22,4 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		sync.start()
 		return true
 	}
+	
+	func applicationDidBecomeActive(_ application: UIApplication) {
+		TheGreatDestroyer.deleteLogs(olderThan: PrefsShared.AutoDeleteLogsDays)
+	}
 }

@@ -39,8 +39,20 @@ extension SQLiteDatabase {
 	/// `INSERT INTO cache (dns, opt) VALUES (?, ?);`
 	func logWrite(_ domain: String, blocked: Bool = false) throws {
 		try self.run(sql: "INSERT INTO cache (dns, opt) VALUES (?, ?);",
-			bind: [BindText(domain), BindInt32(blocked ? 1 : 0)])
+					 bind: [BindText(domain), BindInt32(blocked ? 1 : 0)])
 		{ try ifStep($0, SQLITE_DONE) }
+	}
+	
+	/// `DELETE FROM cache WHERE ts < (now - ? days);`
+	/// - Parameter days: if `0` or negative, this function does nothing.
+	/// - Returns: `true` if at least one row was deleted.
+	@discardableResult func dnsLogsDeleteOlderThan(days: Int) throws -> Bool {
+		guard days > 0 else { return false }
+		return try self.run(sql: "DELETE FROM cache WHERE ts < strftime('%s', 'now', ?);",
+							bind: [BindText("-\(days) days")]) {
+			try ifStep($0, SQLITE_DONE)
+			return numberOfChanges > 0
+		}
 	}
 }
 
