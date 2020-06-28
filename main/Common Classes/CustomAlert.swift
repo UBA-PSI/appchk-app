@@ -166,9 +166,9 @@ class DatePickerAlert : CustomAlert<UIDatePicker> {
 		datePicker.date = Date()
 	}
 	
-	func present(in viewController: UIViewController, onSuccess: @escaping (Date) -> Void) {
+	func present(in viewController: UIViewController, onSuccess: @escaping (UIDatePicker, Date) -> Void) {
 		super.present(in: viewController) {
-			onSuccess($0.date)
+			onSuccess($0, $0.date)
 		}
 	}
 }
@@ -219,9 +219,9 @@ class DurationPickerAlert: CustomAlert<UIPickerView>, UIPickerViewDataSource, UI
 		compWidths[c] * pickerView.frame.width
 	}
 	
-	func present(in viewController: UIViewController, onSuccess: @escaping ([Int]) -> Void) {
+	func present(in viewController: UIViewController, onSuccess: @escaping (UIPickerView, [Int]) -> Void) {
 		super.present(in: viewController) {
-			onSuccess($0.selection)
+			onSuccess($0, $0.selection)
 		}
 	}
 }
