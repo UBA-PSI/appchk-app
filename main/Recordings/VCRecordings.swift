@@ -17,7 +17,7 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		updateUI(setRecording: false, animated: false)
 		currentRecording = RecordingsDB.getCurrent()
 		
-		if !Pref.DidShowTutorial.Recordings {
+		if !Prefs.DidShowTutorial.Recordings {
 			self.perform(#selector(showTutorial), with: nil, afterDelay: 0.5)
 		}
 	}
@@ -134,7 +134,7 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		))
 		x.buttonTitleDone = "Got it"
 		x.present {
-			Pref.DidShowTutorial.Recordings = true
+			Prefs.DidShowTutorial.Recordings = true
 		}
 	}
 }

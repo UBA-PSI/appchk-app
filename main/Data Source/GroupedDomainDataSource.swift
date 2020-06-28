@@ -55,8 +55,8 @@ class GroupedDomainDataSource: FilterPipelineDelegate, SyncUpdateDelegate {
 	/// Read user defaults and apply new sorting order. Either by setting a new or reversing the current.
 	/// - Parameter force: If `true` set new sorting even if the type does not differ.
 	private func resetSortingOrder(force: Bool = false) {
-		let orderAscChanged = (orderAsc <-? Pref.DateFilter.OrderAsc)
-		let orderTypChanged = (currentOrder <-? Pref.DateFilter.OrderBy)
+		let orderAscChanged = (orderAsc <-? Prefs.DateFilter.OrderAsc)
+		let orderTypChanged = (currentOrder <-? Prefs.DateFilter.OrderBy)
 		if orderTypChanged || force {
 			switch currentOrder {
 			case .Date:

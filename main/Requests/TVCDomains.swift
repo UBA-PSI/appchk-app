@@ -38,12 +38,12 @@ class TVCDomains: UITableViewController, UISearchBarDelegate, GroupedDomainDataS
 	}
 	
 	@objc private func didChangeDateFilter() {
-		switch Pref.DateFilter.Kind {
+		switch Prefs.DateFilter.Kind {
 		case .ABRange: // read start/end time
 			self.filterButtonDetail.title = "A – B"
 			self.filterButton.image = UIImage(named: "filter-filled")
 		case .LastXMin: // most recent
-			let lastXMin = Pref.DateFilter.LastXMin
+			let lastXMin = Prefs.DateFilter.LastXMin
 			if lastXMin == 0 { fallthrough }
 			self.filterButtonDetail.title = TimeFormat(.abbreviated).from(minutes: lastXMin)
 			self.filterButton.image = UIImage(named: "filter-filled")

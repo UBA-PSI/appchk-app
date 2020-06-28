@@ -97,8 +97,8 @@ class TVCSettings: UITableViewController {
 	// MARK: - Reset Settings
 	
 	@IBAction private func resetTutorialAlerts(_ sender: UIButton) {
-		Pref.DidShowTutorial.Welcome = false
-		Pref.DidShowTutorial.Recordings = false
+		Prefs.DidShowTutorial.Welcome = false
+		Prefs.DidShowTutorial.Recordings = false
 		Alert(title: sender.titleLabel?.text,
 			  text: "\nDone.\n\nYou may need to restart the application.").presentIn(self)
 	}

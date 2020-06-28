@@ -19,7 +19,7 @@ class SyncUpdate {
 	
 	
 	init(periodic interval: TimeInterval) {
-		(filterType, tsEarliest, tsLatest) = Pref.DateFilter.restrictions()
+		(filterType, tsEarliest, tsLatest) = Prefs.DateFilter.restrictions()
 		reloadRangeFromDB()
 		
 		NotifyDateFilterChanged.observe(call: #selector(didChangeDateFilter), on: self)
@@ -33,7 +33,7 @@ class SyncUpdate {
 	/// Callback fired when user changes `DateFilter` on root tableView controller
 	@objc private func didChangeDateFilter() {
 		self.pause()
-		let filter = Pref.DateFilter.restrictions()
+		let filter = Prefs.DateFilter.restrictions()
 		filterType = filter.type
 		DispatchQueue.global().async {
 			// Not necessary, but improve execution order (delete then insert).
@@ -109,7 +109,7 @@ class SyncUpdate {
 			}
 		}
 		if filterType == .LastXMin {
-			set(newEarliest: Timestamp.past(minutes: Pref.DateFilter.LastXMin))
+			set(newEarliest: Timestamp.past(minutes: Prefs.DateFilter.LastXMin))
 		}
 		// TODO: periodic hard delete old logs (will reset rowids!)
 	}

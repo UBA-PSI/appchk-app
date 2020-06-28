@@ -18,8 +18,8 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 	@IBOutlet private var rangeView: UIView!
 	@IBOutlet private var buttonRangeStart: UIButton!
 	@IBOutlet private var buttonRangeEnd: UIButton!
-	private lazy var tsRangeA: Timestamp = Pref.DateFilter.RangeA ?? AppDB?.dnsLogsMinDate() ?? .now()
-	private lazy var tsRangeB: Timestamp = Pref.DateFilter.RangeB ?? .now()
+	private lazy var tsRangeA: Timestamp = Prefs.DateFilter.RangeA ?? AppDB?.dnsLogsMinDate() ?? .now()
+	private lazy var tsRangeB: Timestamp = Prefs.DateFilter.RangeB ?? .now()
 	
 	// order by
 	@IBOutlet private var orderbyType: UISegmentedControl!
@@ -29,18 +29,18 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		filterBy.selectedSegmentIndex = (Pref.DateFilter.Kind == .ABRange ? 1 : 0)
+		filterBy.selectedSegmentIndex = (Prefs.DateFilter.Kind == .ABRange ? 1 : 0)
 		didChangeFilterBy(filterBy)
 		
 		durationSlider.tag = -1 // otherwise wont update because `tag == 0`
-		durationSlider.value = Float(durationTimes.firstIndex(of: Pref.DateFilter.LastXMin) ?? 0) / 9
+		durationSlider.value = Float(durationTimes.firstIndex(of: Prefs.DateFilter.LastXMin) ?? 0) / 9
 		durationSliderChanged(durationSlider)
 		
 		buttonRangeStart.setTitle(DateFormat.minutes(tsRangeA), for: .normal)
 		buttonRangeEnd.setTitle(DateFormat.minutes(tsRangeB), for: .normal)
 		
-		orderbyType.selectedSegmentIndex = Pref.DateFilter.OrderBy.rawValue
-		orderbyAsc.selectedSegmentIndex = (Pref.DateFilter.OrderAsc ? 0 : 1)
+		orderbyType.selectedSegmentIndex = Prefs.DateFilter.OrderBy.rawValue
+		orderbyAsc.selectedSegmentIndex = (Prefs.DateFilter.OrderAsc ? 0 : 1)
 	}
 	
 	@IBAction private func didChangeFilterBy(_ sender: UISegmentedControl) {
@@ -103,15 +103,15 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 		case 2: orderType = .Count
 		default: preconditionFailure()
 		}
-		let a = Pref.DateFilter.OrderBy <-? orderType
-		let b = Pref.DateFilter.OrderAsc <-? (orderbyAsc.selectedSegmentIndex == 0)
+		let a = Prefs.DateFilter.OrderBy <-? orderType
+		let b = Prefs.DateFilter.OrderAsc <-? (orderbyAsc.selectedSegmentIndex == 0)
 		if a || b {
 			NotifySortOrderChanged.post()
 		}
-		let c = Pref.DateFilter.Kind <-? filterType
-		let d = Pref.DateFilter.LastXMin <-? newXMin
-		let e = Pref.DateFilter.RangeA <-? (filterType == .ABRange ? tsRangeA : nil)
-		let f = Pref.DateFilter.RangeB <-? (filterType == .ABRange ? tsRangeB : nil)
+		let c = Prefs.DateFilter.Kind <-? filterType
+		let d = Prefs.DateFilter.LastXMin <-? newXMin
+		let e = Prefs.DateFilter.RangeA <-? (filterType == .ABRange ? tsRangeA : nil)
+		let f = Prefs.DateFilter.RangeB <-? (filterType == .ABRange ? tsRangeB : nil)
 		if c || d || e || f {
 			NotifyDateFilterChanged.post()
 		}
