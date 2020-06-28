@@ -1,6 +1,6 @@
 import Foundation
 
-let NotifyVPNStateChanged = NSNotification.Name("GlassVPNStateChanged") // VPNState!
+let NotifyVPNStateChanged = NSNotification.Name("GlassVPNStateChanged") // nil!
 let NotifyDNSFilterChanged = NSNotification.Name("PSIDNSFilterSettingsChanged") // domain: String!
 let NotifyDateFilterChanged = NSNotification.Name("PSIDateFilterSettingsChanged") // nil!
 let NotifySortOrderChanged = NSNotification.Name("PSIDateFilterSortOrderChanged") // nil!

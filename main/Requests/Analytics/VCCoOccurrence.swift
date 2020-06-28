@@ -148,22 +148,3 @@ extension VCCoOccurrence {
 		x.present(in: self)
 	}
 }
-
-fileprivate extension UIView {
-	func asImage(insets: UIEdgeInsets = .zero) -> UIImage {
-		if #available(iOS 10.0, *) {
-			let renderer = UIGraphicsImageRenderer(bounds: bounds.inset(by: insets))
-			return renderer.image { rendererContext in
-				layer.render(in: rendererContext.cgContext)
-			}
-		} else {
-			UIGraphicsBeginImageContext(bounds.inset(by: insets).size)
-			let ctx = UIGraphicsGetCurrentContext()!
-			ctx.translateBy(x: -insets.left, y: -insets.top)
-			layer.render(in:ctx)
-			let image = UIGraphicsGetImageFromCurrentImageContext()
-			UIGraphicsEndImageContext()
-			return UIImage(cgImage: image!.cgImage!)
-		}
-	}
-}

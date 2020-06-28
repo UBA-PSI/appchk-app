@@ -21,7 +21,6 @@
 		541FC47824A1453F009154D8 /* VCCoOccurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541FC47724A1453F009154D8 /* VCCoOccurrence.swift */; };
 		541FC9872497D81C00962623 /* TheGreatDestroyer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541FC9862497D81C00962623 /* TheGreatDestroyer.swift */; };
 		542E2A982404973F001462DC /* TBCMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542E2A972404973F001462DC /* TBCMain.swift */; };
-		542E2A9A24051556001462DC /* TVCSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542E2A9924051556001462DC /* TVCSettings.swift */; };
 		543CDB2023EEE61900B7F323 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543CDB1F23EEE61900B7F323 /* PacketTunnelProvider.swift */; };
 		543CDB2523EEE61900B7F323 /* GlassVPN.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 543CDB1D23EEE61900B7F323 /* GlassVPN.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		54448A2E2486464F00771C96 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54448A2D2486464F00771C96 /* Array.swift */; };
@@ -44,7 +43,7 @@
 		54B34594240E6343004C53CC /* TVCFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B34593240E6343004C53CC /* TVCFilter.swift */; };
 		54B34596240F0513004C53CC /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B34595240F0513004C53CC /* TableView.swift */; };
 		54B345A6241BB982004C53CC /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345A5241BB982004C53CC /* Notifications.swift */; };
-		54B345A9241BBA0B004C53CC /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345A8241BBA0B004C53CC /* Generic.swift */; };
+		54B345A9241BBA0B004C53CC /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345A8241BBA0B004C53CC /* Logging.swift */; };
 		54B345AB241BBA5B004C53CC /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345AA241BBA5B004C53CC /* AlertSheet.swift */; };
 		54B345AD241BBB00004C53CC /* DBExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345AC241BBB00004C53CC /* DBExtensions.swift */; };
 		54B345B0242264F8004C53CC /* third-level.txt in Resources */ = {isa = PBXBuildFile; fileRef = 54B345AF242264F8004C53CC /* third-level.txt */; };
@@ -143,6 +142,9 @@
 		54E67E4624A8B0FE0025D261 /* PrefsShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4524A8B0FE0025D261 /* PrefsShared.swift */; };
 		54E67E4924A8B1280025D261 /* Prefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4824A8B1280025D261 /* Prefs.swift */; };
 		54E67E4B24A8C6370025D261 /* GlassVPN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4A24A8C6370025D261 /* GlassVPN.swift */; };
+		54E67E4D24A8E20D0025D261 /* TVCSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542E2A9924051556001462DC /* TVCSettings.swift */; };
+		54E67E4F24A8E2910025D261 /* Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4E24A8E2910025D261 /* Equatable.swift */; };
+		54E67E5124A8E8820025D261 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E5024A8E8820025D261 /* View.swift */; };
 		54EFA4E82491A16A0022D618 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54EFA4E72491A16A0022D618 /* Font.swift */; };
 /* End PBXBuildFile section */
 
@@ -210,7 +212,7 @@
 		54B34593240E6343004C53CC /* TVCFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCFilter.swift; sourceTree = "<group>"; };
 		54B34595240F0513004C53CC /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
 		54B345A5241BB982004C53CC /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
-		54B345A8241BBA0B004C53CC /* Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generic.swift; sourceTree = "<group>"; };
+		54B345A8241BBA0B004C53CC /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		54B345AA241BBA5B004C53CC /* AlertSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSheet.swift; sourceTree = "<group>"; };
 		54B345AC241BBB00004C53CC /* DBExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBExtensions.swift; sourceTree = "<group>"; };
 		54B345AF242264F8004C53CC /* third-level.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "third-level.txt"; sourceTree = "<group>"; };
@@ -312,6 +314,8 @@
 		54E67E4524A8B0FE0025D261 /* PrefsShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefsShared.swift; sourceTree = "<group>"; };
 		54E67E4824A8B1280025D261 /* Prefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prefs.swift; sourceTree = "<group>"; };
 		54E67E4A24A8C6370025D261 /* GlassVPN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassVPN.swift; sourceTree = "<group>"; };
+		54E67E4E24A8E2910025D261 /* Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Equatable.swift; sourceTree = "<group>"; };
+		54E67E5024A8E8820025D261 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		54EFA4E72491A16A0022D618 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -470,9 +474,11 @@
 		54B345A4241BB975004C53CC /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				54B345A8241BBA0B004C53CC /* Generic.swift */,
+				54B345A8241BBA0B004C53CC /* Logging.swift */,
+				54E67E4E24A8E2910025D261 /* Equatable.swift */,
 				54B345A5241BB982004C53CC /* Notifications.swift */,
 				54B345AA241BBA5B004C53CC /* AlertSheet.swift */,
+				54E67E5024A8E8820025D261 /* View.swift */,
 				541DCA6024A6B0F6005F1A4B /* Color.swift */,
 				54448A2F248647D900771C96 /* Time.swift */,
 				54751E502423955000168273 /* URL.swift */,
@@ -848,12 +854,14 @@
 			files = (
 				54E67E4924A8B1280025D261 /* Prefs.swift in Sources */,
 				54E540F8247DB90F00F7C34A /* RecordingsDB.swift in Sources */,
+				54E67E4F24A8E2910025D261 /* Equatable.swift in Sources */,
 				54E540F4247D3F2600F7C34A /* TestDataSource.swift in Sources */,
 				545DDDD424466D37003B6544 /* AutoLayout.swift in Sources */,
 				54B345AD241BBB00004C53CC /* DBExtensions.swift in Sources */,
 				54E540F2247C423200F7C34A /* DomainFilter.swift in Sources */,
 				54D8B97E2471B88900EB2414 /* DBCommon.swift in Sources */,
 				54D8B9832471BD8100EB2414 /* DBAppOnly.swift in Sources */,
+				54E67E4D24A8E20D0025D261 /* TVCSettings.swift in Sources */,
 				540E67842433FAFE00871BBE /* TVCPreviousRecords.swift in Sources */,
 				54B345A6241BB982004C53CC /* Notifications.swift in Sources */,
 				54448A2E2486464F00771C96 /* Array.swift in Sources */,
@@ -862,7 +870,7 @@
 				54B345AB241BBA5B004C53CC /* AlertSheet.swift in Sources */,
 				541DCA6124A6B0F6005F1A4B /* Color.swift in Sources */,
 				545DDDCF243E6267003B6544 /* TutorialSheet.swift in Sources */,
-				54B345A9241BBA0B004C53CC /* Generic.swift in Sources */,
+				54B345A9241BBA0B004C53CC /* Logging.swift in Sources */,
 				54B34596240F0513004C53CC /* TableView.swift in Sources */,
 				540E6780242D2CF100871BBE /* VCRecordings.swift in Sources */,
 				54953E3323DC752E0054345C /* DBCore.swift in Sources */,
@@ -871,12 +879,12 @@
 				54448A30248647D900771C96 /* Time.swift in Sources */,
 				54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */,
 				54751E512423955100168273 /* URL.swift in Sources */,
-				542E2A9A24051556001462DC /* TVCSettings.swift in Sources */,
 				54953E5F23DEBE840054345C /* TVCDomains.swift in Sources */,
 				54C056DB23E9E36E00214A3F /* AppInfoType.swift in Sources */,
 				54D8B98624796E9900EB2414 /* GroupedDomainDataSource.swift in Sources */,
 				54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */,
 				54D8B97C2471A7E000EB2414 /* String.swift in Sources */,
+				54E67E5124A8E8820025D261 /* View.swift in Sources */,
 				54C056DD23E9EEF700214A3F /* BundleIcon.swift in Sources */,
 				542E2A982404973F001462DC /* TBCMain.swift in Sources */,
 				54448A3224899A4000771C96 /* SearchBarManager.swift in Sources */,

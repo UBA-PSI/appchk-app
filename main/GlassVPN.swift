@@ -106,6 +106,6 @@ final class GlassVPNManager {
 	
 	private func postProcessedVPNState(_ state: VPNState) {
 		self.state = state
-		NotifyVPNStateChanged.post(state)
+		NotifyVPNStateChanged.post()
 	}
 }
