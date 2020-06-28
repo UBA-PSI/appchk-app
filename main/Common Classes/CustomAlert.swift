@@ -58,10 +58,13 @@ class CustomAlert<CustomView: UIView>: UIViewController {
 			control.addSubview(x)
 			// sticky edges horizontally
 			x.anchor([.leading, .trailing], to: control, margin: lr)
-			// chain views vertically
-			x.topAnchor =&= (prevView?.bottomAnchor ?? control.topAnchor) + top
+			chainPrevious(to: x.topAnchor, padding: top)
 			prevView = x
 			h += x.frame.height + top
+		}
+		func chainPrevious(to anchor: NSLayoutYAxisAnchor, padding p: CGFloat) {
+			anchor =&= (prevView?.bottomAnchor ?? control.topAnchor) + p/2 | .defaultLow
+			anchor =&= (prevView?.bottomAnchor ?? control.topAnchor) + p | .defaultHigh
 		}
 		
 		if let t = alertTitle {
@@ -76,8 +79,7 @@ class CustomAlert<CustomView: UIView>: UIViewController {
 		}
 		appendView(customView, top: (prevView == nil) ? 0 : 16, lr: 0)
 		appendView(buttonsBar, top: 0, lr: 25)
-		
-		buttonsBar.bottomAnchor =&= control.bottomAnchor - 15
+		chainPrevious(to: control.bottomAnchor, padding: 15)
 		h += 15 // buttonsBar has 15px padding
 		
 		let screen = UIScreen.main.bounds.size
@@ -85,6 +87,7 @@ class CustomAlert<CustomView: UIView>: UIViewController {
 		
 		view.addSubview(control)
 		control.anchor([.leading, .trailing, .bottom], to: view!)
+		control.heightAnchor =<= view.heightAnchor
 	}
 	
 	
