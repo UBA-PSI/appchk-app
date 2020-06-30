@@ -7,6 +7,9 @@ struct QuickUI {
 		x.text = str
 		x.textAlignment = align
 		x.font = .preferredFont(forTextStyle: style)
+		x.constrainHuggingCompression(.horizontal, .defaultLow)
+		x.constrainHuggingCompression(.vertical, .defaultHigh)
+		x.sizeToFit()
 		if #available(iOS 10.0, *) {
 			x.adjustsFontForContentSizeCategory = true
 		}
@@ -17,6 +20,7 @@ struct QuickUI {
 		let x = UIButton(type: .roundedRect)
 		x.setTitle(title, for: .normal)
 		x.titleLabel?.font = .preferredFont(forTextStyle: .body)
+		x.constrainHuggingCompression(.vertical, .defaultHigh)
 		x.sizeToFit()
 		if let a = action { x.addTarget(target, action: a, for: .touchUpInside) }
 		if #available(iOS 10.0, *) {

@@ -47,6 +47,15 @@ extension NSLayoutConstraint {
 	@discardableResult static func |(l: NSLayoutConstraint, r: UILayoutPriority) -> NSLayoutConstraint { l.priority = r; return l }
 }
 
+extension NSLayoutDimension {
+	/// Create and activate an `equal` constraint with constant value. Format: `A.anchor =&= constant | priority`
+	@discardableResult static func =&= (l: NSLayoutDimension, r: CGFloat) -> NSLayoutConstraint { l.constraint(equalToConstant: r).on() }
+	/// Create and activate a `lessThan` constraint with constant value. Format: `A.anchor =<= constant | priority`
+	@discardableResult static func =<= (l: NSLayoutDimension, r: CGFloat) -> NSLayoutConstraint { l.constraint(lessThanOrEqualToConstant: r).on() }
+	/// Create and activate a `greaterThan` constraint with constant value. Format: `A.anchor =>= constant | priority`
+	@discardableResult static func =>= (l: NSLayoutDimension, r: CGFloat) -> NSLayoutConstraint { l.constraint(greaterThanOrEqualToConstant: r).on() }
+}
+
 /*
   UIView extension to generate multiple constraints at once
 
@@ -72,6 +81,12 @@ extension UIView {
 			let (A, B) = UIView.inverseItem.contains($0) ? (other, self) : (self, other)
 			return NSLayoutConstraint(item: A, attribute: $0, relatedBy: rel, toItem: B, attribute: $0, multiplier: 1, constant: margin).on()
 		}
+	}
+	
+	/// Sets the priority with which a view resists being made smaller and larger than its intrinsic size.
+	func constrainHuggingCompression(_ axis: NSLayoutConstraint.Axis, _ priotity: UILayoutPriority) {
+		setContentHuggingPriority(priotity, for: axis)
+		setContentCompressionResistancePriority(priotity, for: axis)
 	}
 }
 

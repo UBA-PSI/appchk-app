@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5404AEEB24A90717003B2F54 /* PrefsShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4524A8B0FE0025D261 /* PrefsShared.swift */; };
+		5404AEED24A95F3F003B2F54 /* SlideInAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5404AEEC24A95F3F003B2F54 /* SlideInAnimation.swift */; };
 		540E6780242D2CF100871BBE /* VCRecordings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E677F242D2CF100871BBE /* VCRecordings.swift */; };
 		540E67822433483D00871BBE /* VCEditRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E67812433483D00871BBE /* VCEditRecording.swift */; };
 		540E67842433FAFE00871BBE /* TVCPreviousRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */; };
@@ -174,6 +175,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5404AEEC24A95F3F003B2F54 /* SlideInAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInAnimation.swift; sourceTree = "<group>"; };
 		540E677F242D2CF100871BBE /* VCRecordings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCRecordings.swift; sourceTree = "<group>"; };
 		540E67812433483D00871BBE /* VCEditRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCEditRecording.swift; sourceTree = "<group>"; };
 		540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCPreviousRecords.swift; sourceTree = "<group>"; };
@@ -456,6 +458,7 @@
 				54448A3124899A4000771C96 /* SearchBarManager.swift */,
 				549ECD9C24A7AD550097571C /* CustomAlert.swift */,
 				541FC47524A12D01009154D8 /* IBViews.swift */,
+				5404AEEC24A95F3F003B2F54 /* SlideInAnimation.swift */,
 			);
 			path = "Common Classes";
 			sourceTree = "<group>";
@@ -901,6 +904,7 @@
 				54B34594240E6343004C53CC /* TVCFilter.swift in Sources */,
 				549ECD9D24A7AD550097571C /* CustomAlert.swift in Sources */,
 				54E540FA2482414800F7C34A /* SyncUpdate.swift in Sources */,
+				5404AEED24A95F3F003B2F54 /* SlideInAnimation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

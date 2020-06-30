@@ -6,19 +6,7 @@ class CustomAlert<CustomView: UIView>: UIViewController {
 	private let alertDetail: String?
 	
 	private let customView: CustomView
-	private var callback: ((CustomView) -> Void)!
-	
-	private let backgroundShadow: UIView = {
-		let shadow = UIView()
-		shadow.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		return shadow
-	}()
-	
-	private let control: UIView = {
-		let x = UIView()
-		x.backgroundColor = .sysBackground
-		return x
-	}()
+	private var callback: ((CustomView) -> Void)?
 	
 	/// Default: `[Cancel, Save]`
 	let buttonsBar: UIStackView = {
@@ -41,55 +29,88 @@ class CustomAlert<CustomView: UIView>: UIViewController {
 		alertDetail = detail
 		customView = custom
 		super.init(nibName: nil, bundle: nil)
-		modalPresentationStyle = .custom
-		if #available(iOS 13.0, *) {
-			isModalInPresentation = true
+	}
+	
+	override var isModalInPresentation: Bool { set{} get{true} }
+	override var modalPresentationStyle: UIModalPresentationStyle { set{} get{.custom} }
+	override var transitioningDelegate: UIViewControllerTransitioningDelegate? {
+		set {} get {
+			SlideInTransitioningDelegate(for: .bottom, modal: true)
 		}
 	}
 	
 	internal override func loadView() {
-		view = UIView()
-		view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		view.isHidden = true // otherwise control will flash on present
+		let control = UIView()
+		control.backgroundColor = .sysBackground
+		view = control
 		
-		var h: CGFloat = 0
-		var prevView: UIView? = nil
-		func appendView(_ x: UIView, top: CGFloat, lr: CGFloat) {
-			control.addSubview(x)
-			// sticky edges horizontally
-			x.anchor([.leading, .trailing], to: control, margin: lr)
-			chainPrevious(to: x.topAnchor, padding: top)
-			prevView = x
-			h += x.frame.height + top
-		}
-		func chainPrevious(to anchor: NSLayoutYAxisAnchor, padding p: CGFloat) {
-			anchor =&= (prevView?.bottomAnchor ?? control.topAnchor) + p/2 | .defaultLow
-			anchor =&= (prevView?.bottomAnchor ?? control.topAnchor) + p | .defaultHigh
+		var tmpPrevivous: UIView? = nil
+		
+		func adaptive(margin: CGFloat, _ fn: () -> NSLayoutConstraint) {
+			regularConstraints.append(fn() + margin)
+			compactConstraints.append(fn() + margin/2)
 		}
 		
+		func addLabel(_ lbl: UILabel) {
+			lbl.numberOfLines = 0
+			control.addSubview(lbl)
+			lbl.anchor([.leading, .trailing], to: control.layoutMarginsGuide)
+			if let p = tmpPrevivous {
+				adaptive(margin: 16) { lbl.topAnchor =&= p.bottomAnchor }
+			} else {
+				adaptive(margin: 12) { lbl.topAnchor =&= control.layoutMarginsGuide.topAnchor }
+			}
+			tmpPrevivous = lbl
+		}
+		
+		// Alert title & description
 		if let t = alertTitle {
-			let lbl = QuickUI.label(t, align: .center, style: .headline)
-			lbl.numberOfLines = 0
-			appendView(lbl, top: 16, lr: 16)
+			let lbl = QuickUI.label(t, align: .center, style: .subheadline)
+			lbl.font = lbl.font.bold()
+			addLabel(lbl)
 		}
+		
 		if let d = alertDetail {
-			let lbl = QuickUI.label(d, align: .center, style: .subheadline)
-			lbl.numberOfLines = 0
-			appendView(lbl, top: 16, lr: 16)
+			addLabel(QuickUI.label(d, align: .center, style: .footnote))
 		}
-		appendView(customView, top: (prevView == nil) ? 0 : 16, lr: 0)
-		appendView(buttonsBar, top: 0, lr: 25)
-		chainPrevious(to: control.bottomAnchor, padding: 15)
-		h += 15 // buttonsBar has 15px padding
 		
-		let screen = UIScreen.main.bounds.size
-		control.frame = CGRect(x: 0, y: screen.height - h, width: screen.width, height: h)
+		// User content
+		control.addSubview(customView)
+		customView.anchor([.leading, .trailing], to: control)
+		if let p = tmpPrevivous {
+			customView.topAnchor =&= p.bottomAnchor | .defaultHigh
+		} else {
+			customView.topAnchor =&= control.layoutMarginsGuide.topAnchor
+		}
 		
-		view.addSubview(control)
-		control.anchor([.leading, .trailing, .bottom], to: view!)
-		control.heightAnchor =<= view.heightAnchor
+		// Action buttons
+		control.addSubview(buttonsBar)
+		buttonsBar.anchor([.leading, .trailing], to: control.layoutMarginsGuide, margin: 8)
+		buttonsBar.topAnchor =&= customView.bottomAnchor | .defaultHigh
+		
+		adaptive(margin: 12) { control.layoutMarginsGuide.bottomAnchor =&= buttonsBar.bottomAnchor }
+		
+		adaptToNewTraits(traitCollection)
+		view.frame.size = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
 	}
 	
+	
+	// MARK: - Adaptive Traits
+	
+	private var compactConstraints: [NSLayoutConstraint] = []
+	private var regularConstraints: [NSLayoutConstraint] = []
+	
+	private func adaptToNewTraits(_ traits: UITraitCollection) {
+		let flag = traits.verticalSizeClass == .compact
+		NSLayoutConstraint.deactivate(flag ? regularConstraints : compactConstraints)
+		NSLayoutConstraint.activate(flag ? compactConstraints : regularConstraints)
+		view.setNeedsLayout()
+	}
+	
+	override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+		super.willTransition(to: newCollection, with: coordinator)
+		adaptToNewTraits(newCollection)
+	}
 	
 	// MARK: - User Interaction
 	
@@ -104,7 +125,7 @@ class CustomAlert<CustomView: UIView>: UIViewController {
 	
 	@objc private func didTapSave() {
 		dismiss(animated: true) {
-			self.callback(self.customView)
+			self.callback?(self.customView)
 			self.callback = nil
 		}
 	}
@@ -114,26 +135,7 @@ class CustomAlert<CustomView: UIView>: UIViewController {
 	
 	func present(in viewController: UIViewController, onSuccess: @escaping (CustomView) -> Void) {
 		callback = onSuccess
-		loadViewIfNeeded()
-		viewController.present(self, animated: false) {
-			let prev = self.control.frame.origin.y
-			self.control.frame.origin.y += self.control.frame.height
-			self.view.isHidden = false
-			
-			UIView.animate(withDuration: 0.3) {
-				self.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-				self.control.frame.origin.y = prev
-			}
-		}
-	}
-	
-	override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-		UIView.animate(withDuration: 0.3, animations: {
-			self.view.backgroundColor = .clear
-			self.control.frame.origin.y += self.control.frame.height
-		}) { _ in
-			super.dismiss(animated: false, completion: completion)
-		}
+		viewController.present(self, animated: true)
 	}
 }
 
@@ -145,11 +147,7 @@ class CustomAlert<CustomView: UIView>: UIViewController {
 
 class DatePickerAlert : CustomAlert<UIDatePicker> {
 	
-	let datePicker: UIDatePicker = {
-		let x = UIDatePicker()
-		x.frame.size.height = x.sizeThatFits(.zero).height
-		return x
-	}()
+	let datePicker = UIDatePicker()
 	
 	required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 	
@@ -184,14 +182,9 @@ class DatePickerAlert : CustomAlert<UIDatePicker> {
 
 class DurationPickerAlert: CustomAlert<UIPickerView>, UIPickerViewDataSource, UIPickerViewDelegate {
 	
+	let pickerView = UIPickerView()
 	private let dataSource: [[String]]
 	private let compWidths: [CGFloat]
-	let pickerView: UIPickerView = {
-		let x = UIPickerView()
-		x.frame.size.height = x.sizeThatFits(.zero).height
-		return x
-	}()
-	
 	
 	required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 	
