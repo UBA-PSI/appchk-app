@@ -16,6 +16,8 @@ Your data belongs to you.
 Therefore, monitoring and analysis take place on your device only.
 The app does not share any data with us or any other third-party – unless you choose to.
 
+Join [Testflight beta](https://testflight.apple.com/join/9jjaFeHO)
+
 
 ### How does it work?
 
@@ -31,19 +33,23 @@ That means, AppCheck does not have to be active in the foreground all the time.
 - See history of previous connections
 - Block unwanted traffic based on domain names
 - Record app specific activity<sup>1</sup>
-- Apply logging filters
+- Apply logging filters (block or ignore) and display filters (specific range or last x minutes)
+- Sort results by time, name, or occurrence count
+- Context Analysis
+  - What other domains occur often at the same time?
+  - What happened immediately before or after the action?
+- Export results for custom analysis
 
 **… and soon:**
 
 - Alert Monitor & reminder
-- Occurrence Context Analysis
 - Participate in privacy research
 
 
-<sup>1</sup> Due to technical limitations, recording is not limited to any single application. Remember to force-quit all other applications before starting a recording.
+<sup>1</sup> Due to technical limitations, recordings can not be restricted to a single application. Remember to force-quit all other applications before starting a recording.
 
 
 ## Research Project
 
-*information will be added soon*
+*information will be added soon™*
 
