@@ -25,5 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		TheGreatDestroyer.deleteLogs(olderThan: PrefsShared.AutoDeleteLogsDays)
+		// FIXME: Does not reflect changes performed by GlassVPN auto-delete while app is open.
+		//        It will update whenever app restarts or becomes active again (only if deleteLogs has something to delete!)
+		//        This is a known issue and tolerated.
 	}
 }
