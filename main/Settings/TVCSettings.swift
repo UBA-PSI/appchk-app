@@ -2,7 +2,6 @@ import UIKit
 
 class TVCSettings: UITableViewController {
 	
-	private let appDelegate = UIApplication.shared.delegate as! AppDelegate
 	@IBOutlet var vpnToggle: UISwitch!
 	@IBOutlet var cellDomainsIgnored: UITableViewCell!
 	@IBOutlet var cellDomainsBlocked: UITableViewCell!
@@ -71,6 +70,7 @@ class TVCSettings: UITableViewController {
 	// MARK: - Privacy
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		// FIXME: there is a lag between tap and open when run on device
 		if let cell = tableView.cellForRow(at: indexPath), cell === cellPrivacyAutoDelete {
 			let multiplier = [1, 7, 31]
 			let (one, two) = autoDeleteSelection(multiplier)
@@ -117,6 +117,7 @@ class TVCSettings: UITableViewController {
 	// MARK: - Advanced
 	
 	@IBAction private func exportDB() {
+		AppDB?.vacuum()
 		let sheet = UIActivityViewController(activityItems: [URL.internalDB()], applicationActivities: nil)
 		self.present(sheet, animated: true)
 	}
