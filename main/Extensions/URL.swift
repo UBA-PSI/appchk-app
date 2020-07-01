@@ -12,6 +12,18 @@ fileprivate extension FileManager {
 	}
 }
 
+extension FileManager {
+	func sizeOf(path: String) -> Int64? {
+		try? attributesOfItem(atPath: path)[.size] as? Int64
+	}
+	func readableSizeOf(path: String) -> String? {
+		guard let fSize = sizeOf(path: path) else { return nil }
+		let bcf = ByteCountFormatter()
+		bcf.countStyle = .file
+		return bcf.string(fromByteCount: fSize)
+	}
+}
+
 extension URL {
 //	static func exportDir() -> URL { FileManager.default.exportDir() }
 	static func appGroupDir() -> URL { FileManager.default.appGroupDir() }

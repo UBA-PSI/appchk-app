@@ -121,6 +121,14 @@ class TVCSettings: UITableViewController {
 		let sheet = UIActivityViewController(activityItems: [URL.internalDB()], applicationActivities: nil)
 		self.present(sheet, animated: true)
 	}
+	
+	override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+		if section == tableView.numberOfSections - 1 {
+			let fs = FileManager.default.readableSizeOf(path: URL.internalDB().relativePath)
+			return "Database size: \(fs ?? "0 MB")"
+		}
+		return nil
+	}
 }
 
 
