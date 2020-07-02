@@ -17,6 +17,18 @@ extension UIView {
 			return UIImage(cgImage: image!.cgImage!)
 		}
 	}
+	
+	/// Find size that fits into frame with given `width` as precondition.
+	/// - Parameter preferredHeight:If unset, find smallest possible size.
+	func fittingSize(fixedWidth: CGFloat, preferredHeight: CGFloat = 0) -> CGSize {
+		systemLayoutSizeFitting(CGSize(width: fixedWidth, height: preferredHeight), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
+	}
+	
+	/// Find size that fits into frame with given `height` as precondition.
+	/// - Parameter preferredWidth:If unset, find smallest possible size.
+	func fittingSize(fixedHeight: CGFloat, preferredWidth: CGFloat = 0) -> CGSize {
+		systemLayoutSizeFitting(CGSize(width: preferredWidth, height: fixedHeight), withHorizontalFittingPriority: .fittingSizeLevel, verticalFittingPriority: .required)
+	}
 }
 
 extension UIEdgeInsets {

@@ -172,18 +172,10 @@ private class StickyPresentationController: UIPresentationController {
 		let preferred = presentedViewController.preferredContentSize
 		switch stickTo {
 		case .left, .right:
-			let fitted = target.systemLayoutSizeFitting(
-				CGSize(width: preferred.width, height: full.height),
-				withHorizontalFittingPriority: .fittingSizeLevel,
-				verticalFittingPriority: .required
-			)
+			let fitted = target.fittingSize(fixedHeight: full.height, preferredWidth: preferred.width)
 			return CGSize(width: min(fitted.width, full.width), height: full.height)
 		case .top, .bottom:
-			let fitted = target.systemLayoutSizeFitting(
-				CGSize(width: full.width, height: preferred.height),
-				withHorizontalFittingPriority: .required,
-				verticalFittingPriority: .fittingSizeLevel
-			)
+			let fitted = target.fittingSize(fixedWidth: full.width, preferredHeight: preferred.height)
 			return CGSize(width: full.width, height: min(fitted.height, full.height))
 		}
 	}
