@@ -1,7 +1,8 @@
 import UIKit
 
 class VCCoOccurrence: UIViewController, UITableViewDataSource {
-	var fqdn: String!
+	var domainName: String!
+	var isFQDN: Bool!
 	private var dataSource: [ContextAnalysisResult] = []
 	
 	@IBOutlet private var tableView: UITableView!
@@ -30,14 +31,15 @@ class VCCoOccurrence: UIViewController, UITableViewDataSource {
 		dataSource = [("Loading …", 0, 0, 0)]
 		logMaxCount = 1
 		tableView.reloadData()
-		let domain = fqdn!
+		let domain = domainName!
+		let flag = isFQDN!
 		let time = Timestamp(selectedTime)
 		DispatchQueue.global().async { [weak self] in
 			let temp: [ContextAnalysisResult]
 			let total: Int32
 			if let db = AppDB,
-				let times = db.dnsLogsUniqTs(domain), times.count > 0,
-				let result = db.contextAnalysis(coOccurrence: times, plusMinus: time, exclude: domain),
+				let times = db.dnsLogsUniqTs(domain, isFQDN: flag), times.count > 0,
+				let result = db.contextAnalysis(coOccurrence: times, plusMinus: time, exclude: domain, isFQDN: flag),
 				result.count > 0
 			{
 				temp = result

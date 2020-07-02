@@ -1,6 +1,6 @@
 import UIKit
 
-class TVCHosts: UITableViewController, GroupedDomainDataSourceDelegate {
+class TVCHosts: UITableViewController, GroupedDomainDataSourceDelegate, AnalysisBarDelegate {
 	
 	lazy var source = GroupedDomainDataSource(withParent: parentDomain)
 	
@@ -19,6 +19,10 @@ class TVCHosts: UITableViewController, GroupedDomainDataSourceDelegate {
 		if let index = tableView.indexPathForSelectedRow?.row {
 			(segue.destination as? TVCHostDetails)?.fullDomain = source[index].domain
 		}
+	}
+	
+	func analysisBarWillOpenCoOccurrence() -> (domain: String, isFQDN: Bool) {
+		(parentDomain, false)
 	}
 	
 	

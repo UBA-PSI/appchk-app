@@ -33,6 +33,13 @@ class SearchBarManager: NSObject, UISearchResultsUpdating {
 		if #available(iOS 11.0, *) {
 			tvc?.navigationItem.searchController = controller
 		} else {
+			let thv = tvc?.tableView.tableHeaderView
+			guard thv == nil || thv is UISearchBar else {
+				// Don't overwrite actions bar (co-occurrence, etc.)
+				// FIXME: find alternative or iOS 9-10 users can't search in hosts
+				tvc = nil
+				return
+			}
 			controller.loadViewIfNeeded() // Fix: "Attempting to load the view of a view controller while it is deallocating"
 			tvc?.definesPresentationContext = true // make search bar disappear if user changes scene (eg. select cell)
 			//tvc?.tableView.backgroundView = UIView() // iOS 11+ bug: bright white background in dark mode
@@ -42,7 +49,7 @@ class SearchBarManager: NSObject, UISearchResultsUpdating {
 	}
 	
 	/// Search callback
-	func updateSearchResults(for controller: UISearchController) {
+	internal func updateSearchResults(for controller: UISearchController) {
 		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(performSearch), object: nil)
 		perform(#selector(performSearch), with: nil, afterDelay: 0.2)
 	}

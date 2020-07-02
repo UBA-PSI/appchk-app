@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5404AEEB24A90717003B2F54 /* PrefsShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4524A8B0FE0025D261 /* PrefsShared.swift */; };
 		5404AEED24A95F3F003B2F54 /* SlideInAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5404AEEC24A95F3F003B2F54 /* SlideInAnimation.swift */; };
+		5404AEEF24ACC089003B2F54 /* VCAnalysisBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5404AEEE24ACC089003B2F54 /* VCAnalysisBar.swift */; };
 		540E6780242D2CF100871BBE /* VCRecordings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E677F242D2CF100871BBE /* VCRecordings.swift */; };
 		540E67822433483D00871BBE /* VCEditRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E67812433483D00871BBE /* VCEditRecording.swift */; };
 		540E67842433FAFE00871BBE /* TVCPreviousRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */; };
@@ -176,6 +177,7 @@
 
 /* Begin PBXFileReference section */
 		5404AEEC24A95F3F003B2F54 /* SlideInAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInAnimation.swift; sourceTree = "<group>"; };
+		5404AEEE24ACC089003B2F54 /* VCAnalysisBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCAnalysisBar.swift; sourceTree = "<group>"; };
 		540E677F242D2CF100871BBE /* VCRecordings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCRecordings.swift; sourceTree = "<group>"; };
 		540E67812433483D00871BBE /* VCEditRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCEditRecording.swift; sourceTree = "<group>"; };
 		540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCPreviousRecords.swift; sourceTree = "<group>"; };
@@ -347,7 +349,8 @@
 				5412F8ED24571B8100A63D7A /* VCDateFilter.swift */,
 				54953E6023E0D69A0054345C /* TVCHosts.swift */,
 				54953E6E23E44CD00054345C /* TVCHostDetails.swift */,
-				541FC47424A12CE9009154D8 /* Analytics */,
+				544F911F24A67EC5001D4B00 /* TVCOccurrenceContext.swift */,
+				541FC47424A12CE9009154D8 /* Analysis */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -415,13 +418,13 @@
 			path = main;
 			sourceTree = "<group>";
 		};
-		541FC47424A12CE9009154D8 /* Analytics */ = {
+		541FC47424A12CE9009154D8 /* Analysis */ = {
 			isa = PBXGroup;
 			children = (
+				5404AEEE24ACC089003B2F54 /* VCAnalysisBar.swift */,
 				541FC47724A1453F009154D8 /* VCCoOccurrence.swift */,
-				544F911F24A67EC5001D4B00 /* TVCOccurrenceContext.swift */,
 			);
-			path = Analytics;
+			path = Analysis;
 			sourceTree = "<group>";
 		};
 		542E2A9B24051F79001462DC /* media */ = {
@@ -860,6 +863,7 @@
 				54E540F8247DB90F00F7C34A /* RecordingsDB.swift in Sources */,
 				54E67E4F24A8E2910025D261 /* Equatable.swift in Sources */,
 				54E540F4247D3F2600F7C34A /* TestDataSource.swift in Sources */,
+				5404AEEF24ACC089003B2F54 /* VCAnalysisBar.swift in Sources */,
 				545DDDD424466D37003B6544 /* AutoLayout.swift in Sources */,
 				54B345AD241BBB00004C53CC /* DBExtensions.swift in Sources */,
 				54E540F2247C423200F7C34A /* DomainFilter.swift in Sources */,

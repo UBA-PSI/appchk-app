@@ -244,8 +244,9 @@ extension SQLiteDatabase {
 	}
 	
 	/// Get sorted, unique list of `ts` with given `fqdn`.
-	func dnsLogsUniqTs(_ fqdn: String) -> [Timestamp]? {
-		try? run(sql: "SELECT DISTINCT ts FROM heap WHERE fqdn = ? ORDER BY ts;", bind: [BindText(fqdn)]) {
+	func dnsLogsUniqTs(_ domain: String, isFQDN flag: Bool) -> [Timestamp]? {
+		try? run(sql: "SELECT DISTINCT ts FROM heap WHERE \(flag ? "fqdn" : "domain") = ? ORDER BY ts;",
+				bind: [BindText(domain)]) {
 			allRows($0) { col_ts($0, 0) }
 		}
 	}
@@ -257,7 +258,7 @@ extension SQLiteDatabase {
 	///   - dt: Search for `ts - dt <= X <= ts + dt`
 	///   - fqdn: Rows matching this domain will be excluded from the result set.
 	/// - Returns: List of tuples ordered by rank (ASC).
-	func contextAnalysis(coOccurrence times: [Timestamp], plusMinus dt: Timestamp, exclude fqdn: String) -> [ContextAnalysisResult]? {
+	func contextAnalysis(coOccurrence times: [Timestamp], plusMinus dt: Timestamp, exclude domain: String, isFQDN flag: Bool) -> [ContextAnalysisResult]? {
 		guard times.count > 0 else { return nil }
 		createFunction("fnDist") {
 			let x = $0.first as! Timestamp
@@ -282,10 +283,10 @@ extension SQLiteDatabase {
 			SELECT fqdn, count, avg, (\(fnRank)) rank FROM (
 				SELECT fqdn, COUNT(*) count, AVG(dist) avg FROM (
 					SELECT fqdn, fnDist(ts) dist FROM heap
-					WHERE ts BETWEEN ? AND ? AND fqdn != ? AND dist <= ?
+					WHERE ts BETWEEN ? AND ? AND \(flag ? "fqdn" : "domain") != ? AND dist <= ?
 				) GROUP BY fqdn
 			) ORDER BY rank ASC LIMIT 99;
-			""", bind: [BindInt64(dt), BindInt64(low), BindInt64(high), BindText(fqdn), BindInt64(dt)]) {
+			""", bind: [BindInt64(dt), BindInt64(low), BindInt64(high), BindText(domain), BindInt64(dt)]) {
 				allRows($0) {
 					(col_text($0, 0) ?? "", sqlite3_column_int($0, 1), sqlite3_column_double($0, 2), sqlite3_column_double($0, 3))
 				}
