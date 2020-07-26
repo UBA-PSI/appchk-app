@@ -13,6 +13,9 @@ enum RecordingsDB {
 	/// Get list of all recordings
 	static func list() -> [Recording] { AppDB?.recordingGetAll() ?? [] }
 	
+	/// Get `Timestamp` of latest recording
+	static func lastTimestamp() -> Timestamp? { AppDB?.recordingLastTimestamp() }
+	
 	/// Copy log entries from generic `heap` table  to recording specific `recLog` table
 	static func persist(_ r: Recording) {
 		sync.syncNow { // persist changes in cache before copying recording details

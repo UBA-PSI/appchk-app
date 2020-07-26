@@ -382,6 +382,14 @@ extension SQLiteDatabase {
 		}
 	}
 	
+	/// Get `Timestamp` of last recording.
+	func recordingLastTimestamp() -> Timestamp? {
+		try? run(sql: "SELECT stop FROM rec WHERE stop IS NOT NULL ORDER BY rowid DESC LIMIT 1;") {
+			try ifStep($0, SQLITE_ROW)
+			return col_ts($0, 0)
+		}
+	}
+	
 	/// `WHERE stop IS NOT NULL`
 	func recordingGetAll() -> [Recording]? {
 		try? run(sql: "SELECT * FROM rec WHERE stop IS NOT NULL;") {

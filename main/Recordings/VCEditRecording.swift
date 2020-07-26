@@ -47,6 +47,9 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 			RecordingsDB.update(self.record)
 			if newlyCreated {
 				RecordingsDB.persist(self.record)
+				if Prefs.RecordingReminder.Enabled {
+					PushNotification.scheduleRecordingReminder(force: true)
+				}
 			}
 		}
 	}

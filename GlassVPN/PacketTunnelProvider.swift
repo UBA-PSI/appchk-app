@@ -1,50 +1,7 @@
 import NetworkExtension
-
-fileprivate var filterDomains: [String]!
-fileprivate var filterOptions: [(block: Bool, ignore: Bool)]!
-
-
-// MARK: Backward DNS Binary Tree Lookup
-
-fileprivate func reloadDomainFilter() {
-	let tmp = AppDB?.loadFilters()?.map({
-		(String($0.reversed()), $1)
-	}).sorted(by: { $0.0 < $1.0 }) ?? []
-	filterDomains = tmp.map { $0.0 }
-	filterOptions = tmp.map { ($1.contains(.blocked), $1.contains(.ignored)) }
-}
-
-fileprivate func filterIndex(for domain: String) -> Int {
-	let reverseDomain = String(domain.reversed())
-	var lo = 0, hi = filterDomains.count - 1
-	while lo <= hi {
-		let mid = (lo + hi)/2
-		if filterDomains[mid] < reverseDomain {
-			lo = mid + 1
-		} else if reverseDomain < filterDomains[mid] {
-			hi = mid - 1
-		} else {
-			return mid
-		}
-	}
-	if lo > 0, reverseDomain.hasPrefix(filterDomains[lo - 1] + ".") {
-		return lo - 1
-	}
-	return -1
-}
+import UserNotifications
 
 private let queue = DispatchQueue.init(label: "PSIGlassDNSQueue", qos: .userInteractive, target: .main)
-
-private func logAsync(_ domain: String, blocked: Bool) {
-	queue.async {
-		do {
-			try AppDB?.logWrite(domain, blocked: blocked)
-		} catch {
-			DDLogWarn("Couldn't write: \(error)")
-		}
-	}
-}
-
 
 // MARK: ObserverFactory
 
@@ -60,14 +17,10 @@ class LDObserverFactory: ObserverFactory {
 			switch event {
 			case .receivedRequest(let session, let socket):
 				let i = filterIndex(for: session.host)
-				if i >= 0 {
-					let (block, ignore) = filterOptions[i]
-					if !ignore { logAsync(session.host, blocked: block) }
-					if block { socket.forceDisconnect() }
-				} else {
-					// TODO: disable filter during recordings
-					logAsync(session.host, blocked: false)
-				}
+				let (block, ignore, cA, cB) = (i<0) ? (false, false, false, false) : filterOptions[i]
+				let kill = ignore ? block : procRequest(session.host, blck: block, custA: cA, custB: cB)
+				// TODO: disable ignore & block during recordings
+				if kill { socket.forceDisconnect() }
 			default:
 				break
 			}
@@ -86,58 +39,35 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	
 	private var autoDeleteTimer: Timer? = nil
 	
-	private func reloadSettings() {
-		reloadDomainFilter()
-		setAutoDelete(PrefsShared.AutoDeleteLogsDays)
-	}
+	// MARK: Delegate
 	
 	override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
 		DDLogVerbose("startTunnel with with options: \(String(describing: options))")
+		PrefsShared.registerDefaults()
 		do {
 			try SQLiteDatabase.open().initCommonScheme()
 		} catch {
-			completionHandler(error)
+			completionHandler(error) // if we cant open db, fail immediately
 			return
 		}
-		reloadSettings()
-		
-		if proxyServer != nil {
-			proxyServer.stop()
-		}
+		// stop previous if any
+		if proxyServer != nil { proxyServer.stop() }
 		proxyServer = nil
 		
-		// Create proxy
-		let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: proxyServerAddress)
-		settings.mtu = NSNumber(value: 1500)
+		willInitProxy()
 		
-		let proxySettings = NEProxySettings()
-		proxySettings.httpEnabled = true;
-		proxySettings.httpServer = NEProxyServer(address: proxyServerAddress, port: Int(proxyServerPort))
-		proxySettings.httpsEnabled = true;
-		proxySettings.httpsServer = NEProxyServer(address: proxyServerAddress, port: Int(proxyServerPort))
-		proxySettings.excludeSimpleHostnames = false;
-		proxySettings.exceptionList = []
-		proxySettings.matchDomains = [""]
-		
-		settings.dnsSettings = NEDNSSettings(servers: ["127.0.0.1"])
-		settings.proxySettings = proxySettings;
-		RawSocketFactory.TunnelProvider = self
-		ObserverFactory.currentFactory = LDObserverFactory()
-		
-		self.setTunnelNetworkSettings(settings) { error in
+		self.setTunnelNetworkSettings(createProxy()) { error in
 			guard error == nil else {
-				DDLogError("setTunnelNetworkSettings error: \(String(describing: error))")
+				DDLogError("setTunnelNetworkSettings error: \(error!)")
 				completionHandler(error)
 				return
 			}
-			completionHandler(nil)
-			
 			self.proxyServer = GCDHTTPProxyServer(address: IPAddress(fromString: self.proxyServerAddress), port: Port(port: self.proxyServerPort))
 			do {
 				try self.proxyServer.start()
+				self.didInitProxy()
 				completionHandler(nil)
-			}
-			catch let proxyError {
+			} catch let proxyError {
 				DDLogError("Error starting proxy server \(proxyError)")
 				completionHandler(proxyError)
 			}
@@ -146,15 +76,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	
 	override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
 		DDLogVerbose("stopTunnel with reason: \(reason)")
-		DNSServer.currentServer = nil
-		RawSocketFactory.TunnelProvider = nil
-		ObserverFactory.currentFactory = nil
-		proxyServer.stop()
-		proxyServer = nil
-		filterDomains = nil
-		filterOptions = nil
-		autoDeleteTimer?.fire() // one last time before we quit
-		autoDeleteTimer?.invalidate()
+		shutdown()
 		completionHandler()
 		exit(EXIT_SUCCESS)
 	}
@@ -171,12 +93,117 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 			case "auto-delete":
 				setAutoDelete(Int(value) ?? PrefsShared.AutoDeleteLogsDays)
 				return
+			case "notify-prefs-change":
+				reloadNotificationSettings()
+				return
 			default: break
 			}
 		}
 		DDLogWarn("This should never happen! Received unknown handleAppMessage: \(message ?? messageData.base64EncodedString())")
 		reloadSettings() // just in case we fallback to do everything
 	}
+	
+	// MARK: Helper
+	
+	private func willInitProxy() {
+		reloadSettings()
+	}
+	
+	private func createProxy() -> NEPacketTunnelNetworkSettings {
+		let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: proxyServerAddress)
+		settings.mtu = NSNumber(value: 1500)
+		
+		let proxySettings = NEProxySettings()
+		proxySettings.httpEnabled = true;
+		proxySettings.httpServer = NEProxyServer(address: proxyServerAddress, port: Int(proxyServerPort))
+		proxySettings.httpsEnabled = true;
+		proxySettings.httpsServer = NEProxyServer(address: proxyServerAddress, port: Int(proxyServerPort))
+		proxySettings.excludeSimpleHostnames = false;
+		proxySettings.exceptionList = []
+		proxySettings.matchDomains = [""]
+		
+		settings.dnsSettings = NEDNSSettings(servers: ["127.0.0.1"])
+		settings.proxySettings = proxySettings;
+		RawSocketFactory.TunnelProvider = self
+		ObserverFactory.currentFactory = LDObserverFactory()
+		return settings
+	}
+	
+	private func didInitProxy() {
+		if PrefsShared.RestartReminder.Enabled {
+			PushNotification.scheduleRestartReminderBadge(on: false)
+		}
+	}
+	
+	private func shutdown() {
+		// proxy
+		DNSServer.currentServer = nil
+		RawSocketFactory.TunnelProvider = nil
+		ObserverFactory.currentFactory = nil
+		proxyServer.stop()
+		proxyServer = nil
+		// custom
+		filterDomains = nil
+		filterOptions = nil
+		autoDeleteTimer?.fire() // one last time before we quit
+		autoDeleteTimer?.invalidate()
+		notifyTone = nil
+		if PrefsShared.RestartReminder.Enabled {
+			PushNotification.scheduleRestartReminderBadge(on: true)
+			PushNotification.scheduleRestartReminderBanner()
+		}
+	}
+	
+	private func reloadSettings() {
+		reloadDomainFilter()
+		setAutoDelete(PrefsShared.AutoDeleteLogsDays)
+		reloadNotificationSettings()
+	}
+}
+
+
+// ################################################################
+// #
+// #    MARK: - Domain Filter
+// #
+// ################################################################
+
+fileprivate var filterDomains: [String]!
+fileprivate var filterOptions: [(block: Bool, ignore: Bool, customA: Bool, customB: Bool)]!
+
+extension PacketTunnelProvider {
+	fileprivate func reloadDomainFilter() {
+		let tmp = AppDB?.loadFilters()?.map({
+			(String($0.reversed()), $1)
+		}).sorted(by: { $0.0 < $1.0 }) ?? []
+		let t1 = tmp.map { $0.0 }
+		let t2 = tmp.map { ($1.contains(.blocked),
+							$1.contains(.ignored),
+							$1.contains(.customA),
+							$1.contains(.customB)) }
+		filterDomains = t1
+		filterOptions = t2
+	}
+}
+
+/// Backward DNS Binary Tree Lookup
+fileprivate func filterIndex(for domain: String) -> Int {
+	let reverseDomain = String(domain.reversed())
+	var lo = 0, hi = filterDomains.count - 1
+	while lo <= hi {
+		let mid = (lo + hi)/2
+		if filterDomains[mid] < reverseDomain {
+			lo = mid + 1
+		} else if reverseDomain < filterDomains[mid] {
+			hi = mid - 1
+		} else {
+			return mid
+		}
+	}
+	if lo > 0, reverseDomain.hasPrefix(filterDomains[lo - 1] + ".") {
+		return lo - 1
+	}
+	return -1
 }
 
 
@@ -212,4 +239,59 @@ extension PacketTunnelProvider {
 			}
 		}
 	}
+}
+
+
+// ################################################################
+// #
+// #    MARK: - Notifications
+// #
+// ################################################################
+
+fileprivate var notifyEnabled: Bool = false
+fileprivate var notifyIvertMode: Bool = false
+fileprivate var notifyListBlocked: Bool = false
+fileprivate var notifyListCustomA: Bool = false
+fileprivate var notifyListCustomB: Bool = false
+fileprivate var notifyListElse: Bool = false
+fileprivate var notifyTone: AnyObject?
+
+extension PacketTunnelProvider {
+	func reloadNotificationSettings() {
+		notifyEnabled = PrefsShared.ConnectionAlerts.Enabled
+		guard #available(iOS 10.0, *), notifyEnabled else {
+			notifyTone = nil
+			return
+		}
+		notifyIvertMode = PrefsShared.ConnectionAlerts.ExcludeMode
+		notifyListBlocked = PrefsShared.ConnectionAlerts.Lists.Blocked
+		notifyListCustomA = PrefsShared.ConnectionAlerts.Lists.CustomA
+		notifyListCustomB = PrefsShared.ConnectionAlerts.Lists.CustomB
+		notifyListElse = PrefsShared.ConnectionAlerts.Lists.Else
+		notifyTone = UNNotificationSound.from(string: PrefsShared.ConnectionAlerts.Sound)
+	}
+}
+
+
+// ################################################################
+// #
+// #    MARK: - Process DNS Request
+// #
+// ################################################################
+
+/// Log domain request and post notification if wanted.
+/// - Returns: `true` if the request shoud be blocked
+fileprivate func procRequest(_ domain: String, blck: Bool, custA: Bool, custB: Bool) -> Bool {
+	queue.async {
+		do { try AppDB?.logWrite(domain, blocked: blck) }
+		catch { DDLogWarn("Couldn't write: \(error)") }
+	}
+	if #available(iOS 10.0, *), notifyEnabled {
+		let onAnyList = notifyListBlocked && blck || notifyListCustomA && custA || notifyListCustomB && custB || notifyListElse
+		if notifyIvertMode ? !onAnyList : onAnyList {
+			// TODO: wait for response to block or allow connection
+			PushNotification.scheduleConnectionAlert(domain, sound: notifyTone as! UNNotificationSound?)
+		}
+	}
+	return blck
 }

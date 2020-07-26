@@ -11,6 +11,9 @@ class TBCMain: UITabBarController {
 		if !Prefs.DidShowTutorial.Welcome {
 			self.perform(#selector(showWelcomeMessage), with: nil, afterDelay: 0.5)
 		}
+		if #available(iOS 10.0, *) {
+			initNotifications()
+		}
 	}
 	
 	@objc private func reloadTabBarBadge() {
@@ -55,5 +58,65 @@ class TBCMain: UITabBarController {
 		x.present {
 			Prefs.DidShowTutorial.Welcome = true
 		}
+	}
+}
+
+extension TBCMain {
+	@discardableResult func openTab(_ index: Int) -> UIViewController? {
+		selectedIndex = index
+		guard let nav = selectedViewController as? UINavigationController else {
+			return selectedViewController
+		}
+		nav.popToRootViewController(animated: false)
+		return nav.topViewController
+	}
+}
+
+// MARK: - Push Notifications
+
+@available(iOS 10.0, *)
+extension TBCMain: UNUserNotificationCenterDelegate {
+	
+	func initNotifications() {
+		UNUserNotificationCenter.current().delegate = self
+		guard Prefs.RecordingReminder.Enabled else {
+			return
+		}
+		PushNotification.allowed {
+			switch $0 {
+			case .NotDetermined:
+				PushNotification.requestProvisionalOrDoNothing { success in
+					guard success else { return }
+					PushNotification.scheduleRecordingReminder(force: false)
+				}
+			case .Denied:
+				break
+			case .Authorized, .Provisional:
+				PushNotification.scheduleRecordingReminder(force: false)
+			}
+		}
+	}
+	
+	func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+		completionHandler([.alert, .badge, .sound]) // in-app notifications
+	}
+	
+	func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+		switch response.notification.request.identifier {
+		case PushNotification.Identifier.YouShallRecordMoreReminder.rawValue:
+			selectedIndex = 1 // open recordings tab
+		case PushNotification.Identifier.CantStopMeNowReminder.rawValue:
+			(openTab(2) as! TVCSettings).openRestartVPNSettings()
+		//case PushNotification.Identifier.RestInPeaceTombstoneReminder // only badge
+		default: // domain notification
+			// TODO: open specific domain?
+			openTab(0) // open Requests tab
+		}
+		completionHandler()
+	}
+	
+	@available(iOS 12.0, *)
+	func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {
+		(openTab(2) as! TVCSettings).openNotificationSettings()
 	}
 }

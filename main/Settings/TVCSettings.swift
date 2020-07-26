@@ -6,36 +6,63 @@ class TVCSettings: UITableViewController {
 	@IBOutlet var cellDomainsIgnored: UITableViewCell!
 	@IBOutlet var cellDomainsBlocked: UITableViewCell!
 	@IBOutlet var cellPrivacyAutoDelete: UITableViewCell!
+	@IBOutlet var cellNotificationReminder: UITableViewCell!
+	@IBOutlet var cellNotificationConnectionAlert: UITableViewCell!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		reloadToggleState()
-		reloadDataSource()
-		NotifyVPNStateChanged.observe(call: #selector(reloadToggleState), on: self)
-		NotifyDNSFilterChanged.observe(call: #selector(reloadDataSource), on: self)
+		reloadVPNState()
+		reloadLoggingFilterUI()
+		reloadPrivacyUI()
+		NotifyVPNStateChanged.observe(call: #selector(reloadVPNState), on: self)
+		NotifyDNSFilterChanged.observe(call: #selector(reloadLoggingFilterUI), on: self)
 	}
 	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		reloadNotificationState()
+	}
 	
-	// MARK: - VPN Proxy Settings
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		// FIXME: there is a lag between tap and open when run on device
+		if let cell = tableView.cellForRow(at: indexPath), cell === cellPrivacyAutoDelete {
+			openAutoDeletePicker()
+		}
+	}
+	
+	func openRestartVPNSettings() { scrollToSection(0, animated: false) }
+	func openNotificationSettings() { scrollToSection(2, animated: false) }
+	private func scrollToSection(_ section: Int, animated: Bool) {
+		tableView.scrollToRow(at: .init(row: 0, section: section), at: .top, animated: animated)
+	}
+}
+
+
+// MARK: - VPN Proxy Settings
+
+extension TVCSettings {
+	@objc private func reloadVPNState() {
+		vpnToggle.isOn = (GlassVPN.state != .off)
+		vpnToggle.onTintColor = (GlassVPN.state == .inbetween ? .systemYellow : nil)
+		UIApplication.shared.applicationIconBadgeNumber =
+			!vpnToggle.isOn &&
+			PrefsShared.RestartReminder.Enabled &&
+			PrefsShared.RestartReminder.WithBadge ? 1 : 0
+	}
 	
 	@IBAction private func toggleVPNProxy(_ sender: UISwitch) {
 		GlassVPN.setEnabled(sender.isOn)
 	}
-	
-	@objc private func reloadToggleState() {
-		vpnToggle.isOn = (GlassVPN.state != .off)
-		vpnToggle.onTintColor = (GlassVPN.state == .inbetween ? .systemYellow : nil)
-	}
-	
-	
-	// MARK: - Logging Filter
-	
-	@objc private func reloadDataSource() {
-		let (blocked, ignored) = DomainFilter.counts()
+}
+
+
+// MARK: - Logging Filter
+
+extension TVCSettings {
+	@objc private func reloadLoggingFilterUI() {
+		let (blocked, ignored, _, _) = DomainFilter.counts()
 		cellDomainsIgnored.detailTextLabel?.text = "\(ignored) Domains"
 		cellDomainsBlocked.detailTextLabel?.text = "\(blocked) Domains"
-		let (one, two) = autoDeleteSelection([1, 7, 31])
-		cellPrivacyAutoDelete.detailTextLabel?.text = autoDeleteString(one, unit: two)
 	}
 	
 	override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
@@ -65,38 +92,84 @@ class TVCSettings: UITableViewController {
 			break
 		}
 	}
+}
+
+
+// MARK: - Privacy
+
+extension TVCSettings {
+	private func reloadPrivacyUI() {
+		let (num, unit) = getAutoDeleteSelection([1, 7, 31])
+		let str: String
+		switch num {
+		case 0:  str = "Never"
+		case 1:  str = "1 \(["Day", "Week", "Month"][unit])"
+		default: str = "\(num) \(["Days", "Weeks", "Months"][unit])"
+		}
+		cellPrivacyAutoDelete.detailTextLabel?.text = str
+	}
 	
+	private func getAutoDeleteSelection(_ multiplier: [Int]) -> (Int, Int) {
+		let current = PrefsShared.AutoDeleteLogsDays
+		let snd = multiplier.lastIndex { current % $0 == 0 }! // make sure 1 is in list
+		return (current / multiplier[snd], snd)
+	}
 	
-	// MARK: - Privacy
-	
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		// FIXME: there is a lag between tap and open when run on device
-		if let cell = tableView.cellForRow(at: indexPath), cell === cellPrivacyAutoDelete {
-			let multiplier = [1, 7, 31]
-			let (one, two) = autoDeleteSelection(multiplier)
-			
-			let picker = DurationPickerAlert(
-				title: "Auto-delete logs",
-				detail: "Warning: Logs older than the selected interval are deleted immediately! " +
-						"Logs are also deleted on each app launch, and periodically in the background as long as the VPN is running.",
-				options: [(0...30).map{"\($0)"}, ["Days", "Weeks", "Months"]],
-				widths: [0.4, 0.6])
-			picker.pickerView.setSelection([min(30, one), two])
-			picker.present(in: self) { _, idx in
-				cell.detailTextLabel?.text = autoDeleteString(idx[0], unit: idx[1])
-				let asDays = idx[0] * multiplier[idx[1]]
-				PrefsShared.AutoDeleteLogsDays = asDays
-				if !GlassVPN.send(.autoDelete(after: asDays)) {
-					// if VPN isn't active, fallback to immediate local delete
-					TheGreatDestroyer.deleteLogs(olderThan: asDays)
-				}
+	private func openAutoDeletePicker() {
+		let multiplier = [1, 7, 31]
+		let (one, two) = getAutoDeleteSelection(multiplier)
+		
+		let picker = DurationPickerAlert(
+			title: "Auto-delete logs",
+			detail: "Warning: Logs older than the selected interval are deleted immediately! " +
+					"Logs are also deleted on each app launch, and periodically in the background as long as the VPN is running.",
+			options: [(0...30).map{"\($0)"}, ["Days", "Weeks", "Months"]],
+			widths: [0.4, 0.6])
+		picker.pickerView.setSelection([min(30, one), two])
+		picker.present(in: self) { _, idx in
+			let asDays = idx[0] * multiplier[idx[1]]
+			PrefsShared.AutoDeleteLogsDays = asDays
+			self.reloadPrivacyUI()
+			if !GlassVPN.send(.autoDelete(after: asDays)) {
+				// if VPN isn't active, fallback to immediate local delete
+				TheGreatDestroyer.deleteLogs(olderThan: asDays)
 			}
 		}
 	}
+}
+
+
+// MARK: - Notification Settings
+
+extension TVCSettings {
+	private func reloadNotificationState() {
+		let lbl1 = cellNotificationReminder.detailTextLabel
+		let lbl2 = cellNotificationConnectionAlert.detailTextLabel
+		readNotificationState { (realAllowed, provisional) in
+			lbl1?.text = provisional ? "Enabled" : "Disabled"
+			lbl2?.text = realAllowed ? "Enabled" : "Disabled"
+		}
+	}
 	
-	
-	// MARK: - Reset Settings
-	
+	private func readNotificationState(_ closure: @escaping (_ all: Bool, _ prov: Bool) -> Void) {
+		let en1 = PrefsShared.ConnectionAlerts.Enabled
+		let en2 = Prefs.RecordingReminder.Enabled || PrefsShared.RestartReminder.Enabled
+		closure(en1, en2)
+		guard en1 || en2 else { return }
+		PushNotification.allowed { state in
+			switch state {
+			case .NotDetermined, .Denied: closure(false, false)
+			case .Authorized: closure(en1, en2)
+			case .Provisional: closure(false, en2)
+			}
+		}
+	}
+}
+
+
+// MARK: - Reset Settings
+
+extension TVCSettings {
 	@IBAction private func resetTutorialAlerts(_ sender: UIButton) {
 		Prefs.DidShowTutorial.Welcome = false
 		Prefs.DidShowTutorial.Recordings = false
@@ -112,10 +185,12 @@ class TVCSettings: UITableViewController {
 				TheGreatDestroyer.deleteAllLogs()
 		}.presentIn(self)
 	}
-	
-	
-	// MARK: - Advanced
-	
+}
+
+
+// MARK: - Advanced
+
+extension TVCSettings {
 	@IBAction private func exportDB() {
 		AppDB?.vacuum()
 		let sheet = UIActivityViewController(activityItems: [URL.internalDB()], applicationActivities: nil)
@@ -128,26 +203,5 @@ class TVCSettings: UITableViewController {
 			return "Database size: \(fs ?? "0 MB")"
 		}
 		return nil
-	}
-}
-
-
-//  -------------------------------
-// |
-// |    MARK: - Helper methods
-// |
-//  -------------------------------
-
-private func autoDeleteSelection(_ multiplier: [Int]) -> (Int, Int) {
-	let current = PrefsShared.AutoDeleteLogsDays
-	let snd = multiplier.lastIndex { current % $0 == 0 }! // make sure 1 is in list
-	return (current / multiplier[snd], snd)
-}
-
-private func autoDeleteString(_ num: Int, unit: Int) -> String {
-	switch num {
-	case 0:  return "Never"
-	case 1:  return "1 \(["Day", "Week", "Month"][unit])"
-	default: return "\(num) \(["Days", "Weeks", "Months"][unit])"
 	}
 }

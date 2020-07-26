@@ -23,6 +23,8 @@ extension Timestamp {
 	static func minutes(_ m: Int) -> Timestamp { Timestamp(m * 60) }
 	/// Create `Timestamp` with `h * 3600` seconds
 	static func hours(_ h: Int) -> Timestamp { Timestamp(h * 3600) }
+	/// Create `Timestamp` with `d * 86400` seconds
+	static func days(_ d: Int) -> Timestamp { Timestamp(d * 86400) }
 }
 
 extension Timer {

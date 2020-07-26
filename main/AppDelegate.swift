@@ -15,6 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			db.initAppOnlyScheme()
 		}
 		
+		Prefs.registerDefaults()
+		PrefsShared.registerDefaults()
+		
 		#if IOS_SIMULATOR
 		TestDataSource.load()
 		#endif

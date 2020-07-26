@@ -13,7 +13,14 @@
 		540E6780242D2CF100871BBE /* VCRecordings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E677F242D2CF100871BBE /* VCRecordings.swift */; };
 		540E67822433483D00871BBE /* VCEditRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E67812433483D00871BBE /* VCEditRecording.swift */; };
 		540E67842433FAFE00871BBE /* TVCPreviousRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */; };
+		541075CE24C9D43A00D6F1BF /* UNNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075CD24C9D43A00D6F1BF /* UNNotification.swift */; };
+		541075CF24C9D43A00D6F1BF /* UNNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075CD24C9D43A00D6F1BF /* UNNotification.swift */; };
+		541075D124CDBA0000D6F1BF /* ThrottledBatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075D024CDBA0000D6F1BF /* ThrottledBatchQueue.swift */; };
+		541075D224CDBA0000D6F1BF /* ThrottledBatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075D024CDBA0000D6F1BF /* ThrottledBatchQueue.swift */; };
 		5412F8EE24571B8200A63D7A /* VCDateFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5412F8ED24571B8100A63D7A /* VCDateFilter.swift */; };
+		5412FCC224C628FA000DE429 /* TVCReminderAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5412FCBF24C628F9000DE429 /* TVCReminderAlerts.swift */; };
+		5412FCC324C628FA000DE429 /* TVCChooseAlertTone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5412FCC024C628F9000DE429 /* TVCChooseAlertTone.swift */; };
+		5412FCC424C628FA000DE429 /* TVCConnectionAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5412FCC124C628FA000DE429 /* TVCConnectionAlerts.swift */; };
 		541A957623E602DF00C09C19 /* LaunchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 541A957523E602DF00C09C19 /* LaunchIcon.png */; };
 		541AC5D82399498A00A769D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541AC5D72399498A00A769D7 /* AppDelegate.swift */; };
 		541AC5DD2399498A00A769D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 541AC5DB2399498A00A769D7 /* Main.storyboard */; };
@@ -24,6 +31,30 @@
 		541FC47824A1453F009154D8 /* VCCoOccurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541FC47724A1453F009154D8 /* VCCoOccurrence.swift */; };
 		541FC9872497D81C00962623 /* TheGreatDestroyer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541FC9862497D81C00962623 /* TheGreatDestroyer.swift */; };
 		542E2A982404973F001462DC /* TBCMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542E2A972404973F001462DC /* TBCMain.swift */; };
+		543078AA24B5E12500278F2D /* snap2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 5430789F24B5E12200278F2D /* snap2.caf */; };
+		543078AB24B5E12500278F2D /* snap2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 5430789F24B5E12200278F2D /* snap2.caf */; };
+		543078AC24B5E12500278F2D /* typewriter2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A024B5E12200278F2D /* typewriter2.caf */; };
+		543078AD24B5E12500278F2D /* typewriter2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A024B5E12200278F2D /* typewriter2.caf */; };
+		543078AE24B5E12500278F2D /* wood1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A124B5E12300278F2D /* wood1.caf */; };
+		543078AF24B5E12500278F2D /* wood1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A124B5E12300278F2D /* wood1.caf */; };
+		543078B024B5E12500278F2D /* plop2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A224B5E12300278F2D /* plop2.caf */; };
+		543078B124B5E12500278F2D /* plop2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A224B5E12300278F2D /* plop2.caf */; };
+		543078B224B5E12500278F2D /* plop1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A324B5E12300278F2D /* plop1.caf */; };
+		543078B324B5E12500278F2D /* plop1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A324B5E12300278F2D /* plop1.caf */; };
+		543078B424B5E12500278F2D /* snap1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A424B5E12300278F2D /* snap1.caf */; };
+		543078B524B5E12500278F2D /* snap1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A424B5E12300278F2D /* snap1.caf */; };
+		543078B624B5E12500278F2D /* drum1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A524B5E12300278F2D /* drum1.caf */; };
+		543078B724B5E12500278F2D /* drum1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A524B5E12300278F2D /* drum1.caf */; };
+		543078B824B5E12500278F2D /* wood2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A624B5E12400278F2D /* wood2.caf */; };
+		543078B924B5E12500278F2D /* wood2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A624B5E12400278F2D /* wood2.caf */; };
+		543078BA24B5E12500278F2D /* typewriter1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A724B5E12400278F2D /* typewriter1.caf */; };
+		543078BB24B5E12500278F2D /* typewriter1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A724B5E12400278F2D /* typewriter1.caf */; };
+		543078BC24B5E12500278F2D /* clock.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A824B5E12400278F2D /* clock.caf */; };
+		543078BD24B5E12500278F2D /* clock.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A824B5E12400278F2D /* clock.caf */; };
+		543078BE24B5E12500278F2D /* drum2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A924B5E12500278F2D /* drum2.caf */; };
+		543078BF24B5E12500278F2D /* drum2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 543078A924B5E12500278F2D /* drum2.caf */; };
+		543078C324B60F3B00278F2D /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 543078C124B60F3B00278F2D /* Settings.storyboard */; };
+		543078C924B75CEA00278F2D /* PushNotificationAppOnly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543078C824B75CD100278F2D /* PushNotificationAppOnly.swift */; };
 		543CDB2023EEE61900B7F323 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543CDB1F23EEE61900B7F323 /* PacketTunnelProvider.swift */; };
 		543CDB2523EEE61900B7F323 /* GlassVPN.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 543CDB1D23EEE61900B7F323 /* GlassVPN.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		54448A2E2486464F00771C96 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54448A2D2486464F00771C96 /* Array.swift */; };
@@ -132,6 +163,8 @@
 		54CA02BE2426D4F3003A5E04 /* DDLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02BD2426D4F3003A5E04 /* DDLog.swift */; };
 		54CA02C32426DCCD003A5E04 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02BF2426DCCC003A5E04 /* GCDAsyncSocket.m */; };
 		54CA02C42426DCCD003A5E04 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02C02426DCCD003A5E04 /* GCDAsyncUdpSocket.m */; };
+		54CE8BC424B1ED2100CC1756 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CE8BC324B1ED2100CC1756 /* PushNotification.swift */; };
+		54CE8BC524B1ED2100CC1756 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CE8BC324B1ED2100CC1756 /* PushNotification.swift */; };
 		54D8B97A246C9F2000EB2414 /* FilterPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B979246C9F2000EB2414 /* FilterPipeline.swift */; };
 		54D8B97C2471A7E000EB2414 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B97B2471A7E000EB2414 /* String.swift */; };
 		54D8B97E2471B88900EB2414 /* DBCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B97D2471B88900EB2414 /* DBCommon.swift */; };
@@ -181,7 +214,12 @@
 		540E677F242D2CF100871BBE /* VCRecordings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCRecordings.swift; sourceTree = "<group>"; };
 		540E67812433483D00871BBE /* VCEditRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCEditRecording.swift; sourceTree = "<group>"; };
 		540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCPreviousRecords.swift; sourceTree = "<group>"; };
+		541075CD24C9D43A00D6F1BF /* UNNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UNNotification.swift; sourceTree = "<group>"; };
+		541075D024CDBA0000D6F1BF /* ThrottledBatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottledBatchQueue.swift; sourceTree = "<group>"; };
 		5412F8ED24571B8100A63D7A /* VCDateFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCDateFilter.swift; sourceTree = "<group>"; };
+		5412FCBF24C628F9000DE429 /* TVCReminderAlerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVCReminderAlerts.swift; sourceTree = "<group>"; };
+		5412FCC024C628F9000DE429 /* TVCChooseAlertTone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVCChooseAlertTone.swift; sourceTree = "<group>"; };
+		5412FCC124C628FA000DE429 /* TVCConnectionAlerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVCConnectionAlerts.swift; sourceTree = "<group>"; };
 		541A957523E602DF00C09C19 /* LaunchIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LaunchIcon.png; sourceTree = "<group>"; };
 		541AC5D42399498A00A769D7 /* AppCheck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		541AC5D72399498A00A769D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -195,6 +233,19 @@
 		541FC9862497D81C00962623 /* TheGreatDestroyer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheGreatDestroyer.swift; sourceTree = "<group>"; };
 		542E2A972404973F001462DC /* TBCMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBCMain.swift; sourceTree = "<group>"; };
 		542E2A9924051556001462DC /* TVCSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCSettings.swift; sourceTree = "<group>"; };
+		5430789F24B5E12200278F2D /* snap2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = snap2.caf; sourceTree = "<group>"; };
+		543078A024B5E12200278F2D /* typewriter2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = typewriter2.caf; sourceTree = "<group>"; };
+		543078A124B5E12300278F2D /* wood1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = wood1.caf; sourceTree = "<group>"; };
+		543078A224B5E12300278F2D /* plop2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = plop2.caf; sourceTree = "<group>"; };
+		543078A324B5E12300278F2D /* plop1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = plop1.caf; sourceTree = "<group>"; };
+		543078A424B5E12300278F2D /* snap1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = snap1.caf; sourceTree = "<group>"; };
+		543078A524B5E12300278F2D /* drum1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = drum1.caf; sourceTree = "<group>"; };
+		543078A624B5E12400278F2D /* wood2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = wood2.caf; sourceTree = "<group>"; };
+		543078A724B5E12400278F2D /* typewriter1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = typewriter1.caf; sourceTree = "<group>"; };
+		543078A824B5E12400278F2D /* clock.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = clock.caf; sourceTree = "<group>"; };
+		543078A924B5E12500278F2D /* drum2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = drum2.caf; sourceTree = "<group>"; };
+		543078C224B60F3B00278F2D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
+		543078C824B75CD100278F2D /* PushNotificationAppOnly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationAppOnly.swift; sourceTree = "<group>"; };
 		543CDB1D23EEE61900B7F323 /* GlassVPN.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GlassVPN.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		543CDB1F23EEE61900B7F323 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
 		543CDB2123EEE61900B7F323 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -307,6 +358,7 @@
 		54CA02C02426DCCD003A5E04 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		54CA02C12426DCCD003A5E04 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
 		54CA02C22426DCCD003A5E04 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		54CE8BC324B1ED2100CC1756 /* PushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotification.swift; sourceTree = "<group>"; };
 		54D8B979246C9F2000EB2414 /* FilterPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPipeline.swift; sourceTree = "<group>"; };
 		54D8B97B2471A7E000EB2414 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		54D8B97D2471B88900EB2414 /* DBCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBCommon.swift; sourceTree = "<group>"; };
@@ -360,6 +412,9 @@
 			children = (
 				542E2A9924051556001462DC /* TVCSettings.swift */,
 				54B34593240E6343004C53CC /* TVCFilter.swift */,
+				5412FCBF24C628F9000DE429 /* TVCReminderAlerts.swift */,
+				5412FCC124C628FA000DE429 /* TVCConnectionAlerts.swift */,
+				5412FCC024C628F9000DE429 /* TVCChooseAlertTone.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -411,6 +466,7 @@
 				54B345B12422E029004C53CC /* unused */,
 				541AC5E02399498B00A769D7 /* LaunchScreen.storyboard */,
 				541AC5DB2399498A00A769D7 /* Main.storyboard */,
+				543078C124B60F3B00278F2D /* Settings.storyboard */,
 				541AC5DE2399498B00A769D7 /* Assets.xcassets */,
 				541AC5E32399498B00A769D7 /* Info.plist */,
 				54953E7023E473F10054345C /* Settings.bundle */,
@@ -430,10 +486,29 @@
 		542E2A9B24051F79001462DC /* media */ = {
 			isa = PBXGroup;
 			children = (
+				5430789E24B5E10E00278F2D /* sounds */,
 				541A957523E602DF00C09C19 /* LaunchIcon.png */,
 				54B345AF242264F8004C53CC /* third-level.txt */,
 			);
 			path = media;
+			sourceTree = "<group>";
+		};
+		5430789E24B5E10E00278F2D /* sounds */ = {
+			isa = PBXGroup;
+			children = (
+				543078A824B5E12400278F2D /* clock.caf */,
+				543078A524B5E12300278F2D /* drum1.caf */,
+				543078A924B5E12500278F2D /* drum2.caf */,
+				543078A324B5E12300278F2D /* plop1.caf */,
+				543078A224B5E12300278F2D /* plop2.caf */,
+				543078A424B5E12300278F2D /* snap1.caf */,
+				5430789F24B5E12200278F2D /* snap2.caf */,
+				543078A724B5E12400278F2D /* typewriter1.caf */,
+				543078A024B5E12200278F2D /* typewriter2.caf */,
+				543078A124B5E12300278F2D /* wood1.caf */,
+				543078A624B5E12400278F2D /* wood2.caf */,
+			);
+			path = sounds;
 			sourceTree = "<group>";
 		};
 		543CDB1E23EEE61900B7F323 /* GlassVPN */ = {
@@ -462,6 +537,9 @@
 				549ECD9C24A7AD550097571C /* CustomAlert.swift */,
 				541FC47524A12D01009154D8 /* IBViews.swift */,
 				5404AEEC24A95F3F003B2F54 /* SlideInAnimation.swift */,
+				541075D024CDBA0000D6F1BF /* ThrottledBatchQueue.swift */,
+				54CE8BC324B1ED2100CC1756 /* PushNotification.swift */,
+				543078C824B75CD100278F2D /* PushNotificationAppOnly.swift */,
 			);
 			path = "Common Classes";
 			sourceTree = "<group>";
@@ -484,6 +562,7 @@
 				54B345A8241BBA0B004C53CC /* Logging.swift */,
 				54E67E4E24A8E2910025D261 /* Equatable.swift */,
 				54B345A5241BB982004C53CC /* Notifications.swift */,
+				541075CD24C9D43A00D6F1BF /* UNNotification.swift */,
 				54B345AA241BBA5B004C53CC /* AlertSheet.swift */,
 				54E67E5024A8E8820025D261 /* View.swift */,
 				541DCA6024A6B0F6005F1A4B /* Color.swift */,
@@ -836,11 +915,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				543078AC24B5E12500278F2D /* typewriter2.caf in Resources */,
 				54953E7123E473F10054345C /* Settings.bundle in Resources */,
+				543078B024B5E12500278F2D /* plop2.caf in Resources */,
 				541AC5E22399498B00A769D7 /* LaunchScreen.storyboard in Resources */,
+				543078B824B5E12500278F2D /* wood2.caf in Resources */,
+				543078BE24B5E12500278F2D /* drum2.caf in Resources */,
+				543078B424B5E12500278F2D /* snap1.caf in Resources */,
 				541AC5DF2399498B00A769D7 /* Assets.xcassets in Resources */,
+				543078AE24B5E12500278F2D /* wood1.caf in Resources */,
 				541AC5DD2399498A00A769D7 /* Main.storyboard in Resources */,
 				54B345B0242264F8004C53CC /* third-level.txt in Resources */,
+				543078BA24B5E12500278F2D /* typewriter1.caf in Resources */,
+				543078B224B5E12500278F2D /* plop1.caf in Resources */,
+				543078B624B5E12500278F2D /* drum1.caf in Resources */,
+				543078BC24B5E12500278F2D /* clock.caf in Resources */,
+				543078C324B60F3B00278F2D /* Settings.storyboard in Resources */,
+				543078AA24B5E12500278F2D /* snap2.caf in Resources */,
 				541A957623E602DF00C09C19 /* LaunchIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -849,6 +940,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				543078AD24B5E12500278F2D /* typewriter2.caf in Resources */,
+				543078BB24B5E12500278F2D /* typewriter1.caf in Resources */,
+				543078BF24B5E12500278F2D /* drum2.caf in Resources */,
+				543078AF24B5E12500278F2D /* wood1.caf in Resources */,
+				543078B124B5E12500278F2D /* plop2.caf in Resources */,
+				543078AB24B5E12500278F2D /* snap2.caf in Resources */,
+				543078B924B5E12500278F2D /* wood2.caf in Resources */,
+				543078B724B5E12500278F2D /* drum1.caf in Resources */,
+				543078B524B5E12500278F2D /* snap1.caf in Resources */,
+				543078B324B5E12500278F2D /* plop1.caf in Resources */,
+				543078BD24B5E12500278F2D /* clock.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -869,6 +971,7 @@
 				54E540F2247C423200F7C34A /* DomainFilter.swift in Sources */,
 				54D8B97E2471B88900EB2414 /* DBCommon.swift in Sources */,
 				54D8B9832471BD8100EB2414 /* DBAppOnly.swift in Sources */,
+				5412FCC224C628FA000DE429 /* TVCReminderAlerts.swift in Sources */,
 				54E67E4D24A8E20D0025D261 /* TVCSettings.swift in Sources */,
 				540E67842433FAFE00871BBE /* TVCPreviousRecords.swift in Sources */,
 				54B345A6241BB982004C53CC /* Notifications.swift in Sources */,
@@ -881,8 +984,10 @@
 				54B345A9241BBA0B004C53CC /* Logging.swift in Sources */,
 				54B34596240F0513004C53CC /* TableView.swift in Sources */,
 				540E6780242D2CF100871BBE /* VCRecordings.swift in Sources */,
+				541075D124CDBA0000D6F1BF /* ThrottledBatchQueue.swift in Sources */,
 				54953E3323DC752E0054345C /* DBCore.swift in Sources */,
 				54E67E4624A8B0FE0025D261 /* PrefsShared.swift in Sources */,
+				5412FCC324C628FA000DE429 /* TVCChooseAlertTone.swift in Sources */,
 				544F912024A67EC5001D4B00 /* TVCOccurrenceContext.swift in Sources */,
 				54448A30248647D900771C96 /* Time.swift in Sources */,
 				54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */,
@@ -890,6 +995,7 @@
 				54953E5F23DEBE840054345C /* TVCDomains.swift in Sources */,
 				54C056DB23E9E36E00214A3F /* AppInfoType.swift in Sources */,
 				54D8B98624796E9900EB2414 /* GroupedDomainDataSource.swift in Sources */,
+				541075CE24C9D43A00D6F1BF /* UNNotification.swift in Sources */,
 				54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */,
 				54D8B97C2471A7E000EB2414 /* String.swift in Sources */,
 				54E67E5124A8E8820025D261 /* View.swift in Sources */,
@@ -899,6 +1005,8 @@
 				5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */,
 				541FC9872497D81C00962623 /* TheGreatDestroyer.swift in Sources */,
 				5412F8EE24571B8200A63D7A /* VCDateFilter.swift in Sources */,
+				5412FCC424C628FA000DE429 /* TVCConnectionAlerts.swift in Sources */,
+				543078C924B75CEA00278F2D /* PushNotificationAppOnly.swift in Sources */,
 				545DDDD124436983003B6544 /* QuickUI.swift in Sources */,
 				541AC5D82399498A00A769D7 /* AppDelegate.swift in Sources */,
 				541FC47624A12D01009154D8 /* IBViews.swift in Sources */,
@@ -907,6 +1015,7 @@
 				54D8B97A246C9F2000EB2414 /* FilterPipeline.swift in Sources */,
 				54B34594240E6343004C53CC /* TVCFilter.swift in Sources */,
 				549ECD9D24A7AD550097571C /* CustomAlert.swift in Sources */,
+				54CE8BC424B1ED2100CC1756 /* PushNotification.swift in Sources */,
 				54E540FA2482414800F7C34A /* SyncUpdate.swift in Sources */,
 				5404AEED24A95F3F003B2F54 /* SlideInAnimation.swift in Sources */,
 			);
@@ -950,6 +1059,7 @@
 				54CA02A82426B2FD003A5E04 /* SOCKS5Adapter.swift in Sources */,
 				54CA02792426B2FD003A5E04 /* Checksum.swift in Sources */,
 				54CA02AD2426B2FD003A5E04 /* RejectAdapterFactory.swift in Sources */,
+				541075D224CDBA0000D6F1BF /* ThrottledBatchQueue.swift in Sources */,
 				54CA02672426B2FD003A5E04 /* RawTCPSocketProtocol.swift in Sources */,
 				54CA02602426B2FD003A5E04 /* GCDProxyServer.swift in Sources */,
 				54CA026B2426B2FD003A5E04 /* GCDTCPSocket.swift in Sources */,
@@ -960,12 +1070,14 @@
 				54CA02B02426B2FD003A5E04 /* SecureHTTPAdapterFactory.swift in Sources */,
 				54CA02A62426B2FD003A5E04 /* AdapterSocket.swift in Sources */,
 				54CA02742426B2FD003A5E04 /* IPMask.swift in Sources */,
+				541075CF24C9D43A00D6F1BF /* UNNotification.swift in Sources */,
 				54CA02BB2426B2FD003A5E04 /* SOCKS5ProxySocket.swift in Sources */,
 				54D8B97F2471B89100EB2414 /* DBCommon.swift in Sources */,
 				54CA02A42426B2FD003A5E04 /* SecureHTTPAdapter.swift in Sources */,
 				54CA02942426B2FD003A5E04 /* DNSResolver.swift in Sources */,
 				54CA025F2426B2FD003A5E04 /* ProxyServer.swift in Sources */,
 				54CA02842426B2FD003A5E04 /* Rule.swift in Sources */,
+				54CE8BC524B1ED2100CC1756 /* PushNotification.swift in Sources */,
 				54CA02B92426B2FD003A5E04 /* DirectProxySocket.swift in Sources */,
 				54751E522423955100168273 /* URL.swift in Sources */,
 				54CA02A92426B2FD003A5E04 /* RejectAdapter.swift in Sources */,
@@ -1029,6 +1141,14 @@
 				541AC5E12399498B00A769D7 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		543078C124B60F3B00278F2D /* Settings.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				543078C224B60F3B00278F2D /* Base */,
+			);
+			name = Settings.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

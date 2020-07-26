@@ -21,10 +21,13 @@ enum DomainFilter {
 	}
 	
 	/// Get total number of blocked and ignored domains. Shown in settings overview.
-	static func counts() -> (blocked: Int, ignored: Int) {
-		data.reduce(into: (0, 0)) {
+	static func counts() -> (blocked: Int, ignored: Int, listCustomA: Int, listCustomB: Int) {
+		data.reduce(into: (0, 0, 0, 0)) {
 			if $1.1.contains(.blocked) { $0.0 += 1 }
-			if $1.1.contains(.ignored) { $0.1 += 1 } }
+			if $1.1.contains(.ignored) { $0.1 += 1 }
+			if $1.1.contains(.customA) { $0.2 += 1 }
+			if $1.1.contains(.customB) { $0.3 += 1 }
+		}
 	}
 	
 	/// Union `filter` with set.

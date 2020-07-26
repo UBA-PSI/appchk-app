@@ -16,7 +16,7 @@ class VCCoOccurrence: UIViewController, UITableViewDataSource {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		selectedTime = Prefs.ContextAnalyis.CoOccurrenceTime ?? 5 // calls `didSet` and `logTimeDelta`
+		selectedTime = Prefs.ContextAnalyis.CoOccurrenceTime // calls `didSet` and `logTimeDelta`
 		timeSegment.removeAllSegments() // clear IB values
 		for (i, time) in availableTimes.enumerated() {
 			timeSegment.insertSegment(withTitle: TimeFormat(.abbreviated).from(seconds: time), at: i, animated: false)

@@ -74,7 +74,9 @@ struct FilterOptions: OptionSet {
 	static let none    = FilterOptions([])
 	static let blocked = FilterOptions(rawValue: 1 << 0)
 	static let ignored = FilterOptions(rawValue: 1 << 1)
-	static let any     = FilterOptions(rawValue: 0b11)
+	static let customA = FilterOptions(rawValue: 1 << 2)
+	static let customB = FilterOptions(rawValue: 1 << 3)
+	static let any = FilterOptions(rawValue: 0b1111)
 }
 
 extension SQLiteDatabase {

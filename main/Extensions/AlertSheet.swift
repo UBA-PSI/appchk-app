@@ -37,6 +37,13 @@ func AskAlert(title: String?, text: String?, buttonText: String = "Continue", bu
 	return alert
 }
 
+/// Show alert hinting the user to go to system settings and re-enable notifications.
+func NotificationsDisabledAlert(presentIn viewController: UIViewController) {
+	Alert(title: "Notifications Disabled",
+		  text: "Go to System Settings > Notifications > AppCheck to re-enable notifications."
+	).presentIn(viewController)
+}
+
 // MARK: Alert with multiple options
 
 /// - Parameters:

@@ -136,4 +136,8 @@ struct VPNAppMessage {
 	static func autoDelete(after interval: Int) -> Self {
 		.init("auto-delete:\(interval)")
 	}
+	/// Only used for connection alert notifications
+	static func notificationSettingsChanged() -> Self {
+		.init("notify-prefs-change:1")
+	}
 }

@@ -1,58 +1,81 @@
 import Foundation
 
 enum Prefs {
-	private static func Int(_ key: String) -> Int { UserDefaults.standard.integer(forKey: key) }
-	private static func Int(_ val: Int, _ key: String) { UserDefaults.standard.set(val, forKey: key) }
-	private static func Bool(_ key: String) -> Bool { UserDefaults.standard.bool(forKey: key) }
-	private static func Bool(_ val: Bool, _ key: String) { UserDefaults.standard.set(val, forKey: key) }
-	private static func `Any`(_ key: String) -> Any? { UserDefaults.standard.object(forKey: key) }
-	private static func `Any`(_ val: Any?, _ key: String) { UserDefaults.standard.set(val, forKey: key) }
+	private static var suite: UserDefaults { UserDefaults.standard }
 	
+	private static func Int(_ key: String) -> Int { suite.integer(forKey: key) }
+	private static func Int(_ key: String, _ val: Int) { suite.set(val, forKey: key) }
+	private static func Bool(_ key: String) -> Bool { suite.bool(forKey: key) }
+	private static func Bool(_ key: String, _ val: Bool) { suite.set(val, forKey: key) }
+	private static func Str(_ key: String) -> String? { suite.string(forKey: key) }
+	private static func Str(_ key: String, _ val: String?) { suite.set(val, forKey: key) }
+	private static func Obj(_ key: String) -> Any? { suite.object(forKey: key) }
+	private static func Obj(_ key: String, _ val: Any?) { suite.set(val, forKey: key) }
+	
+	static func registerDefaults() {
+		suite.register(defaults: [
+			"RecordingReminderEnabled" : true,
+			"contextAnalyisCoOccurrenceTime" : 5,
+		])
+	}
+}
+
+
+// MARK: - Tutorial
+
+extension Prefs {
 	enum DidShowTutorial {
 		static var Welcome: Bool {
 			get { Prefs.Bool("didShowTutorialAppWelcome") }
-			set { Prefs.Bool(newValue, "didShowTutorialAppWelcome") }
+			set { Prefs.Bool("didShowTutorialAppWelcome", newValue) }
 		}
 		static var Recordings: Bool {
 			get { Prefs.Bool("didShowTutorialRecordings") }
-			set { Prefs.Bool(newValue, "didShowTutorialRecordings") }
+			set { Prefs.Bool("didShowTutorialRecordings", newValue) }
 		}
 	}
-	enum ContextAnalyis {
-		static var CoOccurrenceTime: Int? {
-			get { Prefs.Any("contextAnalyisCoOccurrenceTime") as? Int }
-			set { Prefs.Any(newValue, "contextAnalyisCoOccurrenceTime") }
-		}
-	}
+}
+
+
+// MARK: - Date Filter
+
+enum DateFilterKind: Int {
+	case Off = 0, LastXMin = 1, ABRange = 2;
+}
+enum DateFilterOrderBy: Int {
+	case Date = 0, Name = 1, Count = 2;
+}
+
+extension Prefs {
 	enum DateFilter {
 		static var Kind: DateFilterKind {
 			get { DateFilterKind(rawValue: Prefs.Int("dateFilterType"))! }
-			set { Prefs.Int(newValue.rawValue, "dateFilterType") }
+			set { Prefs.Int("dateFilterType", newValue.rawValue) }
 		}
 		/// Default: `0` (disabled)
 		static var LastXMin: Int {
 			get { Prefs.Int("dateFilterLastXMin") }
-			set { Prefs.Int(newValue, "dateFilterLastXMin") }
+			set { Prefs.Int("dateFilterLastXMin", newValue) }
 		}
 		/// Default: `nil` (disabled)
 		static var RangeA: Timestamp? {
-			get { Prefs.Any("dateFilterRangeA") as? Timestamp }
-			set { Prefs.Any(newValue, "dateFilterRangeA") }
+			get { Prefs.Obj("dateFilterRangeA") as? Timestamp }
+			set { Prefs.Obj("dateFilterRangeA", newValue) }
 		}
 		/// Default: `nil` (disabled)
 		static var RangeB: Timestamp? {
-			get { Prefs.Any("dateFilterRangeB") as? Timestamp }
-			set { Prefs.Any(newValue, "dateFilterRangeB") }
+			get { Prefs.Obj("dateFilterRangeB") as? Timestamp }
+			set { Prefs.Obj("dateFilterRangeB", newValue) }
 		}
 		/// default: `.Date`
 		static var OrderBy: DateFilterOrderBy {
 			get { DateFilterOrderBy(rawValue: Prefs.Int("dateFilterOderType"))! }
-			set { Prefs.Int(newValue.rawValue, "dateFilterOderType") }
+			set { Prefs.Int("dateFilterOderType", newValue.rawValue) }
 		}
 		/// default: `false` (Desc)
 		static var OrderAsc: Bool {
 			get { Prefs.Bool("dateFilterOderAsc") }
-			set { Prefs.Bool(newValue, "dateFilterOderAsc") }
+			set { Prefs.Bool("dateFilterOderAsc", newValue) }
 		}
 		
 		/// - Returns: Timestamp restriction depending on current selected date filter.
@@ -69,9 +92,31 @@ enum Prefs {
 		}
 	}
 }
-enum DateFilterKind: Int {
-	case Off = 0, LastXMin = 1, ABRange = 2;
+
+
+// MARK: - ContextAnalyis
+
+extension Prefs {
+	enum ContextAnalyis {
+		static var CoOccurrenceTime: Int {
+			get { Prefs.Int("contextAnalyisCoOccurrenceTime") }
+			set { Prefs.Int("contextAnalyisCoOccurrenceTime", newValue) }
+		}
+	}
 }
-enum DateFilterOrderBy: Int {
-	case Date = 0, Name = 1, Count = 2;
+
+
+// MARK: - Notifications
+
+extension Prefs {
+	enum RecordingReminder {
+		static var Enabled: Bool {
+			get { Prefs.Bool("RecordingReminderEnabled") }
+			set { Prefs.Bool("RecordingReminderEnabled", newValue) }
+		}
+		static var Sound: String {
+			get { Prefs.Str("RecordingReminderSound") ?? "#default" }
+			set { Prefs.Str("RecordingReminderSound", newValue) }
+		}
+	}
 }
