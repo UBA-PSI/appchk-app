@@ -102,6 +102,10 @@ extension TBCMain: UNUserNotificationCenterDelegate {
 	}
 	
 	func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+		defer { completionHandler() }
+		if isFrontmostModal() {
+			return // dont intervene user actions
+		}
 		switch response.notification.request.identifier {
 		case PushNotification.Identifier.YouShallRecordMoreReminder.rawValue:
 			selectedIndex = 1 // open recordings tab
@@ -111,11 +115,24 @@ extension TBCMain: UNUserNotificationCenterDelegate {
 		case let x: // domain notification
 			(openTab(0) as! TVCDomains).pushOpen(domain: x) // open requests tab
 		}
-		completionHandler()
 	}
 	
 	@available(iOS 12.0, *)
 	func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {
 		(openTab(2) as! TVCSettings).openNotificationSettings()
+	}
+	
+	func isFrontmostModal() -> Bool {
+		var x = selectedViewController!
+		while let tmp = x.presentedViewController {
+			x = tmp
+		}
+		if x is UIAlertController {
+			return true
+		} else if #available(iOS 13.0, *) {
+			return x.isModalInPresentation
+		} else {
+			return x.modalPresentationStyle == .custom
+		}
 	}
 }
