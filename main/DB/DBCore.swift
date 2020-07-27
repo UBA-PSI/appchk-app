@@ -91,15 +91,20 @@ class SQLiteDatabase {
 		}
 	}
 	
+	/// `BEGIN TRANSACTION; \(sql); COMMIT;` on exception rollback.
+	func transaction(_ sql: String) {
+		do { try run(sql: "BEGIN TRANSACTION; \(sql); COMMIT;") }
+		catch { rollback() }
+	}
+	
 	func ifStep(_ stmt: OpaquePointer, _ expected: Int32) throws {
 		guard sqlite3_step(stmt) == expected else {
 			throw SQLiteError.Step(message: errorMessage)
 		}
 	}
 	
-	func vacuum() {
-		try? run(sql: "VACUUM;")
-	}
+	func vacuum() { NSLog("[SQL] VACUUM"); try? run(sql: "VACUUM;"); }
+	func rollback() { NSLog("[SQL] ROLLBACK"); try? run(sql: "ROLLBACK;"); }
 }
 
 
