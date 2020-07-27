@@ -17,6 +17,10 @@
 		541075CF24C9D43A00D6F1BF /* UNNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075CD24C9D43A00D6F1BF /* UNNotification.swift */; };
 		541075D124CDBA0000D6F1BF /* ThrottledBatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075D024CDBA0000D6F1BF /* ThrottledBatchQueue.swift */; };
 		541075D224CDBA0000D6F1BF /* ThrottledBatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075D024CDBA0000D6F1BF /* ThrottledBatchQueue.swift */; };
+		541075D524CE286200D6F1BF /* CachedConnectionAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075D424CE286200D6F1BF /* CachedConnectionAlert.swift */; };
+		541075D624CE286200D6F1BF /* CachedConnectionAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075D424CE286200D6F1BF /* CachedConnectionAlert.swift */; };
+		541075D924CE2C7200D6F1BF /* GlassVPNHook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075D824CE2C7200D6F1BF /* GlassVPNHook.swift */; };
+		541075DA24CE2C7200D6F1BF /* GlassVPNHook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541075D824CE2C7200D6F1BF /* GlassVPNHook.swift */; };
 		5412F8EE24571B8200A63D7A /* VCDateFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5412F8ED24571B8100A63D7A /* VCDateFilter.swift */; };
 		5412FCC224C628FA000DE429 /* TVCReminderAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5412FCBF24C628F9000DE429 /* TVCReminderAlerts.swift */; };
 		5412FCC324C628FA000DE429 /* TVCChooseAlertTone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5412FCC024C628F9000DE429 /* TVCChooseAlertTone.swift */; };
@@ -172,7 +176,7 @@
 		54D8B9832471BD8100EB2414 /* DBAppOnly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B9822471BD8100EB2414 /* DBAppOnly.swift */; };
 		54D8B98624796E9900EB2414 /* GroupedDomainDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B98524796E9800EB2414 /* GroupedDomainDataSource.swift */; };
 		54E540F2247C423200F7C34A /* DomainFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E540F1247C423200F7C34A /* DomainFilter.swift */; };
-		54E540F4247D3F2600F7C34A /* TestDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E540F3247D3F2600F7C34A /* TestDataSource.swift */; };
+		54E540F4247D3F2600F7C34A /* SimulatorVPN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E540F3247D3F2600F7C34A /* SimulatorVPN.swift */; };
 		54E540F8247DB90F00F7C34A /* RecordingsDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E540F7247DB90F00F7C34A /* RecordingsDB.swift */; };
 		54E540FA2482414800F7C34A /* SyncUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E540F92482414800F7C34A /* SyncUpdate.swift */; };
 		54E67E4624A8B0FE0025D261 /* PrefsShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E67E4524A8B0FE0025D261 /* PrefsShared.swift */; };
@@ -216,6 +220,8 @@
 		540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCPreviousRecords.swift; sourceTree = "<group>"; };
 		541075CD24C9D43A00D6F1BF /* UNNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UNNotification.swift; sourceTree = "<group>"; };
 		541075D024CDBA0000D6F1BF /* ThrottledBatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottledBatchQueue.swift; sourceTree = "<group>"; };
+		541075D424CE286200D6F1BF /* CachedConnectionAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedConnectionAlert.swift; sourceTree = "<group>"; };
+		541075D824CE2C7200D6F1BF /* GlassVPNHook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassVPNHook.swift; sourceTree = "<group>"; };
 		5412F8ED24571B8100A63D7A /* VCDateFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCDateFilter.swift; sourceTree = "<group>"; };
 		5412FCBF24C628F9000DE429 /* TVCReminderAlerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVCReminderAlerts.swift; sourceTree = "<group>"; };
 		5412FCC024C628F9000DE429 /* TVCChooseAlertTone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVCChooseAlertTone.swift; sourceTree = "<group>"; };
@@ -365,7 +371,7 @@
 		54D8B9822471BD8100EB2414 /* DBAppOnly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBAppOnly.swift; sourceTree = "<group>"; };
 		54D8B98524796E9800EB2414 /* GroupedDomainDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedDomainDataSource.swift; sourceTree = "<group>"; };
 		54E540F1247C423200F7C34A /* DomainFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainFilter.swift; sourceTree = "<group>"; };
-		54E540F3247D3F2600F7C34A /* TestDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDataSource.swift; sourceTree = "<group>"; };
+		54E540F3247D3F2600F7C34A /* SimulatorVPN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorVPN.swift; sourceTree = "<group>"; };
 		54E540F7247DB90F00F7C34A /* RecordingsDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingsDB.swift; sourceTree = "<group>"; };
 		54E540F92482414800F7C34A /* SyncUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncUpdate.swift; sourceTree = "<group>"; };
 		54E67E4524A8B0FE0025D261 /* PrefsShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefsShared.swift; sourceTree = "<group>"; };
@@ -430,6 +436,17 @@
 			path = Recordings;
 			sourceTree = "<group>";
 		};
+		541075D324CE284700D6F1BF /* Push Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				541075CD24C9D43A00D6F1BF /* UNNotification.swift */,
+				54CE8BC324B1ED2100CC1756 /* PushNotification.swift */,
+				543078C824B75CD100278F2D /* PushNotificationAppOnly.swift */,
+				541075D424CE286200D6F1BF /* CachedConnectionAlert.swift */,
+			);
+			path = "Push Notifications";
+			sourceTree = "<group>";
+		};
 		541AC5CB2399498A00A769D7 = {
 			isa = PBXGroup;
 			children = (
@@ -456,9 +473,11 @@
 				54E540F0247C386500F7C34A /* Data Source */,
 				54B345A4241BB975004C53CC /* Extensions */,
 				545DDDD224436A03003B6544 /* Common Classes */,
+				541075D324CE284700D6F1BF /* Push Notifications */,
 				548B1F9423D338EC005B047C /* main.entitlements */,
 				541AC5D72399498A00A769D7 /* AppDelegate.swift */,
 				54E67E4A24A8C6370025D261 /* GlassVPN.swift */,
+				541075D824CE2C7200D6F1BF /* GlassVPNHook.swift */,
 				542E2A972404973F001462DC /* TBCMain.swift */,
 				540C6454240D5BAE00E948F9 /* Requests */,
 				540E677E242D2CD200871BBE /* Recordings */,
@@ -538,8 +557,6 @@
 				541FC47524A12D01009154D8 /* IBViews.swift */,
 				5404AEEC24A95F3F003B2F54 /* SlideInAnimation.swift */,
 				541075D024CDBA0000D6F1BF /* ThrottledBatchQueue.swift */,
-				54CE8BC324B1ED2100CC1756 /* PushNotification.swift */,
-				543078C824B75CD100278F2D /* PushNotificationAppOnly.swift */,
 			);
 			path = "Common Classes";
 			sourceTree = "<group>";
@@ -562,7 +579,6 @@
 				54B345A8241BBA0B004C53CC /* Logging.swift */,
 				54E67E4E24A8E2910025D261 /* Equatable.swift */,
 				54B345A5241BB982004C53CC /* Notifications.swift */,
-				541075CD24C9D43A00D6F1BF /* UNNotification.swift */,
 				54B345AA241BBA5B004C53CC /* AlertSheet.swift */,
 				54E67E5024A8E8820025D261 /* View.swift */,
 				541DCA6024A6B0F6005F1A4B /* Color.swift */,
@@ -812,7 +828,7 @@
 		54E540F0247C386500F7C34A /* Data Source */ = {
 			isa = PBXGroup;
 			children = (
-				54E540F3247D3F2600F7C34A /* TestDataSource.swift */,
+				54E540F3247D3F2600F7C34A /* SimulatorVPN.swift */,
 				54E540F92482414800F7C34A /* SyncUpdate.swift */,
 				54D8B98524796E9800EB2414 /* GroupedDomainDataSource.swift */,
 				54E540F1247C423200F7C34A /* DomainFilter.swift */,
@@ -964,7 +980,9 @@
 				54E67E4924A8B1280025D261 /* Prefs.swift in Sources */,
 				54E540F8247DB90F00F7C34A /* RecordingsDB.swift in Sources */,
 				54E67E4F24A8E2910025D261 /* Equatable.swift in Sources */,
-				54E540F4247D3F2600F7C34A /* TestDataSource.swift in Sources */,
+				54E540F4247D3F2600F7C34A /* SimulatorVPN.swift in Sources */,
+				541075D924CE2C7200D6F1BF /* GlassVPNHook.swift in Sources */,
+				541075D524CE286200D6F1BF /* CachedConnectionAlert.swift in Sources */,
 				5404AEEF24ACC089003B2F54 /* VCAnalysisBar.swift in Sources */,
 				545DDDD424466D37003B6544 /* AutoLayout.swift in Sources */,
 				54B345AD241BBB00004C53CC /* DBExtensions.swift in Sources */,
@@ -1082,6 +1100,7 @@
 				54751E522423955100168273 /* URL.swift in Sources */,
 				54CA02A92426B2FD003A5E04 /* RejectAdapter.swift in Sources */,
 				54CA02732426B2FD003A5E04 /* IPPool.swift in Sources */,
+				541075D624CE286200D6F1BF /* CachedConnectionAlert.swift in Sources */,
 				54CA027E2426B2FD003A5E04 /* DomainListRule.swift in Sources */,
 				54CA02782426B2FD003A5E04 /* BinaryDataScanner.swift in Sources */,
 				54CA02B12426B2FD003A5E04 /* ServerAdapterFactory.swift in Sources */,
@@ -1112,6 +1131,7 @@
 				54CA02B32426B2FD003A5E04 /* HTTPAdapterFactory.swift in Sources */,
 				54CA02702426B2FD003A5E04 /* HTTPStreamScanner.swift in Sources */,
 				54CA02812426B2FD003A5E04 /* DNSFailRule.swift in Sources */,
+				541075DA24CE2C7200D6F1BF /* GlassVPNHook.swift in Sources */,
 				54CA02AC2426B2FD003A5E04 /* AuthenticationServerAdapterFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

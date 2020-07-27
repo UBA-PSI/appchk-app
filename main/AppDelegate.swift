@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		PrefsShared.registerDefaults()
 		
 		#if IOS_SIMULATOR
-		TestDataSource.load()
+		SimulatorVPN.load()
 		#endif
 		
 		sync.start()

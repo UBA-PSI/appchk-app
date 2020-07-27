@@ -2,7 +2,10 @@ import Foundation
 
 #if IOS_SIMULATOR
 
-class TestDataSource {
+fileprivate var hook : GlassVPNHook!
+
+class SimulatorVPN {
+	static var timer: Timer?
 	
 	static func load() {
 		QLog.Debug("SQLite path: \(URL.internalDB())")
@@ -27,13 +30,29 @@ class TestDataSource {
 		db.setFilter("bi.test.com", [.blocked, .ignored])
 		
 		QLog.Debug("Done")
-		
-		Timer.repeating(2, call: #selector(insertRandom), on: self)
+	}
+	
+	static func start() {
+		hook = GlassVPNHook()
+		timer = Timer.repeating(2, call: #selector(insertRandom), on: self)
+	}
+	
+	static func stop() {
+		timer?.invalidate()
+		timer = nil
+		hook.cleanUp()
+		hook = nil
 	}
 	
 	@objc static func insertRandom() {
 		//QLog.Debug("Inserting 1 periodic log entry")
-		try? AppDB?.logWrite("\(arc4random() % 5).count.test.com", blocked: true)
+		let domain = "\(arc4random() % 5).count.test.com"
+		let kill = hook.processDNSRequest(domain)
+		if kill { QLog.Info("Blocked: \(domain)") }
+	}
+	
+	static func sendMsg(_ messageData: Data) {
+		hook.handleAppMessage(messageData)
 	}
 }
 #endif

@@ -5,11 +5,11 @@ enum NotificationRequestState {
 	@available(iOS 10.0, *)
 	init(_ from: UNAuthorizationStatus) {
 		switch from {
-		case .notDetermined: self = .NotDetermined
 		case .denied: self = .Denied
 		case .authorized: self = .Authorized
 		case .provisional: self = .Provisional
-		@unknown default: fatalError()
+		case .notDetermined: fallthrough
+		@unknown default: self = .NotDetermined
 		}
 	}
 }

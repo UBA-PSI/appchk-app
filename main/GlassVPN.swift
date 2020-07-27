@@ -10,6 +10,10 @@ final class GlassVPNManager {
 	private(set) var state: VPNState = .off
 	
 	fileprivate init() {
+#if IOS_SIMULATOR
+		postProcessedVPNState(.on)
+		SimulatorVPN.start()
+#else
 		NETunnelProviderManager.loadAllFromPreferences { managers, error in
 			self.managerVPN = managers?.first {
 				($0.protocolConfiguration as? NETunnelProviderProtocol)?
@@ -24,10 +28,15 @@ final class GlassVPNManager {
 			}
 		}
 		NSNotification.Name.NEVPNStatusDidChange.observe(call: #selector(vpnStatusChanged(_:)), on: self)
+#endif
 		NotifyDNSFilterChanged.observe(call: #selector(didChangeDomainFilter), on: self)
 	}
 	
 	func setEnabled(_ newState: Bool) {
+#if IOS_SIMULATOR
+		postProcessedVPNState(newState ? .on : .off)
+		newState ? SimulatorVPN.start() : SimulatorVPN.stop()
+#else
 		guard let mgr = self.managerVPN else {
 			self.createNewVPN { manager in
 				self.managerVPN = manager
@@ -41,11 +50,18 @@ final class GlassVPNManager {
 				newState ? try? mgr.connection.startVPNTunnel() : mgr.connection.stopVPNTunnel()
 			}
 		}
+#endif
 	}
 	
 	/// Notify VPN extension about changes
 	/// - Returns: `true` on success, `false` if VPN is off or message could not be converted to `.utf8`
 	@discardableResult func send(_ message: VPNAppMessage) -> Bool {
+#if IOS_SIMULATOR
+		if state == .on, let data = message.raw {
+			SimulatorVPN.sendMsg(data)
+			return true
+		}
+#else
 		if let session = self.managerVPN?.connection as? NETunnelProviderSession,
 			session.status == .connected, let data = message.raw {
 			do {
@@ -53,6 +69,7 @@ final class GlassVPNManager {
 				return true
 			} catch {}
 		}
+#endif
 		return false
 	}
 	
