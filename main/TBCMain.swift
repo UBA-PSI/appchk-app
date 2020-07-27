@@ -108,9 +108,8 @@ extension TBCMain: UNUserNotificationCenterDelegate {
 		case PushNotification.Identifier.CantStopMeNowReminder.rawValue:
 			(openTab(2) as! TVCSettings).openRestartVPNSettings()
 		//case PushNotification.Identifier.RestInPeaceTombstoneReminder // only badge
-		default: // domain notification
-			// TODO: open specific domain?
-			openTab(0) // open Requests tab
+		case let x: // domain notification
+			(openTab(0) as! TVCDomains).pushOpen(domain: x) // open requests tab
 		}
 		completionHandler()
 	}

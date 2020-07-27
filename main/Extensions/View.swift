@@ -36,3 +36,9 @@ extension UIEdgeInsets {
 		self.init(top: top ?? all, left: left ?? all, bottom: bottom ?? all, right: right ?? all)
 	}
 }
+
+extension UIStoryboard {
+	func load<T: UIViewController>(_ identifier: String) -> T {
+		instantiateViewController(withIdentifier: identifier) as! T
+	}
+}

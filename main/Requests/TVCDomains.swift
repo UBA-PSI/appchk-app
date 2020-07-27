@@ -25,11 +25,20 @@ class TVCDomains: UITableViewController, UISearchBarDelegate, GroupedDomainDataS
 		}
 	}
 	
+	func pushOpen(domain: String) {
+		let A: TVCHosts = storyboard!.load("requestsHosts")
+		let B: TVCHostDetails = storyboard!.load("requestsOccurrences")
+		A.parentDomain = domain.extractDomain()
+		B.fullDomain = domain
+		navigationController?.pushViewController(A, animated: false)
+		navigationController?.pushViewController(B, animated: false)
+	}
+	
 	
 	// MARK: - Filter
 	
 	@IBAction private func filterButtonTapped(_ sender: UIBarButtonItem) {
-		let vc = self.storyboard!.instantiateViewController(withIdentifier: "domainFilter")
+		let vc = storyboard!.load("domainFilter")
 		vc.modalPresentationStyle = .custom
 		if #available(iOS 13.0, *) {
 			vc.isModalInPresentation = true

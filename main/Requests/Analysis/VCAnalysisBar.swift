@@ -49,7 +49,7 @@ class VCAnalysisBar: UIViewController, UITabBarDelegate {
 	
 	private func openCoOccurrence() {
 		guard let delegate = parent as? AnalysisBarDelegate,
-			let vc = storyboard?.instantiateViewController(withIdentifier: "IBCoOccurrence") as? VCCoOccurrence else {
+			let vc: VCCoOccurrence = storyboard?.load("IBCoOccurrence") else {
 			return
 		}
 		let info = delegate.analysisBarWillOpenCoOccurrence()
