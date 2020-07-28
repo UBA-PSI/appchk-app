@@ -108,6 +108,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
 	private func didInitProxy() {
 		if PrefsShared.RestartReminder.Enabled {
 			PushNotification.scheduleRestartReminderBadge(on: false)
+			PushNotification.cancel(.CantStopMeNowReminder)
 		}
 	}
 	
