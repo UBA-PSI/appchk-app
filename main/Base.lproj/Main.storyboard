@@ -19,8 +19,8 @@
                     </tabBar>
                     <connections>
                         <segue destination="RcB-4v-fd4" kind="relationship" relationship="viewControllers" id="cmC-pu-5n2"/>
-                        <segue destination="hm5-7q-Zfi" kind="relationship" relationship="viewControllers" id="pfK-BR-9lf"/>
-                        <segue destination="dIk-JY-9vE" kind="relationship" relationship="viewControllers" id="AwW-3j-iAg"/>
+                        <segue destination="C7Q-Vu-xAC" kind="relationship" relationship="viewControllers" id="3KK-0d-JeB"/>
+                        <segue destination="dIk-JY-9vE" kind="relationship" relationship="viewControllers" id="YOJ-YY-eLf"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RDz-8t-yhN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -768,7 +768,7 @@
                                     <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v3Z-HR-abM">
                                         <rect key="frame" x="0.0" y="98" width="320" height="421"/>
                                         <connections>
-                                            <segue destination="C7Q-Vu-xAC" kind="embed" id="ZTW-t1-5G1"/>
+                                            <segue destination="Fln-DD-aId" kind="embed" id="eFH-Rl-aBL"/>
                                         </connections>
                                     </containerView>
                                 </subviews>
@@ -783,7 +783,8 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="lFq-fl-zah"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Recordings" image="tag" id="mGk-aq-MRP"/>
+                    <navigationItem key="navigationItem" id="ceR-rC-rur"/>
+                    <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="startButton" destination="vAq-EZ-Gmx" id="FSo-GH-jtd"/>
                         <outlet property="startNewRecView" destination="La3-9e-6TK" id="I5w-aK-DlY"/>
@@ -792,12 +793,13 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wfy-Tp-A9o" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="0.0" y="-550"/>
+            <point key="canvasLocation" x="700" y="-550"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Recordings-->
         <scene sceneID="GQx-dK-qb5">
             <objects>
                 <navigationController id="C7Q-Vu-xAC" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Recordings" image="tag" id="mGk-aq-MRP"/>
                     <navigationItem key="navigationItem" id="mCN-Hk-Z5i"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="ByI-P4-oVv">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -807,19 +809,19 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </toolbar>
                     <connections>
-                        <segue destination="Fln-DD-aId" kind="relationship" relationship="rootViewController" id="smF-1g-aDM"/>
+                        <segue destination="hm5-7q-Zfi" kind="relationship" relationship="rootViewController" id="q9c-NE-PlE"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GEP-3e-6Ko" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="700" y="-550"/>
+            <point key="canvasLocation" x="0.0" y="-550"/>
         </scene>
         <!--Previous Recordings-->
         <scene sceneID="RqA-Jc-FDE">
             <objects>
                 <tableViewController id="Fln-DD-aId" customClass="TVCPreviousRecords" customModule="AppCheck" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="7cH-g6-H5z">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="377"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="421"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
@@ -1026,7 +1028,7 @@ Duration:	60:00</string>
             <objects>
                 <tableViewController id="50g-BI-Q6S" customClass="TVCRecordingDetails" customModule="AppCheck" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="cLV-Db-JxM">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="377"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="421"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>

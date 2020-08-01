@@ -7,11 +7,8 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 	@IBOutlet private var timeLabel: UILabel!
 	@IBOutlet private var startButton: UIButton!
 	@IBOutlet private var startNewRecView: UIView!
-	private var prevRecController: UINavigationController!
 	
 	override func viewDidLoad() {
-		prevRecController = (children.first as! UINavigationController)
-		prevRecController.delegate = self
 		timeLabel.font = timeLabel.font.monoSpace()
 		// hide timer if not running
 		updateUI(setRecording: false, animated: false)
@@ -22,12 +19,16 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		}
 	}
 	
-	override func viewDidAppear(_ animated: Bool) {
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
 		if currentRecording != nil { startTimer(animate: false) }
+		navigationController?.setNavigationBarHidden(true, animated: animated)
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
 		stopTimer(animate: false)
+		navigationController?.setNavigationBarHidden(false, animated: animated)
 	}
 	
 	func navigationController(_ nav: UINavigationController, willShow vc: UIViewController, animated: Bool) {
@@ -57,8 +58,7 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		} else {
 			stopTimer(animate: true)
 			RecordingsDB.stop(&currentRecording!)
-			prevRecController.popToRootViewController(animated: true)
-			let editVC = (prevRecController.topViewController as! TVCPreviousRecords)
+			let editVC = (children.first as! TVCPreviousRecords)
 			editVC.insertAndEditRecording(currentRecording!)
 			currentRecording = nil // otherwise it will restart
 		}
