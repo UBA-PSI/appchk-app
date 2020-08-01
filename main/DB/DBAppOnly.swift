@@ -22,22 +22,8 @@ extension SQLiteDatabase {
 		}
 		if version != 1 {
 			// version 0 -> 1: req(domain) -> heap(fqdn, domain)
-			if version == 0 {
-				try tempMigrate()
-			}
 			try run(sql: "PRAGMA user_version = 1;")
 		}
-	}
-
-	private func tempMigrate() throws { // TODO: remove with next internal release
-		do {
-			try run(sql: "SELECT 1 FROM req LIMIT 1;") // fails if req doesnt exist
-			createFunction("domainof") { ($0.first as! String).extractDomain() }
-			transaction("""
-				INSERT INTO heap(ts,fqdn,domain,opt) SELECT ts,domain,domainof(domain),nullif(logOpt,0) FROM req;
-				DROP TABLE req;
-				""")
-		} catch { /* no need to migrate */ }
 	}
 }
 
@@ -117,12 +103,11 @@ extension SQLiteDatabase {
 	/// - Returns: `nil`  in case no entries were transmitted.
 	@discardableResult func dnsLogsPersist() -> SQLiteRowRange? {
 		guard lastRowId(.cache) > 0 else { return nil }
-		transaction("ALTER TABLE cache RENAME TO tmp_cache; \(CreateTable.cache)")
 		let before = lastRowId(.heap) + 1
 		createFunction("domainof") { ($0.first as! String).extractDomain() }
 		transaction("""
-			INSERT INTO heap(ts,fqdn,domain,opt) SELECT ts,dns,domainof(dns),nullif(opt&1,0) FROM tmp_cache;
-			DROP TABLE tmp_cache;
+			INSERT INTO heap(ts,fqdn,domain,opt) SELECT ts,dns,domainof(dns),nullif(opt&1,0) FROM cache;
+			DELETE FROM cache;
 			""")
 		let after = lastRowId(.heap)
 		return (before > after) ? nil : (before, after)
