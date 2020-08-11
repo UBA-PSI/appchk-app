@@ -79,6 +79,8 @@
 		54953E7123E473F10054345C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 54953E7023E473F10054345C /* Settings.bundle */; };
 		549D6ED524D5BFDB0032E498 /* TVCAppSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549D6ED424D5BFDB0032E498 /* TVCAppSearch.swift */; };
 		549ECD9D24A7AD550097571C /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549ECD9C24A7AD550097571C /* CustomAlert.swift */; };
+		54A0CC0924E30C56009B5EC1 /* Recordings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54A0CC0724E30C56009B5EC1 /* Recordings.storyboard */; };
+		54A0CC0C24E30D6F009B5EC1 /* Requests.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54A0CC0A24E30D6F009B5EC1 /* Requests.storyboard */; };
 		54B34594240E6343004C53CC /* TVCFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B34593240E6343004C53CC /* TVCFilter.swift */; };
 		54B34596240F0513004C53CC /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B34595240F0513004C53CC /* TableView.swift */; };
 		54B345A6241BB982004C53CC /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B345A5241BB982004C53CC /* Notifications.swift */; };
@@ -273,6 +275,8 @@
 		54953E7023E473F10054345C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		549D6ED424D5BFDB0032E498 /* TVCAppSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCAppSearch.swift; sourceTree = "<group>"; };
 		549ECD9C24A7AD550097571C /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
+		54A0CC0824E30C56009B5EC1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Recordings.storyboard; sourceTree = "<group>"; };
+		54A0CC0B24E30D6F009B5EC1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Requests.storyboard; sourceTree = "<group>"; };
 		54B34593240E6343004C53CC /* TVCFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCFilter.swift; sourceTree = "<group>"; };
 		54B34595240F0513004C53CC /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
 		54B345A5241BB982004C53CC /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
@@ -486,9 +490,7 @@
 				540C6454240D5BAE00E948F9 /* Requests */,
 				540E677E242D2CD200871BBE /* Recordings */,
 				540C6455240D5BD200E948F9 /* Settings */,
-				541AC5E02399498B00A769D7 /* LaunchScreen.storyboard */,
-				541AC5DB2399498A00A769D7 /* Main.storyboard */,
-				543078C124B60F3B00278F2D /* Settings.storyboard */,
+				54A0CC0D24E314B6009B5EC1 /* GUI */,
 				541AC5DE2399498B00A769D7 /* Assets.xcassets */,
 				541AC5E32399498B00A769D7 /* Info.plist */,
 				54953E7023E473F10054345C /* Settings.bundle */,
@@ -562,6 +564,18 @@
 				541075D024CDBA0000D6F1BF /* ThrottledBatchQueue.swift */,
 			);
 			path = "Common Classes";
+			sourceTree = "<group>";
+		};
+		54A0CC0D24E314B6009B5EC1 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+				541AC5E02399498B00A769D7 /* LaunchScreen.storyboard */,
+				541AC5DB2399498A00A769D7 /* Main.storyboard */,
+				54A0CC0A24E30D6F009B5EC1 /* Requests.storyboard */,
+				54A0CC0724E30C56009B5EC1 /* Recordings.storyboard */,
+				543078C124B60F3B00278F2D /* Settings.storyboard */,
+			);
+			path = GUI;
 			sourceTree = "<group>";
 		};
 		54B3459A2415651C004C53CC /* DB */ = {
@@ -938,6 +952,7 @@
 				54953E7123E473F10054345C /* Settings.bundle in Resources */,
 				543078B024B5E12500278F2D /* plop2.caf in Resources */,
 				541AC5E22399498B00A769D7 /* LaunchScreen.storyboard in Resources */,
+				54A0CC0924E30C56009B5EC1 /* Recordings.storyboard in Resources */,
 				543078B824B5E12500278F2D /* wood2.caf in Resources */,
 				543078BE24B5E12500278F2D /* drum2.caf in Resources */,
 				543078B424B5E12500278F2D /* snap1.caf in Resources */,
@@ -951,6 +966,7 @@
 				543078BC24B5E12500278F2D /* clock.caf in Resources */,
 				543078C324B60F3B00278F2D /* Settings.storyboard in Resources */,
 				543078AA24B5E12500278F2D /* snap2.caf in Resources */,
+				54A0CC0C24E30D6F009B5EC1 /* Requests.storyboard in Resources */,
 				541A957623E602DF00C09C19 /* LaunchIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1173,6 +1189,22 @@
 				543078C224B60F3B00278F2D /* Base */,
 			);
 			name = Settings.storyboard;
+			sourceTree = "<group>";
+		};
+		54A0CC0724E30C56009B5EC1 /* Recordings.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				54A0CC0824E30C56009B5EC1 /* Base */,
+			);
+			name = Recordings.storyboard;
+			sourceTree = "<group>";
+		};
+		54A0CC0A24E30D6F009B5EC1 /* Requests.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				54A0CC0B24E30D6F009B5EC1 /* Base */,
+			);
+			name = Requests.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
