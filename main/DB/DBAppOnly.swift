@@ -20,9 +20,13 @@ extension SQLiteDatabase {
 			try ifStep(stmt, SQLITE_ROW)
 			return sqlite3_column_int(stmt, 0)
 		}
-		if version != 1 {
+		if version != 2 {
 			// version 0 -> 1: req(domain) -> heap(fqdn, domain)
-			try run(sql: "PRAGMA user_version = 1;")
+			// version 1 -> 2: rec(+subtitle)
+			if version == 1 {
+				try run(sql: "ALTER TABLE rec ADD COLUMN subtitle TEXT;")
+			}
+			try run(sql: "PRAGMA user_version = 2;")
 		}
 	}
 }
@@ -281,7 +285,7 @@ extension SQLiteDatabase {
 // MARK: - Recordings
 
 extension CreateTable {
-	/// `id`: Primary,  `start`: Timestamp,  `stop`: Timestamp,  `appid`: String,  `title`: String,  `notes`: String
+	/// `id`: Primary,  `start`: Timestamp,  `stop`: Timestamp,  `appid`: String,  `title`: String,  `subtitle`: String,  `notes`: String
 	static var rec: String {"""
 		CREATE TABLE IF NOT EXISTS rec(
 			id INTEGER PRIMARY KEY,
@@ -289,6 +293,7 @@ extension CreateTable {
 			stop INTEGER,
 			appid TEXT,
 			title TEXT,
+			subtitle TEXT,
 			notes TEXT
 		);
 		"""}
@@ -300,8 +305,10 @@ struct Recording {
 	let stop: Timestamp?
 	var appId: String? = nil
 	var title: String? = nil
+	var subtitle: String? = nil
 	var notes: String? = nil
 }
+typealias AppBundleInfo = (bundleId: String, name: String?, author: String?)
 
 extension SQLiteDatabase {
 	
@@ -328,8 +335,8 @@ extension SQLiteDatabase {
 	
 	/// Update given recording by replacing `title`, `appid`, and `notes` with new values.
 	func recordingUpdate(_ r: Recording) {
-		try? run(sql: "UPDATE rec SET title = ?, appid = ?, notes = ? WHERE id = ? LIMIT 1;",
-				 bind: [BindTextOrNil(r.title), BindTextOrNil(r.appId), BindTextOrNil(r.notes), BindInt64(r.id)]) { stmt -> Void in
+		try? run(sql: "UPDATE rec SET appid = ?, title = ?, subtitle = ?, notes = ? WHERE id = ? LIMIT 1;",
+				 bind: [BindTextOrNil(r.appId), BindTextOrNil(r.title), BindTextOrNil(r.subtitle), BindTextOrNil(r.notes), BindInt64(r.id)]) { stmt -> Void in
 			sqlite3_step(stmt)
 		}
 	}
@@ -353,12 +360,13 @@ extension SQLiteDatabase {
 						 stop: end == 0 ? nil : end,
 						 appId: col_text(stmt, 3),
 						 title: col_text(stmt, 4),
-						 notes: col_text(stmt, 5))
+						 subtitle: col_text(stmt, 5),
+						 notes: col_text(stmt, 6))
 	}
 	
 	/// `WHERE stop IS NULL`
 	func recordingGetOngoing() -> Recording? {
-		try? run(sql: "SELECT * FROM rec WHERE stop IS NULL LIMIT 1;") {
+		try? run(sql: "SELECT id, start, stop, appid, title, subtitle, notes FROM rec WHERE stop IS NULL LIMIT 1;") {
 			try ifStep($0, SQLITE_ROW)
 			return readRecording($0)
 		}
@@ -374,16 +382,24 @@ extension SQLiteDatabase {
 	
 	/// `WHERE stop IS NOT NULL`
 	func recordingGetAll() -> [Recording]? {
-		try? run(sql: "SELECT * FROM rec WHERE stop IS NOT NULL;") {
+		try? run(sql: "SELECT id, start, stop, appid, title, subtitle, notes FROM rec WHERE stop IS NOT NULL;") {
 			allRows($0) { readRecording($0) }
 		}
 	}
 	
 	/// `WHERE id = ?`
 	private func recordingGet(withID: sqlite3_int64) throws -> Recording {
-		try run(sql: "SELECT * FROM rec WHERE id = ? LIMIT 1;", bind: [BindInt64(withID)]) {
+		try run(sql: "SELECT id, start, stop, appid, title, subtitle, notes FROM rec WHERE id = ? LIMIT 1;", bind: [BindInt64(withID)]) {
 			try ifStep($0, SQLITE_ROW)
 			return readRecording($0)
+		}
+	}
+	
+	func appBundleList() -> [AppBundleInfo]? {
+		try? run(sql: "SELECT appid, title, subtitle FROM rec WHERE appid IS NOT NULL GROUP BY appid ORDER BY title ASC;") {
+			allRows($0) {
+				AppBundleInfo(col_text($0, 0)!, col_text($0, 1), col_text($0, 2))
+			}
 		}
 	}
 }

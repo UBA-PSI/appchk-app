@@ -23,6 +23,8 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		super.viewWillAppear(animated)
 		if currentRecording != nil { startTimer(animate: false) }
 		navigationController?.setNavigationBarHidden(true, animated: animated)
+		// set hidden in will appear causes UITableViewAlertForLayoutOutsideViewHierarchy
+		// but otherwise navBar is visible during transition
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -120,7 +122,7 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 				"Use the App as you would normally. Try to get to all corners and functionality the App provides. " +
 				"When you feel that you have captured enough content, come back to ").italic("AppCheck").normal(" and stop the recording." +
 				"\n\n" +
-				"Upon completion you will find your recording in the 'Previous Recordings' section. " +
+				"Upon completion you will find your recording in the section below. " +
 				"You can review your results and remove user specific information if necessary.")
 		))
 		x.addSheet().addArrangedSubview(QuickUI.text(attributed: NSMutableAttributedString()

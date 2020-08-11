@@ -52,5 +52,10 @@ enum RecordingsDB {
 	static func deleteSingle(_ r: Recording, domain: String, ts: Timestamp) -> Bool {
 		(try? AppDB?.recordingLogsDelete(r.id, singleEntry: ts, domain: domain)) ?? false
 	}
+	
+	/// Return list of previously used apps found in all recordings.
+	static func appList() -> [AppBundleInfo] {
+		AppDB?.appBundleList() ?? []
+	}
 }
 

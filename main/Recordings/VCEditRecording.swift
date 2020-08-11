@@ -1,19 +1,42 @@
 import UIKit
 
-class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate {
+class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate, TVCAppSearchDelegate {
+	
 	var record: Recording!
 	var deleteOnCancel: Bool = false
+	var appId: String?
 	
 	@IBOutlet private var buttonCancel: UIBarButtonItem!
 	@IBOutlet private var buttonSave: UIBarButtonItem!
-	@IBOutlet private var inputTitle: UITextField!
+	@IBOutlet private var appTitle: UILabel!
+	@IBOutlet private var appDeveloper: UILabel!
+	@IBOutlet private var appIcon: UIImageView!
 	@IBOutlet private var inputNotes: UITextView!
 	@IBOutlet private var inputDetails: UITextView!
 	@IBOutlet private var noteBottom: NSLayoutConstraint!
 	
+	@IBOutlet private var chooseAppTap: UITapGestureRecognizer!
+	
 	override func viewDidLoad() {
-		inputTitle.placeholder = record.fallbackTitle
-		inputTitle.text = record.title
+		if record.isLongTerm {
+			appId = nil
+			appIcon.image = nil
+			appTitle.text = "Background Recording"
+			appDeveloper.text = nil
+			chooseAppTap.isEnabled = false
+		} else {
+			appId = record.appId
+			appIcon.image = BundleIcon.image(record.appId)
+			appIcon.layer.cornerRadius = 6.75
+			appIcon.layer.masksToBounds = true
+			if record.appId == nil {
+				appTitle.text = "Tap here to choose app"
+				appDeveloper.text = record.title
+			} else {
+				appTitle.text = record.title ?? record.fallbackTitle
+				appDeveloper.text = record.subtitle
+			}
+		}
 		inputNotes.text = record.notes
 		inputDetails.text = """
 			Start:		\(DateFormat.seconds(record.start))
@@ -31,6 +54,11 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		UIResponder.keyboardWillHideNotification.observe(call: #selector(keyboardWillHide), on: self)
 	}
 	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if let tvc = segue.destination as? TVCAppSearch {
+			tvc.delegate = self
+		}
+	}
 	
 	// MARK: Save & Cancel Buttons
 	
@@ -41,7 +69,15 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 			deleteOnCancel = false
 		}
 		QLog.Debug("updating record #\(record.id)")
-		record.title = (inputTitle.text == "") ? nil : inputTitle.text
+		if let id = appId, id != "" {
+			record.appId = id
+			record.title = (appTitle.text == "") ? nil : appTitle.text
+			record.subtitle = (appDeveloper.text == "") ? nil : appDeveloper.text
+		} else {
+			record.appId = nil
+			record.title = nil
+			record.subtitle = nil
+		}
 		record.notes = (inputNotes.text == "") ? nil : inputNotes.text
 		dismiss(animated: true) {
 			RecordingsDB.update(self.record)
@@ -121,11 +157,18 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	func textViewDidChange(_ _: UITextView) { validateSaveButton() }
 	
 	private func validateSaveButton() {
-		let changed = (inputTitle.text != record.title ?? "" || inputNotes.text != record.notes ?? "")
+		let changed = (appId != record.appId
+			|| (appTitle.text != record.title && appTitle.text != "Tap here to choose app")
+			|| appDeveloper.text != record.subtitle
+			|| inputNotes.text != record.notes ?? "")
 		buttonSave.isEnabled = changed || deleteOnCancel // always allow save for new recordings
 	}
 	
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		textField == inputTitle ? inputNotes.becomeFirstResponder() : true
+	func appSearch(didSelect bundleId: String, appName: String?, developer: String?) {
+		appId = bundleId
+		appTitle.text = appName
+		appDeveloper.text = developer
+		appIcon.image = BundleIcon.image(bundleId)
+		validateSaveButton()
 	}
 }

@@ -35,5 +35,6 @@ extension FilterOptions {
 extension Recording {
 	var fallbackTitle: String { get { "Unnamed Recording #\(id)" } }
 	var duration: Timestamp? { get { stop == nil ? nil : stop! - start } }
+	var isLongTerm: Bool { (duration ?? 0) > Timestamp.hours(1) }
 }
 

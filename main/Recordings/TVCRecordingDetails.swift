@@ -2,7 +2,7 @@ import UIKit
 
 class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	var record: Recording!
-	private lazy var isLongRecording: Bool = (record.duration ?? 0) > Timestamp.hours(1)
+	private lazy var isLongRecording: Bool = record.isLongTerm
 	
 	private var showRaw: Bool = false
 	/// Sorted by `ts` in ascending order (oldest first)
