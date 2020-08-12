@@ -4,9 +4,15 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	var record: Recording!
 	private lazy var isLongRecording: Bool = record.isLongTerm
 	
+	@IBOutlet private var shareButton: UIBarButtonItem!
+	
 	private var showRaw: Bool = false
 	/// Sorted by `ts` in ascending order (oldest first)
-	private lazy var dataSourceRaw: [DomainTsPair] = RecordingsDB.details(record)
+	private lazy var dataSourceRaw: [DomainTsPair] = {
+		let list = RecordingsDB.details(record)
+		shareButton.isEnabled = list.count > 0
+		return list
+	}()
 	/// Sorted by `count` (descending), then alphabetically
 	private lazy var dataSourceSum: [(domain: String, count: Int)] = {
 		var result: [String:Int] = [:]
@@ -26,6 +32,12 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 		showRaw = !showRaw
 		sender.image = UIImage(named: showRaw ? "line-collapse" : "line-expand")
 		tableView.reloadData()
+	}
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if let tgt = segue.destination as? VCShareRecording {
+			tgt.record = self.record
+		}
 	}
 	
 	
@@ -89,6 +101,7 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 				tableView.deleteRows(at: [index], with: .automatic)
 			}
 		}
+		shareButton.isEnabled = dataSourceRaw.count > 0
 		return true
 	}
 }

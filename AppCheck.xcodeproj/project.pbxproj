@@ -172,6 +172,7 @@
 		54CA02C42426DCCD003A5E04 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02C02426DCCD003A5E04 /* GCDAsyncUdpSocket.m */; };
 		54CE8BC424B1ED2100CC1756 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CE8BC324B1ED2100CC1756 /* PushNotification.swift */; };
 		54CE8BC524B1ED2100CC1756 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CE8BC324B1ED2100CC1756 /* PushNotification.swift */; };
+		54CFE86824E3F401001687DD /* VCShareRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CFE86724E3F401001687DD /* VCShareRecording.swift */; };
 		54D8B97A246C9F2000EB2414 /* FilterPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B979246C9F2000EB2414 /* FilterPipeline.swift */; };
 		54D8B97C2471A7E000EB2414 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B97B2471A7E000EB2414 /* String.swift */; };
 		54D8B97E2471B88900EB2414 /* DBCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B97D2471B88900EB2414 /* DBCommon.swift */; };
@@ -371,6 +372,7 @@
 		54CA02C12426DCCD003A5E04 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
 		54CA02C22426DCCD003A5E04 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
 		54CE8BC324B1ED2100CC1756 /* PushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotification.swift; sourceTree = "<group>"; };
+		54CFE86724E3F401001687DD /* VCShareRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCShareRecording.swift; sourceTree = "<group>"; };
 		54D8B979246C9F2000EB2414 /* FilterPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPipeline.swift; sourceTree = "<group>"; };
 		54D8B97B2471A7E000EB2414 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		54D8B97D2471B88900EB2414 /* DBCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBCommon.swift; sourceTree = "<group>"; };
@@ -436,8 +438,9 @@
 			children = (
 				540E677F242D2CF100871BBE /* VCRecordings.swift */,
 				540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */,
-				540E67812433483D00871BBE /* VCEditRecording.swift */,
 				5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */,
+				54CFE86724E3F401001687DD /* VCShareRecording.swift */,
+				540E67812433483D00871BBE /* VCEditRecording.swift */,
 				549D6ED424D5BFDB0032E498 /* TVCAppSearch.swift */,
 				54B345B12422E029004C53CC /* App Icons */,
 			);
@@ -1029,6 +1032,7 @@
 				54448A30248647D900771C96 /* Time.swift in Sources */,
 				54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */,
 				549D6ED524D5BFDB0032E498 /* TVCAppSearch.swift in Sources */,
+				54CFE86824E3F401001687DD /* VCShareRecording.swift in Sources */,
 				54751E512423955100168273 /* URL.swift in Sources */,
 				54953E5F23DEBE840054345C /* TVCDomains.swift in Sources */,
 				54C056DB23E9E36E00214A3F /* AppStoreSearch.swift in Sources */,

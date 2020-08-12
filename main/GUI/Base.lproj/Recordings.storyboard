@@ -219,17 +219,81 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Logs" id="AXT-fV-keV">
-                        <barButtonItem key="rightBarButtonItem" image="line-expand" id="xLc-O7-KVB">
-                            <connections>
-                                <action selector="toggleDisplayStyle:" destination="50g-BI-Q6S" id="3wo-9O-7gV"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="action" id="UkE-Wi-JjW">
+                                <connections>
+                                    <segue destination="P0a-ZP-uEV" kind="modal" id="s3J-zL-4zK"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="line-expand" id="xLc-O7-KVB">
+                                <connections>
+                                    <action selector="toggleDisplayStyle:" destination="50g-BI-Q6S" id="3wo-9O-7gV"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="shareButton" destination="UkE-Wi-JjW" id="9f1-WG-k0N"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lan-I9-b0a" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1400" y="0.0"/>
+        </scene>
+        <!--Share Recording-->
+        <scene sceneID="9Zh-he-N6f">
+            <objects>
+                <viewController id="P0a-ZP-uEV" customClass="VCShareRecording" customModule="AppCheck" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="kVd-y1-MmT">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="421"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dN0-a9-t4G">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <items>
+                                    <navigationItem title="Contribute" id="a43-mu-gQ2">
+                                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="6J3-R1-kRM">
+                                            <connections>
+                                                <action selector="closeView" destination="P0a-ZP-uEV" id="cno-MA-xos"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="Send" style="done" id="PWY-06-ykI">
+                                            <connections>
+                                                <action selector="shareRecording" destination="P0a-ZP-uEV" id="lSZ-8V-ANw"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fFm-v5-DGy">
+                                <rect key="frame" x="0.0" y="45" width="320" height="376"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="fFm-v5-DGy" firstAttribute="leading" secondItem="lie-9P-DtH" secondAttribute="leading" id="2Ae-cc-xkI"/>
+                            <constraint firstItem="fFm-v5-DGy" firstAttribute="top" secondItem="dN0-a9-t4G" secondAttribute="bottom" constant="1" id="2QI-wU-51t"/>
+                            <constraint firstItem="dN0-a9-t4G" firstAttribute="top" secondItem="lie-9P-DtH" secondAttribute="top" id="8eL-tr-3IN"/>
+                            <constraint firstItem="dN0-a9-t4G" firstAttribute="leading" secondItem="lie-9P-DtH" secondAttribute="leading" id="BWF-aS-ah3"/>
+                            <constraint firstItem="lie-9P-DtH" firstAttribute="trailing" secondItem="fFm-v5-DGy" secondAttribute="trailing" id="GRg-BF-rYE"/>
+                            <constraint firstItem="lie-9P-DtH" firstAttribute="bottom" secondItem="fFm-v5-DGy" secondAttribute="bottom" id="IE3-o5-suZ"/>
+                            <constraint firstItem="lie-9P-DtH" firstAttribute="trailing" secondItem="dN0-a9-t4G" secondAttribute="trailing" id="UuJ-xj-xBK"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="lie-9P-DtH"/>
+                    </view>
+                    <connections>
+                        <outlet property="text" destination="fFm-v5-DGy" id="fwm-RE-gHu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AhG-fQ-OzZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2100" y="0.0"/>
         </scene>
         <!--Edit Recording-->
         <scene sceneID="pqx-CU-4AP">
