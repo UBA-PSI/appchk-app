@@ -48,6 +48,7 @@ class SQLiteDatabase {
 	static func open(path: String = URL.internalDB().relativePath) throws -> SQLiteDatabase {
 		var db: OpaquePointer?
 		if sqlite3_open_v2(path, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, nil) == SQLITE_OK {
+			sqlite3_busy_timeout(db, 800)
 			return SQLiteDatabase(dbPointer: db)
 		} else {
 			defer { sqlite3_close_v2(db) }
