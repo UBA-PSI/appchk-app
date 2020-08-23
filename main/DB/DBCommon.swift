@@ -48,11 +48,16 @@ extension SQLiteDatabase {
 	/// - Returns: `true` if at least one row was deleted.
 	@discardableResult func dnsLogsDeleteOlderThan(days: Int) throws -> Bool {
 		guard days > 0 else { return false }
-		return try self.run(sql: "DELETE FROM cache WHERE ts < strftime('%s', 'now', ?);",
-							bind: [BindText("-\(days) days")]) {
-			try ifStep($0, SQLITE_DONE)
-			return numberOfChanges > 0
+		func delFrom(_ table: String) throws -> Bool {
+			return try self.run(sql: "DELETE FROM \(table) WHERE ts < strftime('%s', 'now', ?);",
+								bind: [BindText("-\(days) days")]) {
+				try ifStep($0, SQLITE_DONE)
+				return numberOfChanges > 0
+			}
 		}
+		let didDelHeap = try delFrom("heap")
+		let didDelCache = try delFrom("cache")
+		return didDelHeap || didDelCache
 	}
 }
 

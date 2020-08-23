@@ -34,10 +34,13 @@ struct TheGreatDestroyer {
 		DispatchQueue.global().async {
 			defer { sync.continue() }
 			QLog.Info("Auto-delete logs")
-			guard let success = try? AppDB?.dnsLogsDeleteOlderThan(days: days), success else {
-				return // nothing changed
+			do {
+				if try AppDB!.dnsLogsDeleteOlderThan(days: days) {
+					sync.needsReloadDB()
+				}
+			} catch {
+				QLog.Warning("Couldn't auto-delete logs, \(error)")
 			}
-			sync.needsReloadDB()
 		}
 	}
 }
