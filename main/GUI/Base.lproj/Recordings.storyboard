@@ -260,7 +260,7 @@
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" title="Send" style="done" id="PWY-06-ykI">
                                             <connections>
-                                                <action selector="shareRecording" destination="P0a-ZP-uEV" id="lSZ-8V-ANw"/>
+                                                <action selector="shareRecording:" destination="P0a-ZP-uEV" id="vCR-9d-91D"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
@@ -274,6 +274,9 @@
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eWC-xB-CJe">
+                                <rect key="frame" x="292" y="12" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -283,11 +286,14 @@
                             <constraint firstItem="dN0-a9-t4G" firstAttribute="leading" secondItem="lie-9P-DtH" secondAttribute="leading" id="BWF-aS-ah3"/>
                             <constraint firstItem="lie-9P-DtH" firstAttribute="trailing" secondItem="fFm-v5-DGy" secondAttribute="trailing" id="GRg-BF-rYE"/>
                             <constraint firstItem="lie-9P-DtH" firstAttribute="bottom" secondItem="fFm-v5-DGy" secondAttribute="bottom" id="IE3-o5-suZ"/>
+                            <constraint firstItem="eWC-xB-CJe" firstAttribute="trailing" secondItem="dN0-a9-t4G" secondAttribute="trailingMargin" id="NgN-7W-Ecm"/>
                             <constraint firstItem="lie-9P-DtH" firstAttribute="trailing" secondItem="dN0-a9-t4G" secondAttribute="trailing" id="UuJ-xj-xBK"/>
+                            <constraint firstItem="eWC-xB-CJe" firstAttribute="centerY" secondItem="dN0-a9-t4G" secondAttribute="centerY" id="jvl-OA-Vdr"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="lie-9P-DtH"/>
                     </view>
                     <connections>
+                        <outlet property="sendActivity" destination="eWC-xB-CJe" id="rx3-Jz-ppT"/>
                         <outlet property="text" destination="fFm-v5-DGy" id="fwm-RE-gHu"/>
                     </connections>
                 </viewController>

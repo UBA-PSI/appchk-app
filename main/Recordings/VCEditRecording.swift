@@ -21,7 +21,7 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		if record.isLongTerm {
 			appId = nil
 			appIcon.image = nil
-			appTitle.text = "Background Recording"
+			appTitle.text = record.fallbackTitle
 			appDeveloper.text = nil
 			chooseAppTap.isEnabled = false
 		} else {
@@ -158,7 +158,7 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	
 	private func validateSaveButton() {
 		let changed = (appId != record.appId
-			|| (appTitle.text != record.title && appTitle.text != "Tap here to choose app")
+			|| (appTitle.text != record.title && appTitle.text != "Tap here to choose app" && appTitle.text != record.fallbackTitle)
 			|| appDeveloper.text != record.subtitle
 			|| inputNotes.text != record.notes ?? "")
 		buttonSave.isEnabled = changed || deleteOnCancel // always allow save for new recordings

@@ -6,6 +6,7 @@ class VCShareRecording : UIViewController {
 	private var jsonData: Data?
 	
 	@IBOutlet private var text : UITextView!
+	@IBOutlet private var sendActivity : UIActivityIndicatorView!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -59,8 +60,68 @@ class VCShareRecording : UIViewController {
 		dismiss(animated: true)
 	}
 	
-	@IBAction private func shareRecording() {
-		print("\(String(data: jsonData!, encoding: .utf8)!)")
-		Alert(title: "Not implemented yet", text: nil).presentIn(self)
+	@IBAction private func shareRecording(_ sender: UIBarButtonItem) {
+		sender.isEnabled = false
+		sendActivity.startAnimating()
+		
+		let url = URL(string: "http://127.0.0.1/api/v1/contribute/")!
+		var request = URLRequest(url: url)
+		request.httpMethod = "POST"
+		request.httpBody = jsonData
+
+		URLSession.shared.dataTask(with: request) { data, response, error in
+			DispatchQueue.main.async { [weak self] in
+				sender.isEnabled = true
+				self?.sendActivity.stopAnimating()
+				
+				guard error == nil, let data = data,
+					let response = response as? HTTPURLResponse else {
+					self?.banner(.fail, "\(error?.localizedDescription ?? "Unkown error occurred")")
+					return
+				}
+				let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any]
+				let status = json?["status"] as? String
+				let v = json?["v"] as? Int ?? 0
+				guard v > 0, (200 ... 299) ~= response.statusCode else {
+					QLog.Warning("Couldn't contribute: \(status ?? "unkown reason")")
+					self?.banner(.fail, "Server couldn't parse request.\nTry again later.")
+					return
+				}
+				var autoHide = true
+				if v == 1, let urlStr = json?["url"] as? String {
+					let nextUpdateIn = json?["when"] as? Int
+					self?.showOpenResultsAlert(urlStr, when: nextUpdateIn)
+					autoHide = false
+				}
+				self?.banner(.ok, "Thank you for your contribution.",
+							 autoHide ? { [weak self] in self?.closeView() } : nil)
+			}
+		}.resume()
+	}
+	
+	private func banner(_ style: NotificationBanner.Style, _ msg: String, _ closure: (() -> Void)? = nil) {
+		NotificationBanner(msg, style: style).present(in: self, onClose: closure)
+	}
+	
+	private func showOpenResultsAlert(_ urlStr: String, when: Int?) {
+		var msg = "Your contribution is being processed and will be available "
+		if let when = when {
+			if when < 61 {
+				msg += "in approx. \(when) sec. "
+			} else {
+				let fmt = TimeFormat.from(Timestamp(when))
+				msg += "in \(fmt) min. "
+			}
+		} else {
+			msg += "shortly. "
+		}
+		msg += "Open results webpage now?"
+		let alert = Alert(title: "Thank you", text: msg, buttonText: "Not now")
+		alert.addAction(UIAlertAction(title: "Show results", style: .default) { _ in
+			if let url = URL(string: urlStr) {
+				UIApplication.shared.openURL(url)
+			}
+		})
+		alert.presentIn(self)
 	}
 }

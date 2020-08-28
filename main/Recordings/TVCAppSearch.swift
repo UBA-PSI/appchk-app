@@ -106,7 +106,7 @@ class TVCAppSearch: UITableViewController, UISearchBarDelegate {
 				let alert = AskAlert(title: "App Name",
 									 text: "Be as descriptive as possible. Preferably use app bundle id if available. Alternatively use app name or a link to a public repository.",
 									 buttonText: "Set") {
-					self.delegate?.appSearch(didSelect: "un.known", appName: $0.textFields?.first?.text, developer: nil)
+					self.delegate?.appSearch(didSelect: "_manually", appName: $0.textFields?.first?.text, developer: nil)
 					self.closeThis()
 				}
 				alert.addTextField { $0.placeholder = "com.apple.notes" }
