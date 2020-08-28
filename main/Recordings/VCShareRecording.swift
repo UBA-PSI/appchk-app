@@ -12,7 +12,9 @@ class VCShareRecording : UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		sendButton.tintColor = .gray
+		if record.isShared {
+			sendButton.tintColor = .gray
+		}
 		
 		let start = record.start
 		let comp = Calendar.current.dateComponents([.weekOfYear, .yearForWeekOfYear], from: Date(start))
@@ -64,7 +66,7 @@ class VCShareRecording : UIViewController {
 	}
 	
 	@IBAction private func shareRecording(_ sender: UIBarButtonItem) {
-		guard !record.shared else {
+		guard !record.isShared else {
 			showAlertAlreadyShared()
 			return
 		}
@@ -91,22 +93,27 @@ class VCShareRecording : UIViewController {
 					self?.banner(.fail, "\(error?.localizedDescription ?? "Unkown error occurred")")
 					return
 				}
-				let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any]
-				let status = json?["status"] as? String
-				let v = json?["v"] as? Int ?? 0
-				guard v > 0, (200 ... 299) ~= response.statusCode else {
-					QLog.Warning("Couldn't contribute: \(status ?? "unkown reason")")
+				guard let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any],
+					let v = json["v"] as? Int, v > 0 else {
+					QLog.Warning("Couldn't contribute: Not JSON or no version key")
 					self?.banner(.fail, "Server couldn't parse request.\nTry again later.")
 					return
 				}
+				guard (200 ... 299) ~= response.statusCode else {
+					let reason = json["status"] as? String ?? "unkown reason"
+					QLog.Warning("Couldn't contribute: \(reason)")
+					self?.banner(.fail, "Error: \(reason)")
+					return
+				}
 				// update db, mark record as shared
-				rec.shared = true   // in case view was closed
-				self?.record = rec  // in case view is still open
+				rec.sharekey = json["key"] as? String ?? "_"
+				self?.record = rec // in case view is still open
 				RecordingsDB.update(rec) // rec cause self may not be available
+				self?.sendButton.tintColor = .gray
 				// notify user about results
 				var autoHide = true
-				if v == 1, let urlStr = json?["url"] as? String {
-					let nextUpdateIn = json?["when"] as? Int
+				if v == 1, let urlStr = json["url"] as? String {
+					let nextUpdateIn = json["when"] as? Int
 					self?.showAlertAvailableSoon(urlStr, when: nextUpdateIn)
 					autoHide = false
 				}

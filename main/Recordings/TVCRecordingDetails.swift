@@ -28,6 +28,14 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	
 	override func viewDidLoad() {
 		title = record.title ?? record.fallbackTitle
+		NotifyRecordingChanged.observe(call: #selector(recordingDidChange(_:)), on: self)
+	}
+	
+	@objc private func recordingDidChange(_ notification: Notification) {
+		let (rec, deleted) = notification.object as! (Recording, Bool)
+		if rec.id == record.id, !deleted {
+			record = rec // almost exclusively when 'shared' is set true
+		}
 	}
 	
 	@IBAction private func toggleDisplayStyle(_ sender: UIBarButtonItem) {

@@ -38,5 +38,6 @@ extension Recording {
 	} }
 	var duration: Timestamp? { get { stop == nil ? nil : stop! - start } }
 	var isLongTerm: Bool { (duration ?? 0) > Timestamp.hours(1) }
+	var isShared: Bool { sharekey?.count ?? 0 > 0}
 }
 
