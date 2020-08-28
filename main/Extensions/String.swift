@@ -25,6 +25,13 @@ extension String {
 		let parts = components(separatedBy: ".")
 		return parts.count == 2 && listOfSLDs[parts.last!]?[parts.first!] ?? false
 	}
+	
+	func isValidBundleId() -> Bool {
+		let regex = try! NSRegularExpression(pattern: #"^[A-Za-z0-9\.\-]{1,155}$"#, options: .anchorsMatchLines)
+		let range = NSRange(location: 0, length: self.utf16.count)
+		let matches = regex.matches(in: self, options: .anchored, range: range)
+		return matches.count == 1
+	}
 }
 
 private var listOfSLDs: [String : [String : Bool]] = {

@@ -169,6 +169,10 @@ protocol DBBinding {
 	func bind(_ stmt: OpaquePointer!, _ col: Int32) -> Int32
 }
 
+struct BindNull : DBBinding {
+	func bind(_ stmt: OpaquePointer!, _ col: Int32) -> Int32 { sqlite3_bind_null(stmt, col) }
+}
+
 struct BindInt32 : DBBinding {
 	let raw: Int32
 	init(_ value: Int32) { raw = value }

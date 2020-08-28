@@ -31,8 +31,8 @@ func ErrorAlert(_ errorDescription: String, buttonText: String = "Dismiss") -> U
 /// - Parameters:
 ///   - buttonText: Default: `"Continue"`
 ///   - buttonStyle: Default: `.default`
-func AskAlert(title: String?, text: String?, buttonText: String = "Continue", buttonStyle: UIAlertAction.Style = .default, action: @escaping (UIAlertController) -> Void) -> UIAlertController {
-	let alert = Alert(title: title, text: text, buttonText: "Cancel")
+func AskAlert(title: String?, text: String?, buttonText: String = "Continue", cancelButton: String = "Cancel", buttonStyle: UIAlertAction.Style = .default, action: @escaping (UIAlertController) -> Void) -> UIAlertController {
+	let alert = Alert(title: title, text: text, buttonText: cancelButton)
 	alert.addAction(UIAlertAction(title: buttonText, style: buttonStyle) { _ in action(alert) })
 	return alert
 }
@@ -42,9 +42,7 @@ func NotificationsDisabledAlert(presentIn viewController: UIViewController) {
 	AskAlert(title: "Notifications Disabled",
 			 text: "Go to System Settings > Notifications > AppCheck to re-enable notifications.",
 			 buttonText: "Open settings") { _ in
-		if let url = URL(string: UIApplication.openSettingsURLString) {
-			UIApplication.shared.openURL(url)
-		}
+		URL(string: UIApplication.openSettingsURLString)?.open()
 	}.presentIn(viewController)
 }
 

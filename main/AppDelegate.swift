@@ -33,3 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		//        This is a known issue and tolerated.
 	}
 }
+
+extension URL {
+	@discardableResult func open() -> Bool { UIApplication.shared.openURL(self) }
+}

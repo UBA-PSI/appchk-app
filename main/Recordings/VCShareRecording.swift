@@ -6,10 +6,13 @@ class VCShareRecording : UIViewController {
 	private var jsonData: Data?
 	
 	@IBOutlet private var text : UITextView!
+	@IBOutlet private var sendButton: UIBarButtonItem!
 	@IBOutlet private var sendActivity : UIActivityIndicatorView!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		sendButton.isEnabled = !record.shared
 		
 		let start = record.start
 		let comp = Calendar.current.dateComponents([.weekOfYear, .yearForWeekOfYear], from: Date(start))
@@ -68,6 +71,7 @@ class VCShareRecording : UIViewController {
 		var request = URLRequest(url: url)
 		request.httpMethod = "POST"
 		request.httpBody = jsonData
+		var rec = record!
 
 		URLSession.shared.dataTask(with: request) { data, response, error in
 			DispatchQueue.main.async { [weak self] in
@@ -87,6 +91,12 @@ class VCShareRecording : UIViewController {
 					self?.banner(.fail, "Server couldn't parse request.\nTry again later.")
 					return
 				}
+				// update db, mark record as shared
+				sender.isEnabled = false
+				rec.shared = true   // in case view was closed
+				self?.record = rec  // in case view is still open
+				RecordingsDB.update(rec) // rec cause self may not be available
+				// notify user about results
 				var autoHide = true
 				if v == 1, let urlStr = json?["url"] as? String {
 					let nextUpdateIn = json?["when"] as? Int
@@ -116,12 +126,10 @@ class VCShareRecording : UIViewController {
 			msg += "shortly. "
 		}
 		msg += "Open results webpage now?"
-		let alert = Alert(title: "Thank you", text: msg, buttonText: "Not now")
-		alert.addAction(UIAlertAction(title: "Show results", style: .default) { _ in
+		AskAlert(title: "Thank you", text: msg, buttonText: "Show results", cancelButton: "Not now") { _ in
 			if let url = URL(string: urlStr) {
 				UIApplication.shared.openURL(url)
 			}
-		})
-		alert.presentIn(self)
+		}.presentIn(self)
 	}
 }

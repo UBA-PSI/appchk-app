@@ -2,6 +2,7 @@ import UIKit
 
 class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	var record: Recording!
+	var noResults: Bool = false
 	private lazy var isLongRecording: Bool = record.isLongTerm
 	
 	@IBOutlet private var shareButton: UIBarButtonItem!
@@ -10,7 +11,8 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	/// Sorted by `ts` in ascending order (oldest first)
 	private lazy var dataSourceRaw: [DomainTsPair] = {
 		let list = RecordingsDB.details(record)
-		shareButton.isEnabled = list.count > 0
+		noResults = list.count == 0
+		shareButton.isEnabled = !noResults
 		return list
 	}()
 	/// Sorted by `count` (descending), then alphabetically
@@ -26,12 +28,34 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	
 	override func viewDidLoad() {
 		title = record.title ?? record.fallbackTitle
+		NotifyRecordingChanged.observe(call: #selector(recordingDidChange(_:)), on: self)
+	}
+	
+	@objc private func recordingDidChange(_ notification: Notification) {
+		let (rec, deleted) = notification.object as! (Recording, Bool)
+		if rec.id == record.id, !deleted {
+			record = rec // almost exclusively when 'shared' is set true
+		}
 	}
 	
 	@IBAction private func toggleDisplayStyle(_ sender: UIBarButtonItem) {
 		showRaw = !showRaw
 		sender.image = UIImage(named: showRaw ? "line-collapse" : "line-expand")
 		tableView.reloadData()
+	}
+	
+	override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+		if identifier == "openContributeSegue" && record.shared {
+			let alert = Alert(title: nil, text: "You have shared this recording already.")
+			if let bid = record.appId, bid.isValidBundleId() {
+				alert.addAction(UIAlertAction.init(title: "Open results", style: .default, handler: { _ in
+					URL(string: "http://127.0.0.1/redirect.html?id=\(bid)")?.open()
+				}))
+			}
+			alert.presentIn(self)
+			return false
+		}
+		return super.shouldPerformSegue(withIdentifier: identifier, sender: sender)
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -44,12 +68,15 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	// MARK: - Table View Data Source
 	
 	override func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
-		showRaw ? dataSourceRaw.count : dataSourceSum.count
+		max(1, showRaw ? dataSourceRaw.count : dataSourceSum.count)
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell: UITableViewCell
-		if showRaw {
+		if noResults {
+			cell = tableView.dequeueReusableCell(withIdentifier: "RecordNoResultsCell")!
+			cell.textLabel?.text = "– empty recording –"
+		} else if showRaw {
 			let x = dataSourceRaw[indexPath.row]
 			if isLongRecording {
 				cell = tableView.dequeueReusableCell(withIdentifier: "RecordDetailLongCell")!
@@ -73,11 +100,11 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	// MARK: - Editing
 	
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-		getRowActionsIOS9(indexPath, tableView)
+		noResults ? nil : getRowActionsIOS9(indexPath, tableView)
 	}
 	@available(iOS 11.0, *)
 	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-		getRowActionsIOS11(indexPath)
+		noResults ? nil : getRowActionsIOS11(indexPath)
 	}
 	
 	func editableRowCallback(_ index: IndexPath, _ action: RowAction, _ userInfo: Any?) -> Bool {
@@ -101,7 +128,8 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 				tableView.deleteRows(at: [index], with: .automatic)
 			}
 		}
-		shareButton.isEnabled = dataSourceRaw.count > 0
+		noResults = dataSourceRaw.count == 0
+		shareButton.isEnabled = !noResults
 		return true
 	}
 }
