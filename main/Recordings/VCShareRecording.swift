@@ -12,7 +12,7 @@ class VCShareRecording : UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		sendButton.isEnabled = !record.shared
+		sendButton.tintColor = .gray
 		
 		let start = record.start
 		let comp = Calendar.current.dateComponents([.weekOfYear, .yearForWeekOfYear], from: Date(start))
@@ -64,20 +64,28 @@ class VCShareRecording : UIViewController {
 	}
 	
 	@IBAction private func shareRecording(_ sender: UIBarButtonItem) {
+		guard !record.shared else {
+			showAlertAlreadyShared()
+			return
+		}
 		sender.isEnabled = false
 		sendActivity.startAnimating()
-		
+		postToServer() { [weak self, weak sender] in
+			self?.sendActivity.stopAnimating()
+			sender?.isEnabled = true
+		}
+	}
+	
+	private func postToServer(_ onceLoaded: @escaping () -> Void) {
 		let url = URL(string: "http://127.0.0.1/api/v1/contribute/")!
 		var request = URLRequest(url: url)
 		request.httpMethod = "POST"
 		request.httpBody = jsonData
-		var rec = record!
+		var rec = record! // store temporarily so self can be released
 
 		URLSession.shared.dataTask(with: request) { data, response, error in
 			DispatchQueue.main.async { [weak self] in
-				sender.isEnabled = true
-				self?.sendActivity.stopAnimating()
-				
+				onceLoaded()
 				guard error == nil, let data = data,
 					let response = response as? HTTPURLResponse else {
 					self?.banner(.fail, "\(error?.localizedDescription ?? "Unkown error occurred")")
@@ -92,7 +100,6 @@ class VCShareRecording : UIViewController {
 					return
 				}
 				// update db, mark record as shared
-				sender.isEnabled = false
 				rec.shared = true   // in case view was closed
 				self?.record = rec  // in case view is still open
 				RecordingsDB.update(rec) // rec cause self may not be available
@@ -100,7 +107,7 @@ class VCShareRecording : UIViewController {
 				var autoHide = true
 				if v == 1, let urlStr = json?["url"] as? String {
 					let nextUpdateIn = json?["when"] as? Int
-					self?.showOpenResultsAlert(urlStr, when: nextUpdateIn)
+					self?.showAlertAvailableSoon(urlStr, when: nextUpdateIn)
 					autoHide = false
 				}
 				self?.banner(.ok, "Thank you for your contribution.",
@@ -113,7 +120,7 @@ class VCShareRecording : UIViewController {
 		NotificationBanner(msg, style: style).present(in: self, onClose: closure)
 	}
 	
-	private func showOpenResultsAlert(_ urlStr: String, when: Int?) {
+	private func showAlertAvailableSoon(_ urlStr: String, when: Int?) {
 		var msg = "Your contribution is being processed and will be available "
 		if let when = when {
 			if when < 61 {
@@ -131,5 +138,15 @@ class VCShareRecording : UIViewController {
 				UIApplication.shared.openURL(url)
 			}
 		}.presentIn(self)
+	}
+	
+	private func showAlertAlreadyShared() {
+		let alert = Alert(title: nil, text: "You already shared this recording.")
+		if let bid = record.appId, bid.isValidBundleId() {
+			alert.addAction(UIAlertAction.init(title: "Open results", style: .default, handler: { _ in
+				URL(string: "http://127.0.0.1/redirect.html?id=\(bid)")?.open()
+			}))
+		}
+		alert.presentIn(self)
 	}
 }

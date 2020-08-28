@@ -28,34 +28,12 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	
 	override func viewDidLoad() {
 		title = record.title ?? record.fallbackTitle
-		NotifyRecordingChanged.observe(call: #selector(recordingDidChange(_:)), on: self)
-	}
-	
-	@objc private func recordingDidChange(_ notification: Notification) {
-		let (rec, deleted) = notification.object as! (Recording, Bool)
-		if rec.id == record.id, !deleted {
-			record = rec // almost exclusively when 'shared' is set true
-		}
 	}
 	
 	@IBAction private func toggleDisplayStyle(_ sender: UIBarButtonItem) {
 		showRaw = !showRaw
 		sender.image = UIImage(named: showRaw ? "line-collapse" : "line-expand")
 		tableView.reloadData()
-	}
-	
-	override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-		if identifier == "openContributeSegue" && record.shared {
-			let alert = Alert(title: nil, text: "You have shared this recording already.")
-			if let bid = record.appId, bid.isValidBundleId() {
-				alert.addAction(UIAlertAction.init(title: "Open results", style: .default, handler: { _ in
-					URL(string: "http://127.0.0.1/redirect.html?id=\(bid)")?.open()
-				}))
-			}
-			alert.presentIn(self)
-			return false
-		}
-		return super.shouldPerformSegue(withIdentifier: identifier, sender: sender)
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
