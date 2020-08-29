@@ -26,7 +26,7 @@ extension SQLiteDatabase {
 			if version == 1 {
 				transaction("""
 					ALTER TABLE rec ADD COLUMN subtitle TEXT;
-					ALTER TABLE rec ADD COLUMN sharekey TEXT;
+					ALTER TABLE rec ADD COLUMN uploadkey TEXT;
 					""")
 			}
 			try run(sql: "PRAGMA user_version = 2;")
@@ -298,12 +298,12 @@ extension CreateTable {
 			title TEXT,
 			subtitle TEXT,
 			notes TEXT,
-			sharekey TEXT
+			uploadkey TEXT
 		);
 		"""}
 }
 
-let readRecordingSelect = "id, start, stop, appid, title, subtitle, notes, sharekey"
+let readRecordingSelect = "id, start, stop, appid, title, subtitle, notes, uploadkey"
 struct Recording {
 	let id: sqlite3_int64
 	let start: Timestamp
@@ -312,7 +312,7 @@ struct Recording {
 	var title: String? = nil
 	var subtitle: String? = nil
 	var notes: String? = nil
-	var sharekey: String? = nil
+	var uploadkey: String? = nil
 }
 typealias AppBundleInfo = (bundleId: String, name: String?, author: String?)
 
@@ -341,9 +341,9 @@ extension SQLiteDatabase {
 	
 	/// Update given recording by replacing `title`, `appid`, and `notes` with new values.
 	func recordingUpdate(_ r: Recording) {
-		try? run(sql: "UPDATE rec SET appid = ?, title = ?, subtitle = ?, notes = ?, sharekey = ? WHERE id = ? LIMIT 1;",
+		try? run(sql: "UPDATE rec SET appid = ?, title = ?, subtitle = ?, notes = ?, uploadkey = ? WHERE id = ? LIMIT 1;",
 				 bind: [BindTextOrNil(r.appId), BindTextOrNil(r.title), BindTextOrNil(r.subtitle),
-						BindTextOrNil(r.notes), BindTextOrNil(r.sharekey), BindInt64(r.id)]) { stmt -> Void in
+						BindTextOrNil(r.notes), BindTextOrNil(r.uploadkey), BindInt64(r.id)]) { stmt -> Void in
 			sqlite3_step(stmt)
 		}
 	}
@@ -369,7 +369,7 @@ extension SQLiteDatabase {
 						 title: col_text(stmt, 4),
 						 subtitle: col_text(stmt, 5),
 						 notes: col_text(stmt, 6),
-						 sharekey: col_text(stmt, 7))
+						 uploadkey: col_text(stmt, 7))
 	}
 	
 	/// `WHERE stop IS NULL`

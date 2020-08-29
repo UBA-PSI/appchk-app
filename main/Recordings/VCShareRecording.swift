@@ -106,7 +106,7 @@ class VCShareRecording : UIViewController {
 					return
 				}
 				// update db, mark record as shared
-				rec.sharekey = json["key"] as? String ?? "_"
+				rec.uploadkey = json["key"] as? String ?? "_"
 				self?.record = rec // in case view is still open
 				RecordingsDB.update(rec) // rec cause self may not be available
 				self?.sendButton.tintColor = .gray
