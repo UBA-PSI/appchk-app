@@ -132,9 +132,9 @@ class TutorialSheet: UIViewController, UIScrollViewDelegate {
 		sheetBg.addSubview(button)
 		
 		pager.anchor([.top, .left, .right], to: sheetBg)
-		pageScroll.topAnchor =&= pager.bottomAnchor
+		pageScroll.topAnchor =&= pager.bottomAnchor | .defaultHigh
 		pageScroll.anchor([.left, .right, .top, .bottom], to: sheetBg, margin: sheetInset) | .defaultHigh
-		button.topAnchor =&= pageScroll.bottomAnchor
+		button.topAnchor =&= pageScroll.bottomAnchor | .defaultHigh
 		button.anchor([.bottom, .centerX], to: sheetBg)
 //		button.bottomAnchor =&= sheetBg.bottomAnchor - 30
 //		button.centerXAnchor =&= sheetBg.centerXAnchor
