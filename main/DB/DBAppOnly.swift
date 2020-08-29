@@ -21,6 +21,7 @@ extension SQLiteDatabase {
 			return sqlite3_column_int(stmt, 0)
 		}
 		if version != 2 {
+			QLog.Info("migrate db \(version) -> 2")
 			// version 0 -> 1: req(domain) -> heap(fqdn, domain)
 			// version 1 -> 2: rec(+subtitle, +opt)
 			if version == 1 {

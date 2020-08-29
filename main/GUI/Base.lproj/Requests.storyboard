@@ -80,7 +80,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <containerView key="tableHeaderView" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kh4-PQ-hy6">
-                            <rect key="frame" x="0.0" y="-49" width="320" height="49"/>
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             <connections>
                                 <segue destination="1ba-SA-8sT" kind="embed" id="vf1-07-AS4"/>
@@ -135,7 +135,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <containerView key="tableHeaderView" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SxM-2c-aJb">
-                            <rect key="frame" x="0.0" y="-49" width="320" height="49"/>
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             <connections>
                                 <segue destination="1ba-SA-8sT" kind="embed" id="ueN-6L-cP7"/>
@@ -511,14 +511,10 @@
                                                 <action selector="didClose:" destination="W5Q-oz-bFb" id="wyw-vo-6xL"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" id="bTi-7F-CFS">
-                                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" id="kqK-SL-CxZ">
-                                                <rect key="frame" x="279" y="10" width="25" height="24"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <connections>
-                                                    <action selector="showInfoScreen" destination="W5Q-oz-bFb" eventType="touchUpInside" id="TuI-R9-PNr"/>
-                                                </connections>
-                                            </button>
+                                        <barButtonItem key="rightBarButtonItem" image="detail-help" id="RTh-uI-ST6">
+                                            <connections>
+                                                <action selector="showInfoScreen" destination="W5Q-oz-bFb" id="xoS-z7-PHr"/>
+                                            </connections>
                                         </barButtonItem>
                                     </navigationItem>
                                 </items>
@@ -695,6 +691,7 @@
         <segue reference="vf1-07-AS4"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <image name="detail-help" width="22" height="22"/>
         <image name="filter-clear" width="20" height="20"/>
         <image name="intersection" width="25" height="25"/>
         <image name="jump-to-target" width="20" height="20"/>

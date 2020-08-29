@@ -16,15 +16,63 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Wz5-zb-gwz">
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Wz5-zb-gwz">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
                                 <subviews>
-                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="La3-9e-6TK" userLabel="NewRec">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="90"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ppJ-js-Wwz">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00.000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rbR-np-cXD">
-                                                <rect key="frame" x="0.0" y="0.0" width="320" height="54"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start new recording" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sYd-b2-Puz">
+                                                <rect key="frame" x="20" y="8" width="280" height="24"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="By4-Qr-Zg2">
+                                                <rect key="frame" x="278" y="9" width="22" height="22"/>
+                                                <state key="normal" image="detail-help"/>
+                                                <connections>
+                                                    <action selector="showInfo:" destination="hm5-7q-Zfi" eventType="touchUpInside" id="AiT-rb-53G"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstItem="sYd-b2-Puz" firstAttribute="leading" secondItem="ppJ-js-Wwz" secondAttribute="leading" constant="20" symbolic="YES" id="35n-12-YFH"/>
+                                            <constraint firstAttribute="bottom" secondItem="sYd-b2-Puz" secondAttribute="bottom" priority="999" constant="8" id="4We-J8-dH8"/>
+                                            <constraint firstAttribute="trailing" secondItem="sYd-b2-Puz" secondAttribute="trailing" constant="20" symbolic="YES" id="7eW-5L-F4Z"/>
+                                            <constraint firstItem="sYd-b2-Puz" firstAttribute="top" secondItem="ppJ-js-Wwz" secondAttribute="top" priority="999" constant="8" id="S3K-8P-agX"/>
+                                            <constraint firstItem="By4-Qr-Zg2" firstAttribute="centerY" secondItem="sYd-b2-Puz" secondAttribute="centerY" id="ScC-FQ-oU3"/>
+                                            <constraint firstAttribute="trailing" secondItem="By4-Qr-Zg2" secondAttribute="trailing" constant="20" symbolic="YES" id="yLs-7S-Uwz"/>
+                                        </constraints>
+                                    </view>
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="La3-9e-6TK">
+                                        <rect key="frame" x="0.0" y="40" width="320" height="55"/>
+                                        <subviews>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" momentary="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2MI-6l-YQt">
+                                                <rect key="frame" x="20" y="8" width="280" height="32"/>
+                                                <segments>
+                                                    <segment title="App"/>
+                                                    <segment title="Background"/>
+                                                </segments>
+                                                <connections>
+                                                    <action selector="startRecording:" destination="hm5-7q-Zfi" eventType="valueChanged" id="4p5-9Q-clW"/>
+                                                </connections>
+                                            </segmentedControl>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstItem="2MI-6l-YQt" firstAttribute="top" secondItem="La3-9e-6TK" secondAttribute="top" priority="999" constant="8" id="TTg-gG-wEP"/>
+                                            <constraint firstAttribute="bottom" secondItem="2MI-6l-YQt" secondAttribute="bottom" priority="999" constant="16" id="WPY-VT-xfo"/>
+                                            <constraint firstAttribute="trailing" secondItem="2MI-6l-YQt" secondAttribute="trailing" constant="20" id="hhi-TT-2VS"/>
+                                            <constraint firstItem="2MI-6l-YQt" firstAttribute="leading" secondItem="La3-9e-6TK" secondAttribute="leading" constant="20" id="p5F-L6-whI"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Yj-FX-eFd">
+                                        <rect key="frame" x="0.0" y="95" width="320" height="54.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00.000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rbR-np-cXD">
+                                                <rect key="frame" x="8" y="8" width="200" height="38"/>
                                                 <accessibility key="accessibilityConfiguration">
                                                     <accessibilityTraits key="traits" staticText="YES" updatesFrequently="YES"/>
                                                 </accessibility>
@@ -32,25 +80,31 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="vAq-EZ-Gmx">
-                                                <rect key="frame" x="0.0" y="54" width="320" height="36"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vAq-EZ-Gmx">
+                                                <rect key="frame" x="212" y="8" width="100" height="38"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
-                                                <state key="normal" title="Stop Recording">
+                                                <state key="normal" title="Stop">
                                                     <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="startRecordingButtonTapped:" destination="hm5-7q-Zfi" eventType="touchUpInside" id="hEp-UI-i6R"/>
+                                                    <action selector="stopRecording:" destination="hm5-7q-Zfi" eventType="touchUpInside" id="CWK-Tg-Tb8"/>
                                                 </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="90" id="bqy-bR-yVI"/>
+                                            <constraint firstItem="rbR-np-cXD" firstAttribute="leading" secondItem="9Yj-FX-eFd" secondAttribute="leading" constant="8" id="610-aO-U6Y"/>
+                                            <constraint firstItem="vAq-EZ-Gmx" firstAttribute="top" secondItem="9Yj-FX-eFd" secondAttribute="top" priority="999" constant="8" id="CKZ-8m-kmt"/>
+                                            <constraint firstItem="vAq-EZ-Gmx" firstAttribute="leading" secondItem="rbR-np-cXD" secondAttribute="trailing" constant="4" id="Cya-vS-90h"/>
+                                            <constraint firstAttribute="trailing" secondItem="vAq-EZ-Gmx" secondAttribute="trailing" constant="8" id="DhM-H2-4I7"/>
+                                            <constraint firstItem="rbR-np-cXD" firstAttribute="width" secondItem="vAq-EZ-Gmx" secondAttribute="width" multiplier="2" id="REp-Ug-zuV"/>
+                                            <constraint firstAttribute="bottom" secondItem="rbR-np-cXD" secondAttribute="bottom" priority="999" constant="8" id="Ukk-3a-Vsi"/>
+                                            <constraint firstAttribute="bottom" secondItem="vAq-EZ-Gmx" secondAttribute="bottom" priority="999" constant="8" id="dV2-g0-7gH"/>
+                                            <constraint firstItem="rbR-np-cXD" firstAttribute="top" secondItem="9Yj-FX-eFd" secondAttribute="top" priority="999" constant="8" id="mrE-Ej-dqM"/>
                                         </constraints>
                                     </view>
                                     <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v3Z-HR-abM">
-                                        <rect key="frame" x="0.0" y="98" width="320" height="421"/>
+                                        <rect key="frame" x="0.0" y="149.5" width="320" height="369.5"/>
                                         <connections>
                                             <segue destination="Fln-DD-aId" kind="embed" id="eFH-Rl-aBL"/>
                                         </connections>
@@ -71,8 +125,9 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
                     <connections>
-                        <outlet property="startButton" destination="vAq-EZ-Gmx" id="FSo-GH-jtd"/>
-                        <outlet property="startNewRecView" destination="La3-9e-6TK" id="I5w-aK-DlY"/>
+                        <outlet property="buttonView" destination="La3-9e-6TK" id="UMg-xx-6OV"/>
+                        <outlet property="headerView" destination="ppJ-js-Wwz" id="68u-8M-R2Q"/>
+                        <outlet property="runningView" destination="9Yj-FX-eFd" id="L2C-YR-2HN"/>
                         <outlet property="timeLabel" destination="rbR-np-cXD" id="EEe-8F-HT6"/>
                     </connections>
                 </viewController>
@@ -85,7 +140,7 @@
             <objects>
                 <tableViewController id="Fln-DD-aId" customClass="TVCPreviousRecords" customModule="AppCheck" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="7cH-g6-H5z">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="421"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="369.5"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
@@ -136,7 +191,7 @@
             <objects>
                 <tableViewController id="50g-BI-Q6S" customClass="TVCRecordingDetails" customModule="AppCheck" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="cLV-Db-JxM">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="421"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="369.5"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
@@ -263,7 +318,7 @@
             <objects>
                 <viewController id="P0a-ZP-uEV" customClass="VCShareRecording" customModule="AppCheck" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kVd-y1-MmT">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="421"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="369.5"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dN0-a9-t4G">
@@ -284,7 +339,7 @@
                                 </items>
                             </navigationBar>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fFm-v5-DGy">
-                                <rect key="frame" x="0.0" y="45" width="320" height="376"/>
+                                <rect key="frame" x="0.0" y="45" width="320" height="324.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -324,11 +379,11 @@
             <objects>
                 <viewController id="VRk-wv-rhk" customClass="VCEditRecording" customModule="AppCheck" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rXz-Mk-wrK">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="421"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="369.5"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2yS-xK-Wac">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="0.0"/>
                                 <gestureRecognizers/>
                                 <items>
                                     <navigationItem title="Edit" id="JSi-oz-VRx">
@@ -349,7 +404,7 @@
                                 </connections>
                             </navigationBar>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="xdn-EU-IMx">
-                                <rect key="frame" x="16" y="56" width="288" height="355"/>
+                                <rect key="frame" x="16" y="12" width="288" height="347.5"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Guy-Ra-fpS" userLabel="Title">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="40"/>
@@ -393,7 +448,7 @@
                                         </connections>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ybL-UG-dwT" userLabel="Notes">
-                                        <rect key="frame" x="0.0" y="48" width="288" height="208"/>
+                                        <rect key="frame" x="0.0" y="48" width="288" height="200.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notes" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QJp-6C-yoZ">
                                                 <rect key="frame" x="0.0" y="0.0" width="288" height="24"/>
@@ -403,7 +458,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NXU-yU-eST">
-                                                <rect key="frame" x="0.0" y="24" width="288" height="184"/>
+                                                <rect key="frame" x="0.0" y="24" width="288" height="176.5"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                                 <string key="text">1. Line
 2. Line
@@ -427,7 +482,7 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QiY-Mm-Dej" userLabel="Details">
-                                        <rect key="frame" x="0.0" y="264" width="288" height="91"/>
+                                        <rect key="frame" x="0.0" y="256.5" width="288" height="91"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Details" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="FR1-Nt-XuB">
                                                 <rect key="frame" x="0.0" y="0.0" width="288" height="24"/>
@@ -504,7 +559,7 @@ Duration:   60:00</string>
             <objects>
                 <tableViewController id="qNp-w1-7Md" customClass="TVCAppSearch" customModule="AppCheck" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="WYZ-wA-6Rh">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="421"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="369.5"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <searchBar key="tableHeaderView" contentMode="redraw" preservesSuperviewLayoutMargins="YES" placeholder="Search AppStore" showsCancelButton="YES" id="9dl-ZI-85h">
@@ -557,6 +612,7 @@ Duration:   60:00</string>
     </scenes>
     <resources>
         <image name="LaunchIcon.png" width="128" height="128"/>
+        <image name="detail-help" width="22" height="22"/>
         <image name="line-expand" width="20" height="20"/>
     </resources>
 </document>
