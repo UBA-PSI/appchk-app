@@ -55,6 +55,14 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 	
 	@IBAction private func startRecordingButtonTapped(_ sender: UIButton) {
 		if recordingTimer == nil {
+			guard GlassVPN.state == .on else {
+				AskAlert(title: "VPN stopped",
+						 text: "You need to start the VPN proxy before you can start a recording.",
+						 buttonText: "Start") { _ in
+					GlassVPN.setEnabled(true)
+				}.presentIn(self)
+				return
+			}
 			currentRecording = RecordingsDB.startNew()
 			startTimer(animate: true)
 		} else {
