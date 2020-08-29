@@ -157,4 +157,8 @@ struct VPNAppMessage {
 	static func notificationSettingsChanged() -> Self {
 		.init("notify-prefs-change:1")
 	}
+	/// Triggered whenever user taps on the start/stop recording button
+	static func isRecording(_ state: Bool) -> Self {
+		.init("recording-now:\(state ? 1 : 0)")
+	}
 }

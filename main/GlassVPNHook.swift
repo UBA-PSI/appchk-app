@@ -8,6 +8,7 @@ class GlassVPNHook {
 	private var filterOptions: [(block: Bool, ignore: Bool, customA: Bool, customB: Bool)]!
 	private var autoDeleteTimer: Timer? = nil
 	private var cachedNotify: CachedConnectionAlert!
+	private var currentlyRecording: Bool = false
 	
 	init() { reset() }
 	
@@ -16,6 +17,7 @@ class GlassVPNHook {
 		reloadDomainFilter()
 		setAutoDelete(PrefsShared.AutoDeleteLogsDays)
 		cachedNotify = CachedConnectionAlert()
+		currentlyRecording = PrefsShared.CurrentlyRecording
 	}
 	
 	/// Invalidate auto-delete timer and release stored properties. You should nullify this instance afterwards.
@@ -25,6 +27,7 @@ class GlassVPNHook {
 		autoDeleteTimer?.fire() // one last time before we quit
 		autoDeleteTimer?.invalidate()
 		cachedNotify = nil
+		currentlyRecording = false
 	}
 	
 	/// Call this method from `PacketTunnelProvider.handleAppMessage(_:completionHandler:)`
@@ -43,6 +46,9 @@ class GlassVPNHook {
 			case "notify-prefs-change":
 				cachedNotify = CachedConnectionAlert()
 				return
+			case "recording-now":
+				currentlyRecording = value == "1"
+				return
 			default: break
 			}
 		}
@@ -57,18 +63,19 @@ class GlassVPNHook {
 	/// - Returns: `true` if the request shoud be blocked.
 	func processDNSRequest(_ domain: String) -> Bool {
 		let i = filterIndex(for: domain)
-		// TODO: disable ignore & block during recordings
 		let (block, ignore, cA, cB) = (i<0) ? (false, false, false, false) : filterOptions[i]
-		if ignore {
+		if ignore, !currentlyRecording {
 			return block
 		}
+		let blockActive = block && !currentlyRecording
 		queue.async {
-			do { try AppDB?.logWrite(domain, blocked: block) }
+			do { try AppDB?.logWrite(domain, blocked: blockActive) }
 			catch { NSLog("[VPN.WARN] Couldn't write: \(error)") }
 		}
+		// TODO: disable notifications during recording?
 		cachedNotify.postOrIgnore(domain, blck: block, custA: cA, custB: cB)
 		// TODO: wait for notify response to block or allow connection
-		return block
+		return blockActive
 	}
 	
 	/// Build binary tree for reverse DNS lookup

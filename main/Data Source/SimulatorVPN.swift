@@ -46,7 +46,14 @@ class SimulatorVPN {
 	
 	@objc static func insertRandom() {
 		//QLog.Debug("Inserting 1 periodic log entry")
-		let domain = "\(arc4random() % 5).count.test.com"
+		let rand = arc4random() % 8
+		let domain: String
+		switch rand {
+		case 6: domain = "tmp.b.test.com"
+		case 7: domain = "tmp.i.test.com"
+		case 8: domain = "tmp.bi.test.com"
+		default: domain = "\(rand).count.test.com"
+		}
 		let kill = hook.processDNSRequest(domain)
 		if kill { QLog.Info("Blocked: \(domain)") }
 	}

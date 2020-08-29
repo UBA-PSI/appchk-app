@@ -64,14 +64,22 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 				return
 			}
 			currentRecording = RecordingsDB.startNew()
+			QLog.Debug("start recording #\(currentRecording!.id)")
 			startTimer(animate: true)
+			notifyVPN(setRecording: true)
 		} else {
+			notifyVPN(setRecording: false)
 			stopTimer(animate: true)
 			RecordingsDB.stop(&currentRecording!)
 			let editVC = (children.first as! TVCPreviousRecords)
 			editVC.insertAndEditRecording(currentRecording!)
 			currentRecording = nil // otherwise it will restart
 		}
+	}
+	
+	private func notifyVPN(setRecording state: Bool) {
+		PrefsShared.CurrentlyRecording = state
+		GlassVPN.send(.isRecording(state))
 	}
 	
 	private func startTimer(animate: Bool) {

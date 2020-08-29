@@ -23,6 +23,11 @@ enum PrefsShared {
 		get { Int("AutoDeleteLogsDays") }
 		set { Int("AutoDeleteLogsDays", newValue) }
 	}
+	
+	static var CurrentlyRecording: Bool {
+		get { Bool("CurrentlyRecording") }
+		set { Bool("CurrentlyRecording", newValue) }
+	}
 }
 
 
