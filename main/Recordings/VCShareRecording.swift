@@ -99,10 +99,10 @@ class VCShareRecording : UIViewController {
 					self?.banner(.fail, "Server couldn't parse request.\nTry again later.")
 					return
 				}
-				guard (200 ... 299) ~= response.statusCode else {
-					let reason = json["status"] as? String ?? "unkown reason"
-					QLog.Warning("Couldn't contribute: \(reason)")
-					self?.banner(.fail, "Error: \(reason)")
+				let status = json["status"] as? String ?? "unkown reason"
+				guard status == "ok", (200 ... 299) ~= response.statusCode else {
+					QLog.Warning("Couldn't contribute: \(status)")
+					self?.banner(.fail, "Error: \(status)")
 					return
 				}
 				// update db, mark record as shared
