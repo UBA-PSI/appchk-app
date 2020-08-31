@@ -23,7 +23,15 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 			updateUI(setRecording: false, animated: false)
 		}
 		if !Prefs.DidShowTutorial.Recordings {
-			self.perform(#selector(showTutorial), with: nil, afterDelay: 0.5)
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+				let x = TutorialSheet()
+				x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-recording-1"))
+				x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-recording-2"))
+				x.buttonTitleDone = "Got it"
+				x.present {
+					Prefs.DidShowTutorial.Recordings = true
+				}
+			}
 		}
 	}
 	
@@ -41,6 +49,15 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		navigationController?.setNavigationBarHidden(false, animated: animated)
 	}
 	
+	@IBAction private func showInfo(_ sender: UIButton?) {
+		let x = TutorialSheet()
+		x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-recording-howto"))
+		x.buttonTitleDone = "Close"
+		x.present() {
+			Prefs.DidShowTutorial.RecordingHowTo = true
+		}
+	}
+	
 	
 	// MARK: Start New Recording
 	
@@ -51,6 +68,10 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 					 buttonText: "Start") { _ in
 				GlassVPN.setEnabled(true)
 			}.presentIn(self)
+			return
+		}
+		guard Prefs.DidShowTutorial.RecordingHowTo else {
+			showInfo(nil) // show at least once. Later, user can click the help icon.
 			return
 		}
 		currentRecording = RecordingsDB.startNew()
@@ -118,26 +139,6 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		if stopButton.tag != validInt {
 			stopButton.tag = validInt
 			stopButton.setTitle(valid ? "Stop" : slow ? "Cancel" : "Discard", for: .normal)
-		}
-	}
-	
-	
-	// MARK: Tutorial View Controller
-	
-	@IBAction private func showInfo(_ sender: UIButton) {
-		let x = TutorialSheet()
-		x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-recording-howto"))
-		x.buttonTitleDone = "Close"
-		x.present()
-	}
-	
-	@objc private func showTutorial() {
-		let x = TutorialSheet()
-		x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-recording-1"))
-		x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-recording-2"))
-		x.buttonTitleDone = "Got it"
-		x.present {
-			Prefs.DidShowTutorial.Recordings = true
 		}
 	}
 }

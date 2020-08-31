@@ -33,6 +33,10 @@ extension Prefs {
 			get { Prefs.Bool("didShowTutorialRecordings") }
 			set { Prefs.Bool("didShowTutorialRecordings", newValue) }
 		}
+		static var RecordingHowTo: Bool {
+			get { Prefs.Bool("didShowTutorialRecordingHowTo") }
+			set { Prefs.Bool("didShowTutorialRecordingHowTo", newValue) }
+		}
 	}
 }
 
