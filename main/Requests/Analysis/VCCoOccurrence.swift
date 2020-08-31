@@ -132,21 +132,9 @@ extension VCCoOccurrence {
 		}()
 		
 		let x = TutorialSheet()
-		x.addSheet().addArrangedSubview(QuickUI.text(attributed: NSMutableAttributedString()
-			.h3("Co-Occurrence")
-			.normal(" allows you to find requests that happen often at the same time as the selected domain. " +
-					"Hence it will give you a hint what Apps might be involved in the activity." +
-					"\n\nHow do you interpret these results? Lets look at an example:\n\n")
-			.centered(.image(sampleCell))
-			.normal("\n\nThe domain ").bold("example.org").normal(" had ").bold("14").normal(" requests with an ").italic("average time divergence").normal(" of ").bold("0.71 seconds").normal(". " +
-					"That is, these 14 domain calls happend, on average, less then a second before or after the original request of the selected domain." +
-					"\n\nClose temporal proximity and high occurrence counts are both indicators for domain correlation. " +
-					"Results are sorted by a ranking index (").bold("9.").normal(") which strikes a balance between the two. " +
-					"Preferring entries with higher counts as well as low time divergence.")
-			.italic("\n\nTip: ").normal("As a visual guide you can look for the colored bar beside each value. " +
-					"The larger the bar, the greater the correlation.")
-		))
-		
+		x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-cooccurrence", replacements: [
+			"<IMG>" : .init(image: sampleCell, centered: true)
+		]))
 		x.present(in: self)
 	}
 }

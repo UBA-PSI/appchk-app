@@ -71,6 +71,13 @@
 		545DDDD424466D37003B6544 /* AutoLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545DDDD324466D37003B6544 /* AutoLayout.swift */; };
 		546063E523FEFAFE008F505A /* DBCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7562223D7B2DC008F0C41 /* DBCore.swift */; };
 		54686A7624F8062C0084934D /* NotificationBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54686A7524F8062C0084934D /* NotificationBanner.swift */; };
+		54686A8524FD0A3F0084934D /* tut-recording-howto.md in Resources */ = {isa = PBXBuildFile; fileRef = 54686A8424FD0A3F0084934D /* tut-recording-howto.md */; };
+		54686A8724FD27AA0084934D /* TinyMarkdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54686A8624FD26410084934D /* TinyMarkdown.swift */; };
+		54686A8D24FD428C0084934D /* tut-welcome-1.md in Resources */ = {isa = PBXBuildFile; fileRef = 54686A8824FD31580084934D /* tut-welcome-1.md */; };
+		54686A8E24FD42950084934D /* tut-welcome-2.md in Resources */ = {isa = PBXBuildFile; fileRef = 54686A8B24FD3F180084934D /* tut-welcome-2.md */; };
+		54686A8F24FD42950084934D /* tut-recording-1.md in Resources */ = {isa = PBXBuildFile; fileRef = 54686A8A24FD3F100084934D /* tut-recording-1.md */; };
+		54686A9024FD42950084934D /* tut-recording-2.md in Resources */ = {isa = PBXBuildFile; fileRef = 54686A8924FD31630084934D /* tut-recording-2.md */; };
+		54686A9124FD42950084934D /* tut-cooccurrence.md in Resources */ = {isa = PBXBuildFile; fileRef = 54686A8C24FD3F630084934D /* tut-cooccurrence.md */; };
 		54751E512423955100168273 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54751E502423955000168273 /* URL.swift */; };
 		54751E522423955100168273 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54751E502423955000168273 /* URL.swift */; };
 		54953E3323DC752E0054345C /* DBCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7562223D7B2DC008F0C41 /* DBCore.swift */; };
@@ -270,6 +277,13 @@
 		545DDDD024436983003B6544 /* QuickUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickUI.swift; sourceTree = "<group>"; };
 		545DDDD324466D37003B6544 /* AutoLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoLayout.swift; sourceTree = "<group>"; };
 		54686A7524F8062C0084934D /* NotificationBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationBanner.swift; sourceTree = "<group>"; };
+		54686A8424FD0A3F0084934D /* tut-recording-howto.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "tut-recording-howto.md"; sourceTree = "<group>"; };
+		54686A8624FD26410084934D /* TinyMarkdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinyMarkdown.swift; sourceTree = "<group>"; };
+		54686A8824FD31580084934D /* tut-welcome-1.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "tut-welcome-1.md"; sourceTree = "<group>"; };
+		54686A8924FD31630084934D /* tut-recording-2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "tut-recording-2.md"; sourceTree = "<group>"; };
+		54686A8A24FD3F100084934D /* tut-recording-1.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "tut-recording-1.md"; sourceTree = "<group>"; };
+		54686A8B24FD3F180084934D /* tut-welcome-2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "tut-welcome-2.md"; sourceTree = "<group>"; };
+		54686A8C24FD3F630084934D /* tut-cooccurrence.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "tut-cooccurrence.md"; sourceTree = "<group>"; };
 		54751E502423955000168273 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		548B1F9423D338EC005B047C /* main.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = main.entitlements; sourceTree = "<group>"; };
 		54953E5E23DEBE840054345C /* TVCDomains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCDomains.swift; sourceTree = "<group>"; };
@@ -515,6 +529,7 @@
 		542E2A9B24051F79001462DC /* media */ = {
 			isa = PBXGroup;
 			children = (
+				54686A8324FD0A3F0084934D /* tutorials */,
 				5430789E24B5E10E00278F2D /* sounds */,
 				541A957523E602DF00C09C19 /* LaunchIcon.png */,
 				54B345AF242264F8004C53CC /* third-level.txt */,
@@ -561,6 +576,7 @@
 				54E67E4524A8B0FE0025D261 /* PrefsShared.swift */,
 				545DDDD024436983003B6544 /* QuickUI.swift */,
 				545DDDCE243E6267003B6544 /* TutorialSheet.swift */,
+				54686A8624FD26410084934D /* TinyMarkdown.swift */,
 				54D8B979246C9F2000EB2414 /* FilterPipeline.swift */,
 				54448A3124899A4000771C96 /* SearchBarManager.swift */,
 				549ECD9C24A7AD550097571C /* CustomAlert.swift */,
@@ -570,6 +586,19 @@
 				54686A7524F8062C0084934D /* NotificationBanner.swift */,
 			);
 			path = "Common Classes";
+			sourceTree = "<group>";
+		};
+		54686A8324FD0A3F0084934D /* tutorials */ = {
+			isa = PBXGroup;
+			children = (
+				54686A8824FD31580084934D /* tut-welcome-1.md */,
+				54686A8B24FD3F180084934D /* tut-welcome-2.md */,
+				54686A8A24FD3F100084934D /* tut-recording-1.md */,
+				54686A8924FD31630084934D /* tut-recording-2.md */,
+				54686A8424FD0A3F0084934D /* tut-recording-howto.md */,
+				54686A8C24FD3F630084934D /* tut-cooccurrence.md */,
+			);
+			path = tutorials;
 			sourceTree = "<group>";
 		};
 		54A0CC0D24E314B6009B5EC1 /* GUI */ = {
@@ -956,16 +985,20 @@
 			files = (
 				543078AC24B5E12500278F2D /* typewriter2.caf in Resources */,
 				54953E7123E473F10054345C /* Settings.bundle in Resources */,
+				54686A9024FD42950084934D /* tut-recording-2.md in Resources */,
 				543078B024B5E12500278F2D /* plop2.caf in Resources */,
 				541AC5E22399498B00A769D7 /* LaunchScreen.storyboard in Resources */,
 				54A0CC0924E30C56009B5EC1 /* Recordings.storyboard in Resources */,
+				54686A8D24FD428C0084934D /* tut-welcome-1.md in Resources */,
 				543078B824B5E12500278F2D /* wood2.caf in Resources */,
 				543078BE24B5E12500278F2D /* drum2.caf in Resources */,
 				543078B424B5E12500278F2D /* snap1.caf in Resources */,
 				541AC5DF2399498B00A769D7 /* Assets.xcassets in Resources */,
 				543078AE24B5E12500278F2D /* wood1.caf in Resources */,
+				54686A8524FD0A3F0084934D /* tut-recording-howto.md in Resources */,
 				541AC5DD2399498A00A769D7 /* Main.storyboard in Resources */,
 				54B345B0242264F8004C53CC /* third-level.txt in Resources */,
+				54686A8F24FD42950084934D /* tut-recording-1.md in Resources */,
 				543078BA24B5E12500278F2D /* typewriter1.caf in Resources */,
 				543078B224B5E12500278F2D /* plop1.caf in Resources */,
 				543078B624B5E12500278F2D /* drum1.caf in Resources */,
@@ -973,6 +1006,8 @@
 				543078C324B60F3B00278F2D /* Settings.storyboard in Resources */,
 				543078AA24B5E12500278F2D /* snap2.caf in Resources */,
 				54A0CC0C24E30D6F009B5EC1 /* Requests.storyboard in Resources */,
+				54686A9124FD42950084934D /* tut-cooccurrence.md in Resources */,
+				54686A8E24FD42950084934D /* tut-welcome-2.md in Resources */,
 				541A957623E602DF00C09C19 /* LaunchIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1050,6 +1085,7 @@
 				54448A3224899A4000771C96 /* SearchBarManager.swift in Sources */,
 				5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */,
 				541FC9872497D81C00962623 /* TheGreatDestroyer.swift in Sources */,
+				54686A8724FD27AA0084934D /* TinyMarkdown.swift in Sources */,
 				5412F8EE24571B8200A63D7A /* VCDateFilter.swift in Sources */,
 				5412FCC424C628FA000DE429 /* TVCConnectionAlerts.swift in Sources */,
 				543078C924B75CEA00278F2D /* PushNotificationAppOnly.swift in Sources */,

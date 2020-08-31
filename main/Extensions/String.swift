@@ -47,3 +47,9 @@ private var listOfSLDs: [String : [String : Bool]] = {
 	}
 	return res
 }()
+
+extension NSString {
+	func substring(from: Int, to: Int) -> String {
+		substring(with: NSRange(location: from, length: to - from))
+	}
+}

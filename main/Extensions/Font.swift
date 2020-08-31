@@ -6,6 +6,7 @@ extension UIFont {
     }
     func bold() -> UIFont { withTraits(traits: .traitBold) }
     func italic() -> UIFont { withTraits(traits: .traitItalic) }
+    func boldItalic() -> UIFont { withTraits(traits: [.traitBold, .traitItalic]) }
 	func monoSpace() -> UIFont {
 		let traits = fontDescriptor.object(forKey: .traits) as? [UIFontDescriptor.TraitKey: Any] ?? [:]
 		let weight = (traits[.weight] as? CGFloat) ?? UIFont.Weight.regular.rawValue
@@ -13,39 +14,35 @@ extension UIFont {
 	}
 }
 
-extension NSAttributedString {
-	static func image(_ img: UIImage) -> Self {
+extension NSMutableAttributedString {
+	convenience init(image: UIImage, centered: Bool = false) {
+		self.init()
 		let att = NSTextAttachment()
-		att.image = img
-		return self.init(attachment: att)
+		att.image = image
+		append(.init(attachment: att))
+		if centered {
+			let ps = NSMutableParagraphStyle()
+			ps.alignment = .center
+			addAttribute(.paragraphStyle, value: ps, range: .init(location: 0, length: length))
+		}
 	}
 }
 
 extension NSMutableAttributedString {
-	static private var def: UIFont = .preferredFont(forTextStyle: .body)
+	@discardableResult func normal(_ str: String, _ style: UIFont.TextStyle = .body) -> Self { append(str, withFont: .preferredFont(forTextStyle: style)) }
+	@discardableResult func bold(_ str: String, _ style: UIFont.TextStyle = .body) -> Self { append(str, withFont: UIFont.preferredFont(forTextStyle: style).bold()) }
+	@discardableResult func italic(_ str: String, _ style: UIFont.TextStyle = .body) -> Self { append(str, withFont: UIFont.preferredFont(forTextStyle: style).italic()) }
+	@discardableResult func boldItalic(_ str: String, _ style: UIFont.TextStyle = .body) -> Self { append(str, withFont: UIFont.preferredFont(forTextStyle: style).boldItalic()) }
 	
-	func normal(_ str: String, _ style: UIFont.TextStyle = .body) -> Self { append(str, withFont: .preferredFont(forTextStyle: style)) }
-	func bold(_ str: String, _ style: UIFont.TextStyle = .body) -> Self { append(str, withFont: UIFont.preferredFont(forTextStyle: style).bold()) }
-	func italic(_ str: String, _ style: UIFont.TextStyle = .body) -> Self { append(str, withFont: UIFont.preferredFont(forTextStyle: style).italic()) }
-	
-	func h1(_ str: String) -> Self { normal(str, .title1) }
-	func h2(_ str: String) -> Self { normal(str, .title2) }
-	func h3(_ str: String) -> Self { normal(str, .title3) }
+	@discardableResult func h1(_ str: String) -> Self { normal(str, .title1) }
+	@discardableResult func h2(_ str: String) -> Self { normal(str, .title2) }
+	@discardableResult func h3(_ str: String) -> Self { normal(str, .title3) }
 	
 	private func append(_ str: String, withFont: UIFont) -> Self {
 		append(NSAttributedString(string: str, attributes: [
 			.font : withFont,
 			.foregroundColor : UIColor.sysLabel
 		]))
-		return self
-	}
-	
-	func centered(_ content: NSAttributedString) -> Self {
-		let before = length
-		append(content)
-		let ps = NSMutableParagraphStyle()
-		ps.alignment = .center
-		addAttribute(.paragraphStyle, value: ps, range: .init(location: before, length: content.length))
 		return self
 	}
 }
