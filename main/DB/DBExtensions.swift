@@ -36,7 +36,7 @@ extension Recording {
 	var fallbackTitle: String { get {
 		isLongTerm ? "Background Recording" : "Unnamed Recording #\(id)"
 	} }
-	var duration: Timestamp { get { stop ?? .now() - start } }
+	var duration: Timestamp { get { (stop ?? .now()) - start } }
 	var isLongTerm: Bool { duration > Timestamp.hours(1) }
 	var isShared: Bool { uploadkey?.count ?? 0 > 0}
 }
