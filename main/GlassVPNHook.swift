@@ -17,7 +17,7 @@ class GlassVPNHook {
 		reloadDomainFilter()
 		setAutoDelete(PrefsShared.AutoDeleteLogsDays)
 		cachedNotify = CachedConnectionAlert()
-		currentlyRecording = PrefsShared.CurrentlyRecording
+		currentlyRecording = PrefsShared.CurrentlyRecording != .Off
 	}
 	
 	/// Invalidate auto-delete timer and release stored properties. You should nullify this instance afterwards.
@@ -47,7 +47,8 @@ class GlassVPNHook {
 				cachedNotify = CachedConnectionAlert()
 				return
 			case "recording-now":
-				currentlyRecording = value == "1"
+				let newState = CurrentRecordingState(rawValue: Int(value) ?? 0)
+				currentlyRecording = newState != .Off
 				return
 			default: break
 			}

@@ -19,7 +19,7 @@ class VCShareRecording : UIViewController {
 		let start = record.start
 		let comp = Calendar.current.dateComponents([.weekOfYear, .yearForWeekOfYear], from: Date(start))
 		let wkYear = "\(comp.yearForWeekOfYear ?? 0).\(comp.weekOfYear ?? 0)"
-		let lenSec = record.duration ?? 0
+		let lenSec = record.duration
 		
 		let res = RecordingsDB.details(record)
 		var cluster: [String : [Timestamp]] = [:]

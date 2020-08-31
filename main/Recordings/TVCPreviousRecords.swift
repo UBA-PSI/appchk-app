@@ -76,7 +76,7 @@ class TVCPreviousRecords: UITableViewController, EditActionsRemove {
 		let x = dataSource[indexPath.row]
 		cell.textLabel?.text = x.title ?? x.fallbackTitle
 		cell.textLabel?.textColor = (x.title == nil) ? .systemGray : nil
-		cell.detailTextLabel?.text = "\(x.isShared ? "✅ " : "")at \(DateFormat.minutes(x.start)),  duration: \(TimeFormat.from(x.duration ?? 0))"
+		cell.detailTextLabel?.text = "\(x.isShared ? "✅ " : "")at \(DateFormat.minutes(x.start)),  duration: \(TimeFormat.from(x.duration))"
 		cell.imageView?.image = x.isLongTerm ? nil : BundleIcon.image(x.appId)
 		cell.imageView?.layer.cornerRadius = 6.75
 		cell.imageView?.layer.masksToBounds = true

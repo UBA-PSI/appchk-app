@@ -86,17 +86,21 @@ struct TimeFormat {
 	}
 	
 	/// Duration string with format `mm:ss` or `mm:ss.SSS`
-	static func from(_ duration: TimeInterval, millis: Bool = false) -> String {
+	static func from(_ duration: TimeInterval, millis: Bool = false, hours: Bool = false) -> String {
 		let t = Int(duration)
+		let min = t / 60
+		let sec = t % 60
 		if millis {
 			let mil = Int(duration * 1000) % 1000
-			return String(format: "%02d:%02d.%03d", t / 60, t % 60, mil)
+			return String(format: "%02d:%02d.%03d", min, sec, mil)
+		} else if hours {
+			return String(format: "%02d:%02d:%02d", min / 60, min % 60, sec)
 		}
-		return String(format: "%02d:%02d", t / 60, t % 60)
+		return String(format: "%02d:%02d", min, sec)
 	}
 	
-	/// Duration string with format `mm:ss` or `mm:ss.SSS` since reference date
-	static func since(_ date: Date, millis: Bool = false) -> String {
-		from(Date().timeIntervalSince(date), millis: millis)
+	/// Duration string with format `mm:ss` or `mm:ss.SSS` or `HH:mm:ss` since reference date
+	static func since(_ date: Date, millis: Bool = false, hours: Bool = false) -> String {
+		from(Date().timeIntervalSince(date), millis: millis, hours: hours)
 	}
 }

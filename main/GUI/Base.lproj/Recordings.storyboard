@@ -72,7 +72,7 @@
                                         <rect key="frame" x="0.0" y="95" width="320" height="54.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00.000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rbR-np-cXD">
-                                                <rect key="frame" x="8" y="8" width="200" height="38"/>
+                                                <rect key="frame" x="8" y="8" width="200" height="38.5"/>
                                                 <accessibility key="accessibilityConfiguration">
                                                     <accessibilityTraits key="traits" staticText="YES" updatesFrequently="YES"/>
                                                 </accessibility>
@@ -81,7 +81,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vAq-EZ-Gmx">
-                                                <rect key="frame" x="212" y="8" width="100" height="38"/>
+                                                <rect key="frame" x="212" y="8" width="100" height="38.5"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                                 <state key="normal" title="Stop">
                                                     <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -128,6 +128,7 @@
                         <outlet property="buttonView" destination="La3-9e-6TK" id="UMg-xx-6OV"/>
                         <outlet property="headerView" destination="ppJ-js-Wwz" id="68u-8M-R2Q"/>
                         <outlet property="runningView" destination="9Yj-FX-eFd" id="L2C-YR-2HN"/>
+                        <outlet property="stopButton" destination="vAq-EZ-Gmx" id="XiW-1H-I9y"/>
                         <outlet property="timeLabel" destination="rbR-np-cXD" id="EEe-8F-HT6"/>
                     </connections>
                 </viewController>

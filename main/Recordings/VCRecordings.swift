@@ -3,17 +3,22 @@ import UIKit
 class VCRecordings: UIViewController, UINavigationControllerDelegate {
 	private var currentRecording: Recording?
 	private var recordingTimer: Timer?
+	private var state: CurrentRecordingState = .Off
 	
 	@IBOutlet private var headerView: UIView!
 	@IBOutlet private var buttonView: UIView!
 	@IBOutlet private var runningView: UIView!
 	@IBOutlet private var timeLabel: UILabel!
+	@IBOutlet private var stopButton: UIButton!
 	
 	override func viewDidLoad() {
 		timeLabel.font = timeLabel.font.monoSpace()
 		if let ongoing = RecordingsDB.getCurrent() {
 			currentRecording = ongoing
-			startTimer(animate: false)
+			// Currently this class is the only one that changes the state,
+			// if that ever changes, make sure to update local state as well
+			state = PrefsShared.CurrentlyRecording
+			startTimer(animate: false, longterm: state == .Background)
 		} else { // hide timer if not running
 			updateUI(setRecording: false, animated: false)
 		}
@@ -50,50 +55,70 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		}
 		currentRecording = RecordingsDB.startNew()
 		QLog.Debug("start recording #\(currentRecording!.id)")
-		startTimer(animate: true)
-		notifyVPN(setRecording: true)
+		let longterm = sender.selectedSegmentIndex == 1
+		startTimer(animate: true, longterm: longterm)
+		notifyVPN(setRecording: longterm ? .Background : .App)
 	}
 	
 	@IBAction private func stopRecording(_ sender: UIButton) {
-		notifyVPN(setRecording: false)
-		stopTimer(animate: true)
-		RecordingsDB.stop(&currentRecording!)
+		let validRecording = (state == .Background) == currentRecording!.isLongTerm
+		notifyVPN(setRecording: .Off) // will change state = .Off
+		stopTimer()
 		QLog.Debug("stop recording #\(currentRecording!.id)")
-		let editVC = (children.first as! TVCPreviousRecords)
-		editVC.insertAndEditRecording(currentRecording!)
+		RecordingsDB.stop(&currentRecording!)
+		if validRecording {
+			let editVC = (children.first as! TVCPreviousRecords)
+			editVC.insertAndEditRecording(currentRecording!)
+		} else {
+			QLog.Debug("Discard illegal recording #\(currentRecording!.id)")
+			RecordingsDB.delete(currentRecording!)
+		}
 		currentRecording = nil // otherwise it will restart
 	}
 	
-	private func notifyVPN(setRecording state: Bool) {
+	private func notifyVPN(setRecording state: CurrentRecordingState) {
 		PrefsShared.CurrentlyRecording = state
+		self.state = state
 		GlassVPN.send(.isRecording(state))
 	}
 	
-	private func startTimer(animate: Bool) {
-		guard let r = currentRecording, r.stop == nil else {
-			return
-		}
-		recordingTimer = Timer.repeating(0.086, call: #selector(timerCallback(_:)), on: self, userInfo: Date(r.start))
-		updateUI(setRecording: true, animated: animate)
-	}
-	
-	@objc private func timerCallback(_ sender: Timer) {
-		timeLabel.text = TimeFormat.since(sender.userInfo as! Date, millis: true)
-	}
-	
-	private func stopTimer(animate: Bool) {
-		recordingTimer?.invalidate()
-		recordingTimer = nil
-		updateUI(setRecording: false, animated: animate)
-	}
-	
 	private func updateUI(setRecording: Bool, animated: Bool) {
+		stopButton.tag = 99 // tag used in timerCallback()
+		stopButton.setTitle("", for: .normal) // prevent flashing while animating in and out
 		let block = {
 			self.headerView.isHidden = setRecording
 			self.buttonView.isHidden = setRecording
 			self.runningView.isHidden = !setRecording
 		}
 		animated ? UIView.animate(withDuration: 0.3, animations: block) : block()
+	}
+	
+	private func startTimer(animate: Bool, longterm: Bool) {
+		guard let r = currentRecording, r.stop == nil else {
+			return
+		}
+		updateUI(setRecording: true, animated: animate)
+		let freq = longterm ? 1 : 0.086
+		let obj = (longterm, Date(r.start))
+		recordingTimer = Timer.repeating(freq, call: #selector(timerCallback(_:)), on: self, userInfo: obj)
+		recordingTimer!.fire() // update label immediately
+	}
+	
+	private func stopTimer() {
+		recordingTimer?.invalidate()
+		recordingTimer = nil
+		updateUI(setRecording: false, animated: true)
+	}
+	
+	@objc private func timerCallback(_ sender: Timer) {
+		let (slow, start) = sender.userInfo as! (Bool, Date)
+		timeLabel.text = TimeFormat.since(start, millis: !slow, hours: slow)
+		let valid = slow == currentRecording!.isLongTerm
+		let validInt = (valid ? 1 : 0)
+		if stopButton.tag != validInt {
+			stopButton.tag = validInt
+			stopButton.setTitle(valid ? "Stop" : slow ? "Cancel" : "Discard", for: .normal)
+		}
 	}
 	
 	
@@ -103,13 +128,21 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		let x = TutorialSheet()
 		x.addSheet().addArrangedSubview(QuickUI.text(attributed: NSMutableAttributedString()
 			.h1("How to record?\n")
-			.normal("\nBefore you begin a new recording make sure that you quit all running applications. " +
-				"Tap on the 'Start Recording' button and switch to the application you'd like to inspect. " +
-				"Use the App as you would normally. Try to get to all corners and functionality the App provides. " +
-				"When you feel that you have captured enough content, come back to ").italic("AppCheck").normal(" and stop the recording." +
-				"\n\n" +
-				"Upon completion you will find your recording in the section below. " +
-				"You can review your results and remove user specific information if necessary.")
+			.normal("\nThere are two types: specific app recordings and general background activity. " +
+					"The former are usually 3 – 5 minutes long, the latter need to be at least an hour long.")
+			.h2("\n\nApp recording\n")
+			.normal("Before you begin make sure that you quit all running applications and wait a few seconds. " +
+					"Tap on the 'App' recording button and switch to the application you'd like to inspect. " +
+					"Use the App as you would normally. Try to get to all corners and functionality the App provides. " +
+					"When you feel that you have captured enough content, come back to ").italic("AppCheck").normal(" and stop the recording.")
+			.h2("\n\nBackground recording\n")
+			.normal("Will answer one simple question: What communications happen while you aren't using your device. " +
+					"You should solely start a background recording when you know you aren't going to use your device in the near future. " +
+					"For example, before you go to bed.\n" +
+					"As soon as you start using your device, you should stop the recording to avoid distorting the results.")
+			.h2("\n\nFinish\n")
+			.normal("Upon completion you will find your recording in the section below. " +
+					"You can review your results and remove any user specific information if necessary.\n")
 		))
 		x.buttonTitleDone = "Close"
 		x.present()
@@ -120,10 +153,10 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		x.addSheet().addArrangedSubview(QuickUI.text(attributed: NSMutableAttributedString()
 			.h1("What are Recordings?\n")
 			.normal("\nSimilar to the default logging, recordings will intercept every request and log it for later review. " +
-				"Recordings are usually 3 – 5 minutes long and cover a single application. " +
-				"You can utilize recordings for App analysis or to get a ground truth for background traffic." +
+				"App recordings are usually 3 – 5 minutes long and cover a single application. " +
+				"You can utilize recordings for App analysis or to get a ground truth on background traffic." +
 				"\n\n" +
-				"Optionally, you can help us by providing app specific recordings. " +
+				"Optionally, you can help us by providing your app specific recordings. " +
 				"Together with your findings we can create a community driven privacy monitor. " +
 				"The research results will help you and others avoid Apps that unnecessarily share data with third-party providers.")
 		))

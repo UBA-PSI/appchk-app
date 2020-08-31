@@ -23,10 +23,19 @@ enum PrefsShared {
 		get { Int("AutoDeleteLogsDays") }
 		set { Int("AutoDeleteLogsDays", newValue) }
 	}
-	
-	static var CurrentlyRecording: Bool {
-		get { Bool("CurrentlyRecording") }
-		set { Bool("CurrentlyRecording", newValue) }
+}
+
+
+// MARK: - Recording State
+
+enum CurrentRecordingState : Int {
+	case Off = 0, App = 1, Background = 2
+}
+
+extension PrefsShared {
+	static var CurrentlyRecording: CurrentRecordingState {
+		get { CurrentRecordingState(rawValue: Int("CurrentlyRecording")) ?? .Off }
+		set { Int("CurrentlyRecording", newValue.rawValue) }
 	}
 }
 
