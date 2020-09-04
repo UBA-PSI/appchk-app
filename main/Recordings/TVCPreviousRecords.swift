@@ -64,13 +64,6 @@ class TVCPreviousRecords: UITableViewController, EditActionsRemove {
 		dataSource.count
 	}
 	
-//	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//		let lbl = QuickUI.label("Previous Recordings", align: .center)
-//		lbl.font = lbl.font.bold()
-//		lbl.backgroundColor = .sysBackground
-//		return lbl
-//	}
-	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "PreviousRecordCell")!
 		let x = dataSource[indexPath.row]
@@ -80,6 +73,10 @@ class TVCPreviousRecords: UITableViewController, EditActionsRemove {
 		cell.imageView?.image = x.isLongTerm ? nil : BundleIcon.image(x.appId)
 		cell.imageView?.layer.cornerRadius = 6.75
 		cell.imageView?.layer.masksToBounds = true
+		if #available(iOS 11, *) {} else {
+			cell.textLabel?.numberOfLines = 1
+			cell.detailTextLabel?.numberOfLines = 1
+		}
 		return cell
 	}
 	

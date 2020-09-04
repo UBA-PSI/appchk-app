@@ -85,6 +85,7 @@
 		54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6023E0D69A0054345C /* TVCHosts.swift */; };
 		54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6E23E44CD00054345C /* TVCHostDetails.swift */; };
 		54953E7123E473F10054345C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 54953E7023E473F10054345C /* Settings.bundle */; };
+		549A96D62501198400C565FA /* VCEditText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549A96D52501198400C565FA /* VCEditText.swift */; };
 		549D6ED524D5BFDB0032E498 /* TVCAppSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549D6ED424D5BFDB0032E498 /* TVCAppSearch.swift */; };
 		549ECD9D24A7AD550097571C /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549ECD9C24A7AD550097571C /* CustomAlert.swift */; };
 		54A0CC0924E30C56009B5EC1 /* Recordings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54A0CC0724E30C56009B5EC1 /* Recordings.storyboard */; };
@@ -180,7 +181,7 @@
 		54CA02C42426DCCD003A5E04 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02C02426DCCD003A5E04 /* GCDAsyncUdpSocket.m */; };
 		54CE8BC424B1ED2100CC1756 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CE8BC324B1ED2100CC1756 /* PushNotification.swift */; };
 		54CE8BC524B1ED2100CC1756 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CE8BC324B1ED2100CC1756 /* PushNotification.swift */; };
-		54CFE86824E3F401001687DD /* VCShareRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CFE86724E3F401001687DD /* VCShareRecording.swift */; };
+		54CFE86824E3F401001687DD /* TVCShareRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CFE86724E3F401001687DD /* TVCShareRecording.swift */; };
 		54D8B97A246C9F2000EB2414 /* FilterPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B979246C9F2000EB2414 /* FilterPipeline.swift */; };
 		54D8B97C2471A7E000EB2414 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B97B2471A7E000EB2414 /* String.swift */; };
 		54D8B97E2471B88900EB2414 /* DBCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8B97D2471B88900EB2414 /* DBCommon.swift */; };
@@ -290,6 +291,7 @@
 		54953E6023E0D69A0054345C /* TVCHosts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCHosts.swift; sourceTree = "<group>"; };
 		54953E6E23E44CD00054345C /* TVCHostDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCHostDetails.swift; sourceTree = "<group>"; };
 		54953E7023E473F10054345C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		549A96D52501198400C565FA /* VCEditText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCEditText.swift; sourceTree = "<group>"; };
 		549D6ED424D5BFDB0032E498 /* TVCAppSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCAppSearch.swift; sourceTree = "<group>"; };
 		549ECD9C24A7AD550097571C /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
 		54A0CC0824E30C56009B5EC1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Recordings.storyboard; sourceTree = "<group>"; };
@@ -388,7 +390,7 @@
 		54CA02C12426DCCD003A5E04 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
 		54CA02C22426DCCD003A5E04 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
 		54CE8BC324B1ED2100CC1756 /* PushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotification.swift; sourceTree = "<group>"; };
-		54CFE86724E3F401001687DD /* VCShareRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCShareRecording.swift; sourceTree = "<group>"; };
+		54CFE86724E3F401001687DD /* TVCShareRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCShareRecording.swift; sourceTree = "<group>"; };
 		54D8B979246C9F2000EB2414 /* FilterPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPipeline.swift; sourceTree = "<group>"; };
 		54D8B97B2471A7E000EB2414 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		54D8B97D2471B88900EB2414 /* DBCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBCommon.swift; sourceTree = "<group>"; };
@@ -455,7 +457,8 @@
 				540E677F242D2CF100871BBE /* VCRecordings.swift */,
 				540E67832433FAFE00871BBE /* TVCPreviousRecords.swift */,
 				5458EBBF243A3F2200CFEB15 /* TVCRecordingDetails.swift */,
-				54CFE86724E3F401001687DD /* VCShareRecording.swift */,
+				54CFE86724E3F401001687DD /* TVCShareRecording.swift */,
+				549A96D52501198400C565FA /* VCEditText.swift */,
 				540E67812433483D00871BBE /* VCEditRecording.swift */,
 				549D6ED424D5BFDB0032E498 /* TVCAppSearch.swift */,
 				54B345B12422E029004C53CC /* App Icons */,
@@ -1071,7 +1074,7 @@
 				54448A30248647D900771C96 /* Time.swift in Sources */,
 				54953E6123E0D69A0054345C /* TVCHosts.swift in Sources */,
 				549D6ED524D5BFDB0032E498 /* TVCAppSearch.swift in Sources */,
-				54CFE86824E3F401001687DD /* VCShareRecording.swift in Sources */,
+				54CFE86824E3F401001687DD /* TVCShareRecording.swift in Sources */,
 				54751E512423955100168273 /* URL.swift in Sources */,
 				54953E5F23DEBE840054345C /* TVCDomains.swift in Sources */,
 				54C056DB23E9E36E00214A3F /* AppStoreSearch.swift in Sources */,
@@ -1084,6 +1087,7 @@
 				542E2A982404973F001462DC /* TBCMain.swift in Sources */,
 				54448A3224899A4000771C96 /* SearchBarManager.swift in Sources */,
 				5458EBC0243A3F2200CFEB15 /* TVCRecordingDetails.swift in Sources */,
+				549A96D62501198400C565FA /* VCEditText.swift in Sources */,
 				541FC9872497D81C00962623 /* TheGreatDestroyer.swift in Sources */,
 				54686A8724FD27AA0084934D /* TinyMarkdown.swift in Sources */,
 				5412F8EE24571B8200A63D7A /* VCDateFilter.swift in Sources */,

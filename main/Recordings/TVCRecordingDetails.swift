@@ -45,7 +45,7 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if let tgt = segue.destination as? VCShareRecording {
+		if let tgt = segue.destination as? TVCShareRecording {
 			tgt.record = self.record
 		}
 	}

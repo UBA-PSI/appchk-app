@@ -28,6 +28,18 @@ enum RecordingsDB {
 		AppDB?.recordingLogsGet(r) ?? []
 	}
 	
+	/// Get dictionary of domains with `ts` in ascending order.
+	static func detailCluster(_ r: Recording) -> [String : [Timestamp]] {
+		var cluster: [String : [Timestamp]] = [:]
+		for (dom, ts) in details(r) {
+			if cluster[dom] == nil {
+				cluster[dom] = []
+			}
+			cluster[dom]!.append(ts - r.start)
+		}
+		return cluster
+	}
+	
 	/// Update `title`, `appid`, and `notes` and post `NotifyRecordingChanged` notification.
 	static func update(_ r: Recording) {
 		AppDB?.recordingUpdate(r)
