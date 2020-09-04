@@ -30,13 +30,18 @@ struct NotificationBanner {
 		img.tintColor = fg
 		view.addSubview(lbl)
 		view.addSubview(img)
-		img.anchor([.leading, .centerY], to: view.layoutMarginsGuide)
+		img.anchor([.centerY], to: view.layoutMarginsGuide)
 		lbl.anchor([.top, .bottom, .trailing], to: view.layoutMarginsGuide)
 		img.widthAnchor =&= 25
 		img.heightAnchor =&= 25
+		if #available(iOS 11, *) {
+			img.leadingAnchor =&= view.layoutMarginsGuide.leadingAnchor
+		} else {
+			img.leadingAnchor =&= view.leadingAnchor + 8
+		}
 		lbl.leadingAnchor =&= img.trailingAnchor + 8
-		img.bottomAnchor =<= view.bottomAnchor - 8
-		lbl.bottomAnchor =<= view.bottomAnchor - 8
+		img.bottomAnchor =<= view.bottomAnchor - 8 | .init(rawValue: 999)
+		lbl.bottomAnchor =<= view.bottomAnchor - 8 | .init(rawValue: 999)
 	}
 	
 	/// Animate header banner from the top of the view. Show for `delay` seconds and then hide again.
@@ -44,6 +49,7 @@ struct NotificationBanner {
 	func present(in vc: UIViewController, hideAfter delay: TimeInterval = 3, onClose: (() -> Void)? = nil) {
 		vc.view.addSubview(view)
 		view.anchor([.leading, .trailing], to: vc.view!)
+		view.widthAnchor =&= vc.view!.widthAnchor // Bug? left-right is not sufficient
 		vc.view.layoutIfNeeded() // sets the height
 		let h = view.frame.height
 		let constraint = view.topAnchor =&= vc.view.topAnchor - h
