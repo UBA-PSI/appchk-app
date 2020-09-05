@@ -59,7 +59,7 @@ class TutorialSheet: UIViewController, UIScrollViewDelegate {
 		return x
 	}()
 	
-	private let button: UIButton = {
+	private lazy var button: UIButton = {
 		let x = QuickUI.button("", target: self, action: #selector(buttonTapped))
 		x.contentEdgeInsets = UIEdgeInsets(all: 8)
 		return x

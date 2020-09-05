@@ -9,7 +9,7 @@ class CustomAlert<CustomView: UIView>: UIViewController {
 	private var callback: ((CustomView) -> Void)?
 	
 	/// Default: `[Cancel, Save]`
-	let buttonsBar: UIStackView = {
+	lazy var buttonsBar: UIStackView = {
 		let cancel = QuickUI.button("Cancel", target: self, action: #selector(didTapCancel))
 		let save = QuickUI.button("Save", target: self, action: #selector(didTapSave))
 		save.titleLabel?.font = save.titleLabel?.font.bold()
