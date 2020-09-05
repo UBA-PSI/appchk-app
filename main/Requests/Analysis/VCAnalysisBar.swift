@@ -48,13 +48,10 @@ class VCAnalysisBar: UIViewController, UITabBarDelegate {
 	}
 	
 	private func openCoOccurrence() {
-		guard let delegate = parent as? AnalysisBarDelegate,
-			let vc: VCCoOccurrence = storyboard?.load("IBCoOccurrence") else {
+		guard let delegate = parent as? AnalysisBarDelegate else {
 			return
 		}
-		let info = delegate.analysisBarWillOpenCoOccurrence()
-		vc.domainName = info.domain
-		vc.isFQDN = info.isFQDN
-		present(vc, animated: true)
+		let x = delegate.analysisBarWillOpenCoOccurrence()
+		present(VCCoOccurrence.make(x.domain, isFQDN: x.isFQDN), animated: true)
 	}
 }

@@ -86,6 +86,7 @@
 		54953E6F23E44CD00054345C /* TVCHostDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54953E6E23E44CD00054345C /* TVCHostDetails.swift */; };
 		54953E7123E473F10054345C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 54953E7023E473F10054345C /* Settings.bundle */; };
 		549A96D62501198400C565FA /* VCEditText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549A96D52501198400C565FA /* VCEditText.swift */; };
+		549A96DA250419B200C565FA /* CoOccurrence.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 549A96D8250419B200C565FA /* CoOccurrence.storyboard */; };
 		549D6ED524D5BFDB0032E498 /* TVCAppSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549D6ED424D5BFDB0032E498 /* TVCAppSearch.swift */; };
 		549ECD9D24A7AD550097571C /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549ECD9C24A7AD550097571C /* CustomAlert.swift */; };
 		54A0CC0924E30C56009B5EC1 /* Recordings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54A0CC0724E30C56009B5EC1 /* Recordings.storyboard */; };
@@ -292,6 +293,7 @@
 		54953E6E23E44CD00054345C /* TVCHostDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCHostDetails.swift; sourceTree = "<group>"; };
 		54953E7023E473F10054345C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		549A96D52501198400C565FA /* VCEditText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCEditText.swift; sourceTree = "<group>"; };
+		549A96D9250419B200C565FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/CoOccurrence.storyboard; sourceTree = "<group>"; };
 		549D6ED424D5BFDB0032E498 /* TVCAppSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCAppSearch.swift; sourceTree = "<group>"; };
 		549ECD9C24A7AD550097571C /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
 		54A0CC0824E30C56009B5EC1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Recordings.storyboard; sourceTree = "<group>"; };
@@ -610,6 +612,7 @@
 				541AC5E02399498B00A769D7 /* LaunchScreen.storyboard */,
 				541AC5DB2399498A00A769D7 /* Main.storyboard */,
 				54A0CC0A24E30D6F009B5EC1 /* Requests.storyboard */,
+				549A96D8250419B200C565FA /* CoOccurrence.storyboard */,
 				54A0CC0724E30C56009B5EC1 /* Recordings.storyboard */,
 				543078C124B60F3B00278F2D /* Settings.storyboard */,
 			);
@@ -1009,6 +1012,7 @@
 				543078C324B60F3B00278F2D /* Settings.storyboard in Resources */,
 				543078AA24B5E12500278F2D /* snap2.caf in Resources */,
 				54A0CC0C24E30D6F009B5EC1 /* Requests.storyboard in Resources */,
+				549A96DA250419B200C565FA /* CoOccurrence.storyboard in Resources */,
 				54686A9124FD42950084934D /* tut-cooccurrence.md in Resources */,
 				54686A8E24FD42950084934D /* tut-welcome-2.md in Resources */,
 				541A957623E602DF00C09C19 /* LaunchIcon.png in Resources */,
@@ -1237,6 +1241,14 @@
 				543078C224B60F3B00278F2D /* Base */,
 			);
 			name = Settings.storyboard;
+			sourceTree = "<group>";
+		};
+		549A96D8250419B200C565FA /* CoOccurrence.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				549A96D9250419B200C565FA /* Base */,
+			);
+			name = CoOccurrence.storyboard;
 			sourceTree = "<group>";
 		};
 		54A0CC0724E30C56009B5EC1 /* Recordings.storyboard */ = {

@@ -129,7 +129,7 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 		if noResults { return nil }
 		let buttons = [
 			UIMenuItem(title: "All requests", action: #selector(openInLogs)),
-//			UIMenuItem(title: "CoOccurrence", action: #selector(openCoOccurrence))
+			UIMenuItem(title: "Co-Occurrence", action: #selector(openCoOccurrence))
 		]
 		if cellMenu.start(tableView, indexPath, items: buttons) {
 			if showRaw {
@@ -161,13 +161,11 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 		copyDomain = nil
 	}
 	
-//	@objc private func openCoOccurrence() {
-//		if let dom = copyDomain, let vc: VCCoOccurrence = storyboard?.load("IBCoOccurrence") {
-//			vc.domainName = dom
-//			vc.isFQDN = true
-//			present(vc, animated: true)
-//		}
-//		cellMenu.reset()
-//		copyDomain = nil
-//	}
+	@objc private func openCoOccurrence() {
+		if let dom = copyDomain {
+			present(VCCoOccurrence.make(dom), animated: true)
+		}
+		cellMenu.reset()
+		copyDomain = nil
+	}
 }

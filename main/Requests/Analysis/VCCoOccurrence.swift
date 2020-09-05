@@ -14,6 +14,14 @@ class VCCoOccurrence: UIViewController, UITableViewDataSource {
 	private var logTimeDelta: CGFloat = 1
 	private var logMaxCount: CGFloat = 1
 	
+	static func make(_ domain: String, isFQDN: Bool = true) -> Self {
+		let story = UIStoryboard(name: "CoOccurrence", bundle: nil)
+		let vc = story.instantiateInitialViewController() as! Self
+		vc.domainName = domain
+		vc.isFQDN = isFQDN
+		return vc
+	}
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		selectedTime = Prefs.ContextAnalyis.CoOccurrenceTime // calls `didSet` and `logTimeDelta`
