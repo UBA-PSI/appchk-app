@@ -118,4 +118,63 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 		shareButton.isEnabled = !noResults
 		return true
 	}
+	
+	
+	// MARK: - Tap to Copy
+	
+	private var rowToCopy: Int = Int.max
+	
+	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		if rowToCopy == indexPath.row {
+			UIMenuController.shared.setMenuVisible(false, animated: true)
+			rowToCopy = Int.max
+			return nil
+		}
+		rowToCopy = indexPath.row
+		self.becomeFirstResponder()
+		let cell = tableView.cellForRow(at: indexPath)!
+		UIMenuController.shared.setTargetRect(cell.bounds, in: cell)
+		UIMenuController.shared.menuItems = [
+			.init(title: "All requests", action: #selector(openInLogs)),
+//			.init(title: "CoOccurrence", action: #selector(openCoOccurrence))
+		]
+		UIMenuController.shared.setMenuVisible(true, animated: true)
+		return nil
+	}
+	
+	override var canBecomeFirstResponder: Bool { true }
+	
+	override func copy(_ sender: Any?) {
+		UIPasteboard.general.string = getDomain()
+		rowToCopy = Int.max
+	}
+	
+	@objc private func openInLogs() {
+		guard let selectedDomain = getDomain(),
+			let tabBar = tabBarController as? TBCMain,
+			let tab = tabBar.openTab(0) as? TVCDomains else {
+			return
+		}
+		VCDateFilter.disableFilter()
+		tab.pushOpen(domain: selectedDomain)
+	}
+	
+	private func getDomain() -> String? {
+		if showRaw {
+			guard rowToCopy < dataSourceRaw.count else { return nil }
+			return dataSourceRaw[rowToCopy].domain
+		} else {
+			guard rowToCopy < dataSourceSum.count else { return nil }
+			return dataSourceSum[rowToCopy].domain
+		}
+	}
+	
+//	@objc private func openCoOccurrence() {
+//		guard let vc: VCCoOccurrence = storyboard?.load("IBCoOccurrence") else {
+//			return
+//		}
+//		vc.domainName = getDomain()
+//		vc.isFQDN = true
+//		present(vc, animated: true)
+//	}
 }

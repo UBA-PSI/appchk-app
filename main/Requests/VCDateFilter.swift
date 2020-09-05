@@ -116,4 +116,13 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 			NotifyDateFilterChanged.post()
 		}
 	}
+	
+	static func disableFilter() {
+		if Prefs.DateFilter.Kind <-? .Off {
+			Prefs.DateFilter.LastXMin = 0
+			Prefs.DateFilter.RangeA = nil
+			Prefs.DateFilter.RangeB = nil
+			NotifyDateFilterChanged.post()
+		}
+	}
 }
