@@ -66,32 +66,24 @@ class TVCOccurrenceContext: UITableViewController {
 	
 	// MARK: - Tap to Copy
 	
-	private var rowToCopy: Int = Int.max
-	
+	private var cellMenu = TableCellTapMenu()
+	private var copyDomain: String? = nil
+			
 	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		if firstOrLast(indexPath.row) { return nil }
-		if rowToCopy == indexPath.row {
-			UIMenuController.shared.setMenuVisible(false, animated: true)
-			rowToCopy = Int.max
-			return nil
+		if cellMenu.start(tableView, indexPath) {
+			copyDomain = cellMenu.getSelected(dataSource)?.domain
+			self.becomeFirstResponder()
 		}
-		rowToCopy = indexPath.row
-		self.becomeFirstResponder()
-		let cell = tableView.cellForRow(at: indexPath)!
-		UIMenuController.shared.setTargetRect(cell.bounds, in: cell)
-		UIMenuController.shared.setMenuVisible(true, animated: true)
 		return nil
 	}
 	
 	override var canBecomeFirstResponder: Bool { true }
 	
-	override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-		action == #selector(UIResponderStandardEditActions.copy)
-	}
-	
 	override func copy(_ sender: Any?) {
-		guard rowToCopy < dataSource.count else { return }
-		UIPasteboard.general.string = dataSource[rowToCopy].domain
-		rowToCopy = Int.max
+		if let dom = copyDomain {
+			UIPasteboard.general.string = dom
+		}
+		cellMenu.reset()
+		copyDomain = nil
 	}
 }

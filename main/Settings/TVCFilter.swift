@@ -51,9 +51,6 @@ class TVCFilter: UITableViewController, EditActionsRemove {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "DomainFilterCell")!
 		cell.textLabel?.text = dataSource[indexPath.row]
-		if cell.gestureRecognizers?.isEmpty ?? true {
-			cell.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongTap)))
-		}
 		return cell
 	}
 	
@@ -75,29 +72,24 @@ class TVCFilter: UITableViewController, EditActionsRemove {
 	
 	// MARK: - Long Press Gesture
 	
-	private var cellTitleCopy: String?
-	
-	@objc private func didLongTap(_ sender: UILongPressGestureRecognizer) {
-		guard let cell = sender.view as? UITableViewCell else {
-			return
-		}
-		if sender.state == .began {
-			cellTitleCopy = cell.textLabel?.text
+	private var cellMenu = TableCellTapMenu()
+	private var copyDomain: String? = nil
+		
+	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		if cellMenu.start(tableView, indexPath) {
+			copyDomain = cellMenu.getSelected(dataSource)
 			self.becomeFirstResponder()
-			let menu = UIMenuController.shared
-//			menu.setTargetRect(CGRect(origin: sender.location(in: cell), size: CGSize.zero), in: cell)
-			menu.setTargetRect(cell.bounds, in: cell)
-			menu.setMenuVisible(true, animated: true)
 		}
-    }
-	override var canBecomeFirstResponder: Bool { get { true } }
-	
-	override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-		action == #selector(UIResponderStandardEditActions.copy)
+		return nil
 	}
 	
+	override var canBecomeFirstResponder: Bool { true }
+	
 	override func copy(_ sender: Any?) {
-		UIPasteboard.general.string = cellTitleCopy
-		cellTitleCopy = nil
+		if let dom = copyDomain {
+			UIPasteboard.general.string = dom
+		}
+		cellMenu.reset()
+		copyDomain = nil
 	}
 }

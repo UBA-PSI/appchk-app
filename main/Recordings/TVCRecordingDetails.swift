@@ -122,59 +122,52 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	
 	// MARK: - Tap to Copy
 	
-	private var rowToCopy: Int = Int.max
-	
+	private var cellMenu = TableCellTapMenu()
+	private var copyDomain: String? = nil
+		
 	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		if rowToCopy == indexPath.row {
-			UIMenuController.shared.setMenuVisible(false, animated: true)
-			rowToCopy = Int.max
-			return nil
-		}
-		rowToCopy = indexPath.row
-		self.becomeFirstResponder()
-		let cell = tableView.cellForRow(at: indexPath)!
-		UIMenuController.shared.setTargetRect(cell.bounds, in: cell)
-		UIMenuController.shared.menuItems = [
-			.init(title: "All requests", action: #selector(openInLogs)),
-//			.init(title: "CoOccurrence", action: #selector(openCoOccurrence))
+		if noResults { return nil }
+		let buttons = [
+			UIMenuItem(title: "All requests", action: #selector(openInLogs)),
+//			UIMenuItem(title: "CoOccurrence", action: #selector(openCoOccurrence))
 		]
-		UIMenuController.shared.setMenuVisible(true, animated: true)
+		if cellMenu.start(tableView, indexPath, items: buttons) {
+			if showRaw {
+				copyDomain = cellMenu.getSelected(dataSourceRaw)?.domain
+			} else {
+				copyDomain = cellMenu.getSelected(dataSourceSum)?.domain
+			}
+			self.becomeFirstResponder()
+		}
 		return nil
 	}
 	
 	override var canBecomeFirstResponder: Bool { true }
 	
 	override func copy(_ sender: Any?) {
-		UIPasteboard.general.string = getDomain()
-		rowToCopy = Int.max
+		if let dom = copyDomain {
+			UIPasteboard.general.string = dom
+		}
+		cellMenu.reset()
+		copyDomain = nil
 	}
 	
 	@objc private func openInLogs() {
-		guard let selectedDomain = getDomain(),
-			let tabBar = tabBarController as? TBCMain,
-			let tab = tabBar.openTab(0) as? TVCDomains else {
-			return
+		if let dom = copyDomain, let req = (tabBarController as? TBCMain)?.openTab(0) as? TVCDomains {
+			VCDateFilter.disableFilter()
+			req.pushOpen(domain: dom)
 		}
-		VCDateFilter.disableFilter()
-		tab.pushOpen(domain: selectedDomain)
-	}
-	
-	private func getDomain() -> String? {
-		if showRaw {
-			guard rowToCopy < dataSourceRaw.count else { return nil }
-			return dataSourceRaw[rowToCopy].domain
-		} else {
-			guard rowToCopy < dataSourceSum.count else { return nil }
-			return dataSourceSum[rowToCopy].domain
-		}
+		cellMenu.reset()
+		copyDomain = nil
 	}
 	
 //	@objc private func openCoOccurrence() {
-//		guard let vc: VCCoOccurrence = storyboard?.load("IBCoOccurrence") else {
-//			return
+//		if let dom = copyDomain, let vc: VCCoOccurrence = storyboard?.load("IBCoOccurrence") {
+//			vc.domainName = dom
+//			vc.isFQDN = true
+//			present(vc, animated: true)
 //		}
-//		vc.domainName = getDomain()
-//		vc.isFQDN = true
-//		present(vc, animated: true)
+//		cellMenu.reset()
+//		copyDomain = nil
 //	}
 }

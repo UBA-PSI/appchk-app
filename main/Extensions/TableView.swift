@@ -90,3 +90,34 @@ extension EditActionsRemove where Self: UITableViewController {
 	func editableRowActions(_: IndexPath) -> [(RowAction, String)] { [(.delete, "Remove")] }
 	func editableRowActionColor(_: IndexPath, _: RowAction) -> UIColor? { nil }
 }
+
+
+// MARK: - Table Cell Tap Menu
+
+struct TableCellTapMenu {
+	private var index: Int = Int.max
+	
+	mutating func reset() { index = Int.max }
+	
+	/// Create a new tap manu and shows it immediatelly. With optional buttons.
+	mutating func start(_ tableView: UITableView, _ indexPath: IndexPath, items: [UIMenuItem]? = nil) -> Bool {
+		let menu = UIMenuController.shared
+		if index == indexPath.row {
+			menu.setMenuVisible(false, animated: true)
+			reset()
+			return false
+		}
+		index = indexPath.row
+		let cell = tableView.cellForRow(at: indexPath)!
+		menu.setTargetRect(cell.bounds, in: cell)
+		menu.menuItems = items
+		menu.setMenuVisible(true, animated: true)
+		return true
+	}
+	
+	/// Returns the item if the array index is in bounds.
+	func getSelected<T>(_ source: [T]) -> T? {
+		guard index < source.count else { return nil }
+		return source[index]
+	}
+}
