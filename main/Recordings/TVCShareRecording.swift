@@ -177,6 +177,7 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 	
 	private func postToServer(_ onceLoaded: @escaping () -> Void) {
 		// prepare json
+		let allowed = dataSourceLogs.filter{ $0.enabled }.map{ $0.domain }
 		let json = try? JSONSerialization.data(withJSONObject: [
 			"v" : 1,
 			"date" : weekInYear,
@@ -184,7 +185,7 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 			"app-bundle" : record.appId ?? "",
 			"app-name" : record.title ?? "",
 			"notes" : shareNotes ? editedNotes : "",
-			"logs" : []
+			"logs" : dataSource.filter{ allowed.contains($0.key) }
 		])
 		
 		// prepare post request
