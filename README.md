@@ -39,11 +39,11 @@ That means, AppCheck does not have to be active in the foreground all the time.
   - What other domains occur often at the same time?
   - What happened immediately before or after the action?
 - Export results for custom analysis
-
-**… and soon:**
-
 - Alert Monitor & reminder
 - Participate in privacy research
+	- Contribute your results
+	- See what others have unveiled
+	- How much traffic does this app produce?
 
 
 <sup>1</sup> Due to technical limitations, recordings can not be restricted to a single application. Remember to force-quit all other applications before starting a recording.
