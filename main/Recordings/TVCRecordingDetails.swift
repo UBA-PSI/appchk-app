@@ -5,14 +5,11 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 	var noResults: Bool = false
 	private lazy var isLongRecording: Bool = record.isLongTerm
 	
-	@IBOutlet private var shareButton: UIBarButtonItem!
-	
 	private var showRaw: Bool = false
 	/// Sorted by `ts` in ascending order (oldest first)
 	private lazy var dataSourceRaw: [DomainTsPair] = {
 		let list = RecordingsDB.details(record)
 		noResults = list.count == 0
-		shareButton.isEnabled = !noResults
 		return list
 	}()
 	/// Sorted by `count` (descending), then alphabetically
@@ -115,7 +112,6 @@ class TVCRecordingDetails: UITableViewController, EditActionsRemove {
 			}
 		}
 		noResults = dataSourceRaw.count == 0
-		shareButton.isEnabled = !noResults
 		return true
 	}
 	
