@@ -18,6 +18,17 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	@IBOutlet private var chooseAppTap: UITapGestureRecognizer!
 	
 	override func viewDidLoad() {
+		if deleteOnCancel { // aka newly created
+			RecordingsDB.persist(record)
+			if Prefs.RecordingReminder.Enabled {
+				PushNotification.scheduleRecordingReminder(force: true)
+			}
+			// mark as destructive
+			buttonCancel.tintColor = .systemRed
+			if #available(iOS 13.0, *) {
+				isModalInPresentation = true
+			}
+		}
 		if record.isLongTerm {
 			appId = nil
 			appIcon.image = nil
@@ -44,12 +55,6 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 			Duration:	\(TimeFormat.from(record.duration))
 			"""
 		validateSaveButton()
-		if deleteOnCancel { // mark as destructive
-			buttonCancel.tintColor = .systemRed
-			if #available(iOS 13.0, *) {
-				isModalInPresentation = true
-			}
-		}
 		UIResponder.keyboardWillShowNotification.observe(call: #selector(keyboardWillShow), on: self)
 		UIResponder.keyboardWillHideNotification.observe(call: #selector(keyboardWillHide), on: self)
 	}
@@ -63,11 +68,8 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	// MARK: Save & Cancel Buttons
 	
 	@IBAction func didTapSave() {
-		let newlyCreated = deleteOnCancel
-		if newlyCreated {
-			// if remains true, `viewDidDisappear` will delete the record
-			deleteOnCancel = false
-		}
+		// if remains true, `viewDidDisappear` will delete the record
+		deleteOnCancel = false
 		QLog.Debug("updating record #\(record.id)")
 		if let id = appId, id != "" {
 			record.appId = id
@@ -81,12 +83,6 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		record.notes = (inputNotes.text == "") ? nil : inputNotes.text
 		dismiss(animated: true) {
 			RecordingsDB.update(self.record)
-			if newlyCreated {
-				RecordingsDB.persist(self.record)
-				if Prefs.RecordingReminder.Enabled {
-					PushNotification.scheduleRecordingReminder(force: true)
-				}
-			}
 		}
 	}
 	
