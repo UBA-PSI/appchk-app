@@ -98,9 +98,7 @@ struct BundleIcon {
 		return img
 	}
 
-	static func download(_ bundleId: String, urlStr: String, whenDone: @escaping () -> Void) {
-		if let url = URL(string: urlStr) {
-			url.download(to: local(bundleId), onSuccess: whenDone)
-		}
+	static func download(_ bundleId: String, url: URL, whenDone: @escaping () -> Void) -> URLSessionDownloadTask {
+		return url.download(to: local(bundleId), onSuccess: whenDone)
 	}
 }

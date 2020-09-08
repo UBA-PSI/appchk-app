@@ -20,15 +20,15 @@ struct AppStoreSearch {
 		let developer, imageURL: String?
 	}
 	
-	static func search(_ term: String, _ closure: @escaping ([Result]?) -> Void) {
+	static func search(_ term: String, _ closure: @escaping ([Result]?, Error?) -> Void) {
 		URLSession.shared.dataTask(with: .init(url: .appStoreSearch(query: term))) { data, response, error in
 			guard let data = data, error == nil,
 				let response = response as? HTTPURLResponse,
 				(200 ..< 300) ~= response.statusCode else {
-					closure(nil)
+					closure(nil, error ?? URLError(.badServerResponse))
 					return
 			}
-			closure(jsonSearchToList(data))
+			closure(jsonSearchToList(data), nil)
 		}.resume()
 	}
 	

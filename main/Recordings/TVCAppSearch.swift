@@ -12,6 +12,10 @@ class TVCAppSearch: UITableViewController, UISearchBarDelegate {
 	private var searchActive: Bool = false
 	var delegate: TVCAppSearchDelegate?
 	
+	private var searchNo = 0
+	private var searchError: Bool = false
+	private var downloadQueue: [URLSessionDownloadTask] = []
+	
 	@IBOutlet private var searchBar: UISearchBar!
 	
 	override func viewDidLoad() {
@@ -28,6 +32,18 @@ class TVCAppSearch: UITableViewController, UISearchBarDelegate {
 		searchBar.endEditing(true)
 		dismiss(animated: true)
 	}
+	
+	private func showManualEntryAlert() {
+		let alert = AskAlert(title: "App Name",
+							 text: "Be as descriptive as possible. Preferably use app bundle id if available. Alternatively use app name or a link to a public repository.",
+							 buttonText: "Set") {
+			self.delegate?.appSearch(didSelect: "_manually", appName: $0.textFields?.first?.text, developer: nil)
+			self.closeThis()
+		}
+		alert.addTextField { $0.placeholder = "com.apple.notes" }
+		alert.presentIn(self)
+	}
+	
 	
 	// MARK: - Table View Data Source
 	
@@ -60,7 +76,13 @@ class TVCAppSearch: UITableViewController, UISearchBarDelegate {
 		case 0:
 			guard dataSource.count > 0, indexPath.row < dataSource.count else {
 				if indexPath.row == 0 {
-					cell.textLabel?.text = isLoading ? "Loading …" : "no results"
+					if searchError {
+						cell.textLabel?.text = "Error loading results"
+					} else if isLoading {
+						cell.textLabel?.text = "Loading …"
+					} else {
+						cell.textLabel?.text = "No results"
+					}
 					cell.isUserInteractionEnabled = false
 				} else {
 					cell.textLabel?.text = "Create manually …"
@@ -84,13 +106,16 @@ class TVCAppSearch: UITableViewController, UISearchBarDelegate {
 			preconditionFailure()
 		}
 		
+		let sno = searchNo
 		cell.imageView?.image = BundleIcon.image(bundleId) {
-			guard let url = altLoadUrl else { return }
-			BundleIcon.download(bundleId, urlStr: url) {
+			guard let u = altLoadUrl, let url = URL(string: u) else { return }
+			self.downloadQueue.append(BundleIcon.download(bundleId, url: url) {
 				DispatchQueue.main.async {
+					// make sure its the same request
+					guard sno == self.searchNo else { return }
 					tableView.reloadRows(at: [indexPath], with: .automatic)
 				}
-			}
+			})
 		}
 		cell.isUserInteractionEnabled = true
 		cell.imageView?.layer.cornerRadius = 6.75
@@ -103,14 +128,7 @@ class TVCAppSearch: UITableViewController, UISearchBarDelegate {
 		switch indexPath.section {
 		case 0:
 			guard indexPath.row < dataSource.count else {
-				let alert = AskAlert(title: "App Name",
-									 text: "Be as descriptive as possible. Preferably use app bundle id if available. Alternatively use app name or a link to a public repository.",
-									 buttonText: "Set") {
-					self.delegate?.appSearch(didSelect: "_manually", appName: $0.textFields?.first?.text, developer: nil)
-					self.closeThis()
-				}
-				alert.addTextField { $0.placeholder = "com.apple.notes" }
-				alert.presentIn(self)
+				showManualEntryAlert()
 				return
 			}
 			let src = dataSource[indexPath.row]
@@ -130,6 +148,8 @@ class TVCAppSearch: UITableViewController, UISearchBarDelegate {
 		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(performSearch), object: nil)
 		isLoading = true
 		tableView.reloadData()
+		for x in downloadQueue { x.cancel() }
+		downloadQueue = []
 		if searchText.count > 0 {
 			perform(#selector(performSearch), with: nil, afterDelay: 0.4)
 		} else {
@@ -140,18 +160,22 @@ class TVCAppSearch: UITableViewController, UISearchBarDelegate {
 	/// Internal callback function for delayed text evaluation.
 	/// This way we can avoid unnecessary searches while user is typing.
 	@objc private func performSearch() {
+		func setSource(_ newSource: [AppStoreSearch.Result], _ err: Bool) {
+			searchNo += 1
+			searchError = err
+			dataSource = searchActive ? newSource : []
+			tableView.reloadData()
+		}
 		isLoading = false
 		let term = searchBar.text?.lowercased() ?? ""
 		searchActive = term.count > 0
 		guard searchActive else {
-			dataSource = []
-			tableView.reloadData()
+			setSource([], false)
 			return
 		}
-		AppStoreSearch.search(term) {
-			self.dataSource = $0 ?? []
+		AppStoreSearch.search(term) { source, error in
 			DispatchQueue.main.async {
-				self.tableView.reloadData()
+				setSource(source ?? [], error != nil)
 			}
 		}
 	}

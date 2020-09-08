@@ -40,8 +40,8 @@ extension URL {
 		return components.url
 	}
 	
-	func download(to file: URL, onSuccess: @escaping () -> Void) {
-		URLSession.shared.downloadTask(with: self) { location, response, error in
+	@discardableResult func download(to file: URL, onSuccess: @escaping () -> Void) -> URLSessionDownloadTask {
+		let task = URLSession.shared.downloadTask(with: self) { location, response, error in
 			if let loc = location {
 				try? FileManager.default.removeItem(at: file)
 				do {
@@ -51,6 +51,8 @@ extension URL {
 					NSLog("[VPN.ERROR] \(error)")
 				}
 			}
-		}.resume()
+		}
+		task.resume()
+		return task
 	}
 }
