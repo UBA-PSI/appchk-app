@@ -497,18 +497,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2yS-xK-Wac">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="0.0"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                 <gestureRecognizers/>
                                 <items>
                                     <navigationItem title="Edit" id="JSi-oz-VRx">
                                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="TGg-60-wZW">
                                             <connections>
-                                                <action selector="didTapCancel:" destination="VRk-wv-rhk" id="Kff-ed-gdd"/>
+                                                <action selector="didTapCancel" destination="VRk-wv-rhk" id="idg-Q7-qLu"/>
                                             </connections>
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" enabled="NO" style="done" systemItem="save" id="rWg-hE-Ydl">
                                             <connections>
-                                                <action selector="didTapSave:" destination="VRk-wv-rhk" id="Xee-qo-bQx"/>
+                                                <action selector="didTapSave" destination="VRk-wv-rhk" id="fPE-i2-I06"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
@@ -518,7 +518,7 @@
                                 </connections>
                             </navigationBar>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="xdn-EU-IMx">
-                                <rect key="frame" x="16" y="12" width="288" height="347.5"/>
+                                <rect key="frame" x="16" y="52" width="288" height="307.5"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Guy-Ra-fpS" userLabel="Title">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="40"/>
@@ -562,7 +562,7 @@
                                         </connections>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ybL-UG-dwT" userLabel="Notes">
-                                        <rect key="frame" x="0.0" y="48" width="288" height="200.5"/>
+                                        <rect key="frame" x="0.0" y="48" width="288" height="160.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notes" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QJp-6C-yoZ">
                                                 <rect key="frame" x="0.0" y="0.0" width="288" height="24"/>
@@ -572,7 +572,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NXU-yU-eST">
-                                                <rect key="frame" x="0.0" y="24" width="288" height="176.5"/>
+                                                <rect key="frame" x="0.0" y="24" width="288" height="136.5"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                                 <string key="text">1. Line
 2. Line
@@ -596,7 +596,7 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QiY-Mm-Dej" userLabel="Details">
-                                        <rect key="frame" x="0.0" y="256.5" width="288" height="91"/>
+                                        <rect key="frame" x="0.0" y="216.5" width="288" height="91"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Details" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="FR1-Nt-XuB">
                                                 <rect key="frame" x="0.0" y="0.0" width="288" height="24"/>
@@ -605,9 +605,8 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pql-H5-k6U">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pql-H5-k6U">
                                                 <rect key="frame" x="0.0" y="24" width="288" height="67"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                                 <string key="text">Start:       1970-01-01 01:00
 End:        1970-01-01 02:00
@@ -616,10 +615,23 @@ Duration:   60:00</string>
                                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LOr-e7-foG">
+                                                <rect key="frame" x="268" y="46.5" width="20" height="22"/>
+                                                <state key="normal" image="filter-clear"/>
+                                                <connections>
+                                                    <action selector="didTapFilter" destination="VRk-wv-rhk" eventType="touchUpInside" id="5NH-qa-yMg"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="pql-H5-k6U" secondAttribute="trailing" id="44x-p3-qWK"/>
+                                            <constraint firstItem="LOr-e7-foG" firstAttribute="trailing" secondItem="pql-H5-k6U" secondAttribute="trailing" id="5sr-Cf-h0c"/>
+                                            <constraint firstItem="pql-H5-k6U" firstAttribute="top" secondItem="FR1-Nt-XuB" secondAttribute="bottom" id="As8-Px-t6G"/>
+                                            <constraint firstItem="pql-H5-k6U" firstAttribute="leading" secondItem="QiY-Mm-Dej" secondAttribute="leading" id="ItB-cO-reV"/>
+                                            <constraint firstItem="LOr-e7-foG" firstAttribute="centerY" secondItem="pql-H5-k6U" secondAttribute="centerY" id="OLu-MI-3sa"/>
                                             <constraint firstAttribute="height" priority="250" constant="91" id="or7-9o-FZb"/>
+                                            <constraint firstAttribute="bottom" secondItem="pql-H5-k6U" secondAttribute="bottom" id="pbd-43-eN0"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -635,9 +647,9 @@ Duration:   60:00</string>
                             <constraint firstItem="2yS-xK-Wac" firstAttribute="trailing" secondItem="fMa-Lq-tGz" secondAttribute="trailing" id="1io-bA-4p9"/>
                             <constraint firstItem="2yS-xK-Wac" firstAttribute="leading" secondItem="fMa-Lq-tGz" secondAttribute="leading" id="Fv1-fO-22V"/>
                             <constraint firstItem="xdn-EU-IMx" firstAttribute="leading" secondItem="fMa-Lq-tGz" secondAttribute="leading" constant="16" id="JuR-Ro-IPi"/>
-                            <constraint firstItem="xdn-EU-IMx" firstAttribute="top" secondItem="2yS-xK-Wac" secondAttribute="bottom" constant="12" id="Lec-83-aaD"/>
-                            <constraint firstItem="xdn-EU-IMx" firstAttribute="trailing" secondItem="fMa-Lq-tGz" secondAttribute="trailing" constant="-16" id="hhC-bL-G3S"/>
-                            <constraint firstItem="xdn-EU-IMx" firstAttribute="bottom" secondItem="fMa-Lq-tGz" secondAttribute="bottom" constant="-10" id="p7W-sr-Wch"/>
+                            <constraint firstItem="xdn-EU-IMx" firstAttribute="top" secondItem="2yS-xK-Wac" secondAttribute="bottom" constant="8" id="Lec-83-aaD"/>
+                            <constraint firstItem="fMa-Lq-tGz" firstAttribute="trailing" secondItem="xdn-EU-IMx" secondAttribute="trailing" constant="16" id="hhC-bL-G3S"/>
+                            <constraint firstItem="fMa-Lq-tGz" firstAttribute="bottom" secondItem="xdn-EU-IMx" secondAttribute="bottom" constant="10" id="p7W-sr-Wch"/>
                             <constraint firstItem="2yS-xK-Wac" firstAttribute="top" secondItem="fMa-Lq-tGz" secondAttribute="top" id="yKh-gv-mgg"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="fMa-Lq-tGz"/>
@@ -727,6 +739,7 @@ Duration:   60:00</string>
     <resources>
         <image name="LaunchIcon.png" width="128" height="128"/>
         <image name="detail-help" width="22" height="22"/>
+        <image name="filter-clear" width="20" height="20"/>
         <image name="line-expand" width="20" height="20"/>
     </resources>
 </document>

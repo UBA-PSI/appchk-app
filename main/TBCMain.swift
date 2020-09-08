@@ -43,6 +43,7 @@ class TBCMain: UITabBarController {
 }
 
 extension TBCMain {
+	/// Open tab and pop to root view controller.
 	@discardableResult func openTab(_ index: Int) -> UIViewController? {
 		selectedIndex = index
 		guard let nav = selectedViewController as? UINavigationController else {

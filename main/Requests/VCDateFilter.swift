@@ -125,4 +125,11 @@ class VCDateFilter: UIViewController, UIGestureRecognizerDelegate {
 			NotifyDateFilterChanged.post()
 		}
 	}
+	
+	static func setFilter(range from: Timestamp?, to: Timestamp?) {
+		Prefs.DateFilter.Kind = .ABRange
+		Prefs.DateFilter.RangeA = from
+		Prefs.DateFilter.RangeB = to
+		NotifyDateFilterChanged.post()
+	}
 }

@@ -62,7 +62,7 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	
 	// MARK: Save & Cancel Buttons
 	
-	@IBAction func didTapSave(_ sender: UIBarButtonItem) {
+	@IBAction func didTapSave() {
 		let newlyCreated = deleteOnCancel
 		if newlyCreated {
 			// if remains true, `viewDidDisappear` will delete the record
@@ -90,7 +90,7 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 		}
 	}
 	
-	@IBAction func didTapCancel(_ sender: UIBarButtonItem) {
+	@IBAction func didTapCancel() {
 		QLog.Debug("discard edit of record #\(record.id)")
 		dismiss(animated: true)
 	}
@@ -101,6 +101,16 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 			RecordingsDB.delete(record)
 			deleteOnCancel = false
 		}
+	}
+	
+	@IBAction func didTapFilter() {
+		if buttonSave.isEnabled {
+			NotificationBanner("Filter set", style: .ok).present(in: self, hideAfter: 1)
+		} else {
+			(presentingViewController as? TBCMain)?.openTab(0)
+			didTapCancel()
+		}
+		VCDateFilter.setFilter(range: record.start, to: record.stop)
 	}
 	
 	
