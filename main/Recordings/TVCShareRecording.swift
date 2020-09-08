@@ -235,7 +235,7 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 	// MARK: - Alerts & Banner
 	
 	private func banner(_ style: NotificationBanner.Style, _ msg: String) {
-		NotificationBanner(msg, style: style).present(in: self)
+		NotificationBanner(msg, style: style).present(in: navigationController!)
 	}
 	
 	private func showAlertAvailableSoon(_ urlStr: String, when: Int?) {

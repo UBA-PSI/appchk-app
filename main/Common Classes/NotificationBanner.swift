@@ -30,14 +30,16 @@ struct NotificationBanner {
 		img.tintColor = fg
 		view.addSubview(lbl)
 		view.addSubview(img)
-		img.anchor([.centerY], to: view.layoutMarginsGuide)
-		lbl.anchor([.top, .bottom, .trailing], to: view.layoutMarginsGuide)
+		img.anchor([.centerY], to: lbl)
+		lbl.anchor([.bottom, .trailing], to: view.layoutMarginsGuide)
 		img.widthAnchor =&= 25
 		img.heightAnchor =&= 25
 		if #available(iOS 11, *) {
 			img.leadingAnchor =&= view.layoutMarginsGuide.leadingAnchor
+			lbl.topAnchor =&= view.layoutMarginsGuide.topAnchor
 		} else {
 			img.leadingAnchor =&= view.leadingAnchor + 8
+			lbl.topAnchor =&= view.topAnchor + 8
 		}
 		lbl.leadingAnchor =&= img.trailingAnchor + 8
 		img.bottomAnchor =<= view.bottomAnchor - 8 | .init(rawValue: 999)
