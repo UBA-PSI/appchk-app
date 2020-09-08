@@ -86,6 +86,13 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 		}
 	}
 	
+	override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+		if motion == .motionShake, let key = record.uploadkey {
+			UIPasteboard.general.string = key
+			banner(.ok, "Copied to clipboard", timeout: 1)
+		}
+	}
+	
 	
 	// MARK: - Table Data Source
 	
@@ -234,8 +241,8 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 	
 	// MARK: - Alerts & Banner
 	
-	private func banner(_ style: NotificationBanner.Style, _ msg: String) {
-		NotificationBanner(msg, style: style).present(in: navigationController!)
+	private func banner(_ style: NotificationBanner.Style, _ msg: String, timeout: TimeInterval = 3) {
+		NotificationBanner(msg, style: style).present(in: navigationController!, hideAfter: timeout)
 	}
 	
 	private func showAlertAvailableSoon(_ urlStr: String, when: Int?) {
