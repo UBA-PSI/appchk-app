@@ -405,7 +405,7 @@ extension SQLiteDatabase {
 	}
 	
 	func appBundleList() -> [AppBundleInfo]? {
-		try? run(sql: "SELECT appid, title, subtitle FROM rec WHERE appid IS NOT NULL GROUP BY appid ORDER BY title ASC;") {
+		try? run(sql: "SELECT appid, title, subtitle FROM rec WHERE appid IS NOT NULL GROUP BY appid ORDER BY lower(title) ASC;") {
 			allRows($0) {
 				AppBundleInfo(col_text($0, 0)!, col_text($0, 1), col_text($0, 2))
 			}
