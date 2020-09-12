@@ -6,7 +6,7 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 	
 	// vars
 	var record: Recording!
-	private var shareNotes: Bool = false // opt-in
+	private var shareNotes: Bool = true // green switch is more present
 	private lazy var hasNotes: Bool = (self.record.notes != nil)
 	private lazy var editedNotes: String = self.record.notes ?? ""
 	private lazy var weekInYear: String = {
@@ -152,7 +152,7 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 			cell = tableView.dequeueReusableCell(withIdentifier: "shareKeyValueCell")!
 			let src = dataSourceKeyValue[indexPath.row]
 			cell.textLabel?.text = src.key
-			let flag = shareNotes && indexPath.row == 4
+			let flag = indexPath.row == 4 && shareNotes && hasNotes
 			cell.detailTextLabel?.text = flag ? editedNotes : src.value
 		case 3:
 			cell = tableView.dequeueReusableCell(withIdentifier: "shareLogCell")!
