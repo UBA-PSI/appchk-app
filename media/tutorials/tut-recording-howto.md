@@ -1,6 +1,6 @@
 # How to record?
 
-Before you begin, there are two types of recordings: app specific recordings and general background activity. The former are usually 3 – 5 minutes long, the latter need to be at least an hour long.
+Before you begin, there are two types of recordings: app specific recordings and general background activity. The former are usually less than 5 minutes long, the latter must be at least an hour long.
 
 ### Important notice
 
