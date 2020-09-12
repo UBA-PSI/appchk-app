@@ -3,6 +3,8 @@ import UIKit
 class TVCSettings: UITableViewController {
 	
 	@IBOutlet var vpnToggle: UISwitch!
+	@IBOutlet var unresolvableToggle: UISwitch!
+	@IBOutlet var swcdToggle: UISwitch!
 	@IBOutlet var cellDomainsIgnored: UITableViewCell!
 	@IBOutlet var cellDomainsBlocked: UITableViewCell!
 	@IBOutlet var cellPrivacyAutoDelete: UITableViewCell!
@@ -14,6 +16,7 @@ class TVCSettings: UITableViewController {
 		reloadVPNState()
 		reloadLoggingFilterUI()
 		reloadPrivacyUI()
+		reloadAdvancedUI()
 		NotifyVPNStateChanged.observe(call: #selector(reloadVPNState), on: self)
 		NotifyDNSFilterChanged.observe(call: #selector(reloadLoggingFilterUI), on: self)
 	}
@@ -191,6 +194,21 @@ extension TVCSettings {
 // MARK: - Advanced
 
 extension TVCSettings {
+	private func reloadAdvancedUI() {
+		unresolvableToggle.isOn = PrefsShared.ForceDisconnectUnresolvableDNS
+		swcdToggle.isOn = PrefsShared.ForceDisconnectSWCD
+	}
+	
+	@IBAction private func togglePreventUnresolvable(_ sender: UISwitch) {
+		PrefsShared.ForceDisconnectUnresolvableDNS = sender.isOn
+		GlassVPN.send(.disconnectUnresolvable(sender.isOn))
+	}
+	
+	@IBAction private func togglePreventSWCD(_ sender: UISwitch) {
+		PrefsShared.ForceDisconnectSWCD = sender.isOn
+		GlassVPN.send(.disconnectSWCD(sender.isOn))
+	}
+	
 	@IBAction private func exportDB() {
 		AppDB?.vacuum()
 		let sheet = UIActivityViewController(activityItems: [URL.internalDB()], applicationActivities: nil)

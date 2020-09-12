@@ -37,6 +37,14 @@ extension PrefsShared {
 		get { CurrentRecordingState(rawValue: Int("CurrentlyRecording")) ?? .Off }
 		set { Int("CurrentlyRecording", newValue.rawValue) }
 	}
+	static var ForceDisconnectUnresolvableDNS: Bool {
+		get { PrefsShared.Bool("ForceDisconnectUnresolvableDNS") }
+		set { PrefsShared.Bool("ForceDisconnectUnresolvableDNS", newValue) }
+	}
+	static var ForceDisconnectSWCD: Bool {
+		get { PrefsShared.Bool("ForceDisconnectSWCD") }
+		set { PrefsShared.Bool("ForceDisconnectSWCD", newValue) }
+	}
 }
 
 

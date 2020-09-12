@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="qdB-ZO-LHY">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="qdB-ZO-LHY">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -243,25 +243,93 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="Advanced Settings" id="Vlg-nm-VB3">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="VnR-9B-1zl">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" textLabel="rio-m6-pXN" detailTextLabel="rr4-sR-VxD" style="IBUITableViewCellStyleSubtitle" id="pQ5-lm-Rco">
                                         <rect key="frame" x="0.0" y="687.5" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="VnR-9B-1zl" id="ZTz-vZ-l5p">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="pQ5-lm-Rco" id="52Y-H3-jvJ">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="twS-Ne-dU0">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Force disconnect unresolvable" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rio-m6-pXN">
+                                                    <rect key="frame" x="16" y="5" width="234" height="20.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="in case DNS returns empty IP" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rr4-sR-VxD">
+                                                    <rect key="frame" x="16" y="25.5" width="166" height="14.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                    <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TSu-IP-KFG">
+                                                    <rect key="frame" x="257" y="6" width="49" height="31"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                                    <connections>
+                                                        <action selector="togglePreventUnresolvable:" destination="qdB-ZO-LHY" eventType="valueChanged" id="xKv-Hp-Nyq"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="accessoryView" destination="TSu-IP-KFG" id="VGm-hN-DLK"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" textLabel="x5u-5T-XTO" detailTextLabel="n7p-Ab-69G" style="IBUITableViewCellStyleSubtitle" id="lxs-NQ-Q7V">
+                                        <rect key="frame" x="0.0" y="731.5" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="lxs-NQ-Q7V" id="B1l-cb-yQg">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Force disconnect swcd" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="x5u-5T-XTO">
+                                                    <rect key="frame" x="16" y="5" width="177" height="20.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="User-Agent: swcd (may affect performance)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="n7p-Ab-69G">
+                                                    <rect key="frame" x="16" y="25.5" width="249.5" height="14.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                    <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c5N-PN-qWU">
+                                                    <rect key="frame" x="257" y="6" width="49" height="31"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                                    <connections>
+                                                        <action selector="togglePreventSWCD:" destination="qdB-ZO-LHY" eventType="valueChanged" id="MAa-5v-djq"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="accessoryView" destination="c5N-PN-qWU" id="SAN-Q9-VOn"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="Tgc-re-gI7">
+                                        <rect key="frame" x="0.0" y="775.5" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Tgc-re-gI7" id="haV-RB-dEa">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vZa-EO-FAZ">
                                                     <rect key="frame" x="125" y="7" width="70" height="30"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <state key="normal" title="Export DB"/>
                                                     <connections>
-                                                        <action selector="exportDB" destination="qdB-ZO-LHY" eventType="touchUpInside" id="FYN-Zz-UK4"/>
+                                                        <action selector="exportDB" destination="qdB-ZO-LHY" eventType="touchUpInside" id="NPx-9w-ua0"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="twS-Ne-dU0" firstAttribute="centerY" secondItem="ZTz-vZ-l5p" secondAttribute="centerY" id="LgK-8q-r6K"/>
-                                                <constraint firstItem="twS-Ne-dU0" firstAttribute="centerX" secondItem="ZTz-vZ-l5p" secondAttribute="centerX" id="ltC-Ba-Bxr"/>
+                                                <constraint firstItem="vZa-EO-FAZ" firstAttribute="centerX" secondItem="haV-RB-dEa" secondAttribute="centerX" id="h0M-qz-pHV"/>
+                                                <constraint firstItem="vZa-EO-FAZ" firstAttribute="centerY" secondItem="haV-RB-dEa" secondAttribute="centerY" id="xBJ-94-nJh"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -282,6 +350,8 @@
                         <outlet property="cellNotificationConnectionAlert" destination="OTC-Kt-LFT" id="XiG-CC-4lC"/>
                         <outlet property="cellNotificationReminder" destination="jZA-aP-aHG" id="sjo-2s-rqW"/>
                         <outlet property="cellPrivacyAutoDelete" destination="Qyy-0U-yhd" id="PzN-iv-kFl"/>
+                        <outlet property="swcdToggle" destination="c5N-PN-qWU" id="qDy-BX-O85"/>
+                        <outlet property="unresolvableToggle" destination="TSu-IP-KFG" id="Vdb-cm-Uy2"/>
                         <outlet property="vpnToggle" destination="ZAz-WT-FDb" id="lGX-J8-WrU"/>
                     </connections>
                 </tableViewController>
@@ -364,7 +434,7 @@ If App Badge is enabled, display the letter "1" on the homescreen app icon, as l
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="zaV-mh-eqb">
-                                                    <rect key="frame" x="252" y="6" width="54" height="31"/>
+                                                    <rect key="frame" x="251" y="6" width="54" height="31"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                                     <connections>
                                                         <action selector="toggleAllowRestartReminder:" destination="JYM-cs-i4H" eventType="valueChanged" id="F4e-k2-bni"/>
@@ -391,7 +461,7 @@ If App Badge is enabled, display the letter "1" on the homescreen app icon, as l
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="HaE-En-NH3">
-                                                    <rect key="frame" x="252" y="6" width="54" height="31"/>
+                                                    <rect key="frame" x="251" y="6" width="54" height="31"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                                     <connections>
                                                         <action selector="toggleAllowRestartNotify:" destination="JYM-cs-i4H" eventType="valueChanged" id="12C-h5-mrR"/>
@@ -418,7 +488,7 @@ If App Badge is enabled, display the letter "1" on the homescreen app icon, as l
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="N2Q-cU-pkd">
-                                                    <rect key="frame" x="252" y="6" width="54" height="31"/>
+                                                    <rect key="frame" x="251" y="6" width="54" height="31"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                                     <connections>
                                                         <action selector="toggleAllowRestartBadge:" destination="JYM-cs-i4H" eventType="valueChanged" id="76l-6y-fOu"/>
@@ -476,7 +546,7 @@ If App Badge is enabled, display the letter "1" on the homescreen app icon, as l
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mTm-Rm-1RQ">
-                                                    <rect key="frame" x="255" y="6" width="49" height="31"/>
+                                                    <rect key="frame" x="255" y="6" width="48" height="31"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                                     <connections>
                                                         <action selector="toggleAllowRecordingReminder:" destination="JYM-cs-i4H" eventType="valueChanged" id="unC-Ur-jPM"/>
@@ -602,7 +672,7 @@ If App Badge is enabled, display the letter "1" on the homescreen app icon, as l
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="who-8G-voz">
-                                                    <rect key="frame" x="256" y="6" width="48" height="31"/>
+                                                    <rect key="frame" x="256" y="6" width="47" height="31"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                                     <connections>
                                                         <action selector="toggleShowNotifications:" destination="D2a-Po-vDU" eventType="valueChanged" id="Thg-6R-7wM"/>
@@ -832,6 +902,6 @@ If App Badge is enabled, display the letter "1" on the homescreen app icon, as l
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="tUF-Kv-koO"/>
-        <segue reference="6wc-d1-VYY"/>
+        <segue reference="EzT-Xq-wka"/>
     </inferredMetricsTieBreakers>
 </document>

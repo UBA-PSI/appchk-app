@@ -10,6 +10,10 @@ class GlassVPNHook {
 	private var cachedNotify: CachedConnectionAlert!
 	private var currentlyRecording: Bool = false
 	
+	public var forceDisconnectUnresolvable: Bool = false
+	public var forceDisconnectSWCD: Bool = false
+	
+	
 	init() { reset() }
 	
 	/// Reload from stored settings and rebuilt binary search tree
@@ -18,6 +22,8 @@ class GlassVPNHook {
 		setAutoDelete(PrefsShared.AutoDeleteLogsDays)
 		cachedNotify = CachedConnectionAlert()
 		currentlyRecording = PrefsShared.CurrentlyRecording != .Off
+		forceDisconnectUnresolvable = PrefsShared.ForceDisconnectUnresolvableDNS
+		forceDisconnectSWCD = PrefsShared.ForceDisconnectSWCD
 	}
 	
 	/// Invalidate auto-delete timer and release stored properties. You should nullify this instance afterwards.
@@ -28,6 +34,8 @@ class GlassVPNHook {
 		autoDeleteTimer?.invalidate()
 		cachedNotify = nil
 		currentlyRecording = false
+		forceDisconnectUnresolvable = false
+		forceDisconnectSWCD = false
 	}
 	
 	/// Call this method from `PacketTunnelProvider.handleAppMessage(_:completionHandler:)`
@@ -49,6 +57,12 @@ class GlassVPNHook {
 			case "recording-now":
 				let newState = CurrentRecordingState(rawValue: Int(value) ?? 0)
 				currentlyRecording = newState != .Off
+				return
+			case "disconnect-unresolvable":
+				forceDisconnectUnresolvable = value == "1"
+				return
+			case "disconnect-swcd":
+				forceDisconnectSWCD = value == "1"
 				return
 			default: break
 			}
@@ -77,6 +91,11 @@ class GlassVPNHook {
 		cachedNotify.postOrIgnore(domain, blck: block, custA: cA, custB: cB)
 		// TODO: wait for notify response to block or allow connection
 		return blockActive
+	}
+	
+	func silentlyPrevented(_ domain: String) {
+		// TODO: persist in a separate db/table?
+		NSLog("[VPN.INFO] preventing connection to \(domain)")
 	}
 	
 	/// Build binary tree for reverse DNS lookup

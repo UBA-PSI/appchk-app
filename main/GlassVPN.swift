@@ -161,4 +161,12 @@ struct VPNAppMessage {
 	static func isRecording(_ state: CurrentRecordingState) -> Self {
 		.init("recording-now:\(state.rawValue)")
 	}
+	/// Triggered whenever user taps on the switch in settings
+	static func disconnectUnresolvable(_ state: Bool) -> Self {
+		.init("disconnect-unresolvable:\(state ? 1 : 0)")
+	}
+	/// Triggered whenever user taps on the switch in settings
+	static func disconnectSWCD(_ state: Bool) -> Self {
+		.init("disconnect-swcd:\(state ? 1 : 0)")
+	}
 }

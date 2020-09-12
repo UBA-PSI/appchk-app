@@ -1,5 +1,6 @@
 import NetworkExtension
 
+let swcdUserAgent: Data = "User-Agent: swcd".data(using: .ascii)!
 fileprivate var hook : GlassVPNHook!
 
 // MARK: ObserverFactory
@@ -15,8 +16,18 @@ class LDObserverFactory: ObserverFactory {
 		override func signal(_ event: ProxySocketEvent) {
 			switch event {
 			case .receivedRequest(let session, let socket):
+				if socket.isCancelled ||
+					(hook.forceDisconnectUnresolvable && session.ipAddress.isEmpty) {
+					hook.silentlyPrevented(session.host)
+					socket.forceDisconnect()
+					return
+				}
 				let kill = hook.processDNSRequest(session.host)
 				if kill { socket.forceDisconnect() }
+			case .readData(let data, on: let socket):
+				if hook.forceDisconnectSWCD, data.range(of: swcdUserAgent) != nil {
+					socket.disconnect()
+				}
 			default:
 				break
 			}
