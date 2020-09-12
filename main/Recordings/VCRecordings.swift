@@ -10,8 +10,10 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 	@IBOutlet private var runningView: UIView!
 	@IBOutlet private var timeLabel: UILabel!
 	@IBOutlet private var stopButton: UIButton!
+	@IBOutlet private var startSegment: UISegmentedControl!
 	
 	override func viewDidLoad() {
+		startSegment.setTitleTextAttributes([NSAttributedString.Key.foregroundColor : UIColor.sysLink], for: .normal)
 		timeLabel.font = timeLabel.font.monoSpace()
 		if let ongoing = RecordingsDB.getCurrent() {
 			currentRecording = ongoing
