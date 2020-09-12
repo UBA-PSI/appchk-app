@@ -70,7 +70,7 @@ class TVCOccurrenceContext: UITableViewController {
 	private var copyDomain: String? = nil
 			
 	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		if cellMenu.start(tableView, indexPath) {
+		if !firstOrLast(indexPath.row), cellMenu.start(tableView, indexPath) {
 			copyDomain = cellMenu.getSelected(dataSource)?.domain
 			self.becomeFirstResponder()
 		}
