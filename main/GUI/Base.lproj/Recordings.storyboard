@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hm5-7q-Zfi">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hm5-7q-Zfi">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -656,6 +656,7 @@ Duration:   60:00</string>
                         <outlet property="appIcon" destination="rbW-pK-Kct" id="VlO-fG-y1a"/>
                         <outlet property="appTitle" destination="Et0-8d-CId" id="HgD-oI-0J8"/>
                         <outlet property="buttonCancel" destination="TGg-60-wZW" id="5Ej-7t-jaD"/>
+                        <outlet property="buttonFilter" destination="LOr-e7-foG" id="qUx-1k-xJK"/>
                         <outlet property="buttonSave" destination="rWg-hE-Ydl" id="zfM-kx-erX"/>
                         <outlet property="chooseAppTap" destination="Jab-q2-U9X" id="Tzv-lm-sUm"/>
                         <outlet property="inputDetails" destination="pql-H5-k6U" id="NXm-8f-5E6"/>

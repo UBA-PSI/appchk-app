@@ -16,6 +16,7 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	@IBOutlet private var noteBottom: NSLayoutConstraint!
 	
 	@IBOutlet private var chooseAppTap: UITapGestureRecognizer!
+	@IBOutlet private var buttonFilter: UIButton!
 	
 	override func viewDidLoad() {
 		if deleteOnCancel { // aka newly created
@@ -23,6 +24,7 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 			if Prefs.RecordingReminder.Enabled {
 				PushNotification.scheduleRecordingReminder(force: true)
 			}
+			buttonFilter.isHidden = true
 			// mark as destructive
 			buttonCancel.tintColor = .systemRed
 			if #available(iOS 13.0, *) {
