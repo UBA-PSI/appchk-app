@@ -87,14 +87,21 @@ struct TimeFormat {
 	
 	/// Duration string with format `mm:ss` or `mm:ss.SSS`
 	static func from(_ duration: TimeInterval, millis: Bool = false, hours: Bool = false) -> String {
-		let t = Int(duration)
-		let min = t / 60
-		let sec = t % 60
+		var t = Int(duration)
+		var min = t / 60
+		var sec = t % 60
 		if millis {
 			let mil = Int(duration * 1000) % 1000
 			return String(format: "%02d:%02d.%03d", min, sec, mil)
 		} else if hours {
-			return String(format: "%02d:%02d:%02d", min / 60, min % 60, sec)
+			if t < Recording.minTimeLongTerm {
+				t = Int(Recording.minTimeLongTerm) - t
+				min = t / 60
+				sec = t % 60
+				return String(format: "-%02d:%02d:%02d", min / 60, min % 60, sec)
+			} else {
+				return String(format: "%02d:%02d:%02d", min / 60, min % 60, sec)
+			}
 		}
 		return String(format: "%02d:%02d", min, sec)
 	}

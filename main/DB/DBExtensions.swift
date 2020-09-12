@@ -33,11 +33,13 @@ extension FilterOptions {
 }
 
 extension Recording {
+	static let minTimeLongTerm: Timestamp = .hours(1)
+	
 	var fallbackTitle: String { get {
 		isLongTerm ? "Background Recording" : "Unnamed Recording #\(id)"
 	} }
 	var duration: Timestamp { get { (stop ?? .now()) - start } }
-	var isLongTerm: Bool { duration > Timestamp.hours(1) }
+	var isLongTerm: Bool { duration > Recording.minTimeLongTerm }
 	var isShared: Bool { uploadkey?.count ?? 0 > 0}
 }
 
