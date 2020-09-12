@@ -53,3 +53,5 @@ That means, AppCheck does not have to be active in the foreground all the time.
 
 *information will be added soon™*
 
+For now, go to the results page at [https://appchk.de/](https://appchk.de/).  
+Btw. we are searching for [help](https://appchk.de/help/) on our ongoing research project.
