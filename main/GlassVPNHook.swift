@@ -152,13 +152,12 @@ class GlassVPNHook {
 	@objc private func autoDeleteNow(_ sender: Timer) {
 		NSLog("[VPN.INFO] Auto-delete old logs")
 		queue.async {
+			guard sender.isValid else { return }
 			do {
 				try AppDB?.dnsLogsDeleteOlderThan(days: sender.userInfo as! Int)
 			} catch {
 				NSLog("[VPN.WARN] Couldn't delete logs, will retry in 5 minutes. \(error)")
-				if sender.isValid {
-					sender.fireDate = Date().addingTimeInterval(300) // retry in 5 min
-				}
+				sender.fireDate = Date().addingTimeInterval(300) // retry in 5 min
 			}
 		}
 	}
