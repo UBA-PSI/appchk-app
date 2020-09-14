@@ -1,5 +1,6 @@
 import NetworkExtension
 
+let connectMessage: Data = "CONNECT".data(using: .ascii)!
 let swcdUserAgent: Data = "User-Agent: swcd".data(using: .ascii)!
 fileprivate var hook : GlassVPNHook!
 
@@ -25,7 +26,9 @@ class LDObserverFactory: ObserverFactory {
 				let kill = hook.processDNSRequest(session.host)
 				if kill { socket.forceDisconnect() }
 			case .readData(let data, on: let socket):
-				if hook.forceDisconnectSWCD, data.range(of: swcdUserAgent) != nil {
+				if hook.forceDisconnectSWCD,
+					data.starts(with: connectMessage),
+					data.range(of: swcdUserAgent) != nil {
 					socket.disconnect()
 				}
 			default:

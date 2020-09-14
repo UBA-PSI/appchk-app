@@ -12,6 +12,7 @@ enum PrefsShared {
 	
 	static func registerDefaults() {
 		suite.register(defaults: [
+			"ForceDisconnectSWCD" : true,
 			"RestartReminderEnabled" : true,
 			"RestartReminderWithText" : true,
 			"RestartReminderWithBadge" : true,
