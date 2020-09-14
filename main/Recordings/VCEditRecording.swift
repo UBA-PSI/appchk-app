@@ -20,9 +20,12 @@ class VCEditRecording: UIViewController, UITextFieldDelegate, UITextViewDelegate
 	
 	override func viewDidLoad() {
 		if deleteOnCancel { // aka newly created
-			RecordingsDB.persist(record)
-			if Prefs.RecordingReminder.Enabled {
-				PushNotification.scheduleRecordingReminder(force: true)
+			let r = record!
+			DispatchQueue.global().async {
+				RecordingsDB.persist(r)
+				if Prefs.RecordingReminder.Enabled {
+					PushNotification.scheduleRecordingReminder(force: true)
+				}
 			}
 			buttonFilter.isHidden = true
 			// mark as destructive
