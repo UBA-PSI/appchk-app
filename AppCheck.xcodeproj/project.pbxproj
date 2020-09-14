@@ -104,10 +104,8 @@
 		54CA01D52426B252003A5E04 /* SafeDict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA01D42426B251003A5E04 /* SafeDict.swift */; };
 		54CA025C2426B2FD003A5E04 /* ConnectSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA01E22426B2FC003A5E04 /* ConnectSession.swift */; };
 		54CA025D2426B2FD003A5E04 /* HTTPHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA01E32426B2FC003A5E04 /* HTTPHeader.swift */; };
-		54CA025E2426B2FD003A5E04 /* ResponseGeneratorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA01E42426B2FC003A5E04 /* ResponseGeneratorFactory.swift */; };
 		54CA025F2426B2FD003A5E04 /* ProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA01E62426B2FC003A5E04 /* ProxyServer.swift */; };
 		54CA02602426B2FD003A5E04 /* GCDProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA01E72426B2FC003A5E04 /* GCDProxyServer.swift */; };
-		54CA02612426B2FD003A5E04 /* GCDSOCKS5ProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA01E82426B2FC003A5E04 /* GCDSOCKS5ProxyServer.swift */; };
 		54CA02622426B2FD003A5E04 /* GCDHTTPProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA01E92426B2FC003A5E04 /* GCDHTTPProxyServer.swift */; };
 		54CA02662426B2FD003A5E04 /* NWUDPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA01EF2426B2FC003A5E04 /* NWUDPSocket.swift */; };
 		54CA02672426B2FD003A5E04 /* RawTCPSocketProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA01F02426B2FC003A5E04 /* RawTCPSocketProtocol.swift */; };
@@ -129,15 +127,8 @@
 		54CA027B2426B2FD003A5E04 /* HTTPAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02062426B2FC003A5E04 /* HTTPAuthentication.swift */; };
 		54CA027C2426B2FD003A5E04 /* StreamScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02072426B2FC003A5E04 /* StreamScanner.swift */; };
 		54CA027D2426B2FD003A5E04 /* GlobalIntializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02082426B2FC003A5E04 /* GlobalIntializer.swift */; };
-		54CA027E2426B2FD003A5E04 /* DomainListRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA020A2426B2FC003A5E04 /* DomainListRule.swift */; };
 		54CA02802426B2FD003A5E04 /* DNSSessionMatchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA020C2426B2FC003A5E04 /* DNSSessionMatchType.swift */; };
-		54CA02812426B2FD003A5E04 /* DNSFailRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA020D2426B2FC003A5E04 /* DNSFailRule.swift */; };
-		54CA02822426B2FD003A5E04 /* AllRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA020E2426B2FC003A5E04 /* AllRule.swift */; };
 		54CA02832426B2FD003A5E04 /* DNSSessionMatchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA020F2426B2FC003A5E04 /* DNSSessionMatchResult.swift */; };
-		54CA02842426B2FD003A5E04 /* Rule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02102426B2FC003A5E04 /* Rule.swift */; };
-		54CA02852426B2FD003A5E04 /* DirectRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02112426B2FC003A5E04 /* DirectRule.swift */; };
-		54CA02862426B2FD003A5E04 /* RuleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02122426B2FC003A5E04 /* RuleManager.swift */; };
-		54CA02872426B2FD003A5E04 /* IPRangeListRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02132426B2FC003A5E04 /* IPRangeListRule.swift */; };
 		54CA02882426B2FD003A5E04 /* QueueFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02152426B2FC003A5E04 /* QueueFactory.swift */; };
 		54CA02892426B2FD003A5E04 /* Tunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02162426B2FC003A5E04 /* Tunnel.swift */; };
 		54CA028A2426B2FD003A5E04 /* ResponseGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02172426B2FC003A5E04 /* ResponseGenerator.swift */; };
@@ -156,26 +147,12 @@
 		54CA029E2426B2FD003A5E04 /* EventType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02302426B2FC003A5E04 /* EventType.swift */; };
 		54CA029F2426B2FD003A5E04 /* ProxySocketEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02312426B2FC003A5E04 /* ProxySocketEvent.swift */; };
 		54CA02A02426B2FD003A5E04 /* TunnelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02322426B2FC003A5E04 /* TunnelEvent.swift */; };
-		54CA02A12426B2FD003A5E04 /* RuleMatchEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02332426B2FC003A5E04 /* RuleMatchEvent.swift */; };
 		54CA02A22426B2FD003A5E04 /* ObserverFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02342426B2FC003A5E04 /* ObserverFactory.swift */; };
-		54CA02A32426B2FD003A5E04 /* HTTPAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02372426B2FC003A5E04 /* HTTPAdapter.swift */; };
-		54CA02A42426B2FD003A5E04 /* SecureHTTPAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02382426B2FC003A5E04 /* SecureHTTPAdapter.swift */; };
 		54CA02A62426B2FD003A5E04 /* AdapterSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA023A2426B2FC003A5E04 /* AdapterSocket.swift */; };
 		54CA02A72426B2FD003A5E04 /* DirectAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA023B2426B2FC003A5E04 /* DirectAdapter.swift */; };
-		54CA02A82426B2FD003A5E04 /* SOCKS5Adapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA023C2426B2FC003A5E04 /* SOCKS5Adapter.swift */; };
-		54CA02A92426B2FD003A5E04 /* RejectAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA023D2426B2FC003A5E04 /* RejectAdapter.swift */; };
-		54CA02AC2426B2FD003A5E04 /* AuthenticationServerAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02412426B2FC003A5E04 /* AuthenticationServerAdapterFactory.swift */; };
-		54CA02AD2426B2FD003A5E04 /* RejectAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02422426B2FC003A5E04 /* RejectAdapterFactory.swift */; };
 		54CA02AE2426B2FD003A5E04 /* AdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02432426B2FD003A5E04 /* AdapterFactory.swift */; };
-		54CA02AF2426B2FD003A5E04 /* SOCKS5AdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02442426B2FD003A5E04 /* SOCKS5AdapterFactory.swift */; };
-		54CA02B02426B2FD003A5E04 /* SecureHTTPAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02452426B2FD003A5E04 /* SecureHTTPAdapterFactory.swift */; };
-		54CA02B12426B2FD003A5E04 /* ServerAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02462426B2FD003A5E04 /* ServerAdapterFactory.swift */; };
-		54CA02B22426B2FD003A5E04 /* AdapterFactoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02472426B2FD003A5E04 /* AdapterFactoryManager.swift */; };
-		54CA02B32426B2FD003A5E04 /* HTTPAdapterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02482426B2FD003A5E04 /* HTTPAdapterFactory.swift */; };
 		54CA02B82426B2FD003A5E04 /* HTTPProxySocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA024F2426B2FD003A5E04 /* HTTPProxySocket.swift */; };
-		54CA02B92426B2FD003A5E04 /* DirectProxySocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02502426B2FD003A5E04 /* DirectProxySocket.swift */; };
 		54CA02BA2426B2FD003A5E04 /* ProxySocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02512426B2FD003A5E04 /* ProxySocket.swift */; };
-		54CA02BB2426B2FD003A5E04 /* SOCKS5ProxySocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02522426B2FD003A5E04 /* SOCKS5ProxySocket.swift */; };
 		54CA02BC2426B2FD003A5E04 /* SocketProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02532426B2FD003A5E04 /* SocketProtocol.swift */; };
 		54CA02BE2426D4F3003A5E04 /* DDLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02BD2426D4F3003A5E04 /* DDLog.swift */; };
 		54CA02C32426DCCD003A5E04 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 54CA02BF2426DCCC003A5E04 /* GCDAsyncSocket.m */; };
@@ -313,10 +290,8 @@
 		54CA01D42426B251003A5E04 /* SafeDict.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SafeDict.swift; sourceTree = "<group>"; };
 		54CA01E22426B2FC003A5E04 /* ConnectSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectSession.swift; sourceTree = "<group>"; };
 		54CA01E32426B2FC003A5E04 /* HTTPHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPHeader.swift; sourceTree = "<group>"; };
-		54CA01E42426B2FC003A5E04 /* ResponseGeneratorFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponseGeneratorFactory.swift; sourceTree = "<group>"; };
 		54CA01E62426B2FC003A5E04 /* ProxyServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxyServer.swift; sourceTree = "<group>"; };
 		54CA01E72426B2FC003A5E04 /* GCDProxyServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDProxyServer.swift; sourceTree = "<group>"; };
-		54CA01E82426B2FC003A5E04 /* GCDSOCKS5ProxyServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDSOCKS5ProxyServer.swift; sourceTree = "<group>"; };
 		54CA01E92426B2FC003A5E04 /* GCDHTTPProxyServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDHTTPProxyServer.swift; sourceTree = "<group>"; };
 		54CA01EF2426B2FC003A5E04 /* NWUDPSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NWUDPSocket.swift; sourceTree = "<group>"; };
 		54CA01F02426B2FC003A5E04 /* RawTCPSocketProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RawTCPSocketProtocol.swift; sourceTree = "<group>"; };
@@ -338,15 +313,8 @@
 		54CA02062426B2FC003A5E04 /* HTTPAuthentication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAuthentication.swift; sourceTree = "<group>"; };
 		54CA02072426B2FC003A5E04 /* StreamScanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamScanner.swift; sourceTree = "<group>"; };
 		54CA02082426B2FC003A5E04 /* GlobalIntializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalIntializer.swift; sourceTree = "<group>"; };
-		54CA020A2426B2FC003A5E04 /* DomainListRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DomainListRule.swift; sourceTree = "<group>"; };
 		54CA020C2426B2FC003A5E04 /* DNSSessionMatchType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DNSSessionMatchType.swift; sourceTree = "<group>"; };
-		54CA020D2426B2FC003A5E04 /* DNSFailRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DNSFailRule.swift; sourceTree = "<group>"; };
-		54CA020E2426B2FC003A5E04 /* AllRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllRule.swift; sourceTree = "<group>"; };
 		54CA020F2426B2FC003A5E04 /* DNSSessionMatchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DNSSessionMatchResult.swift; sourceTree = "<group>"; };
-		54CA02102426B2FC003A5E04 /* Rule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rule.swift; sourceTree = "<group>"; };
-		54CA02112426B2FC003A5E04 /* DirectRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectRule.swift; sourceTree = "<group>"; };
-		54CA02122426B2FC003A5E04 /* RuleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleManager.swift; sourceTree = "<group>"; };
-		54CA02132426B2FC003A5E04 /* IPRangeListRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPRangeListRule.swift; sourceTree = "<group>"; };
 		54CA02152426B2FC003A5E04 /* QueueFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueFactory.swift; sourceTree = "<group>"; };
 		54CA02162426B2FC003A5E04 /* Tunnel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tunnel.swift; sourceTree = "<group>"; };
 		54CA02172426B2FC003A5E04 /* ResponseGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponseGenerator.swift; sourceTree = "<group>"; };
@@ -365,26 +333,12 @@
 		54CA02302426B2FC003A5E04 /* EventType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventType.swift; sourceTree = "<group>"; };
 		54CA02312426B2FC003A5E04 /* ProxySocketEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxySocketEvent.swift; sourceTree = "<group>"; };
 		54CA02322426B2FC003A5E04 /* TunnelEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TunnelEvent.swift; sourceTree = "<group>"; };
-		54CA02332426B2FC003A5E04 /* RuleMatchEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleMatchEvent.swift; sourceTree = "<group>"; };
 		54CA02342426B2FC003A5E04 /* ObserverFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverFactory.swift; sourceTree = "<group>"; };
-		54CA02372426B2FC003A5E04 /* HTTPAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAdapter.swift; sourceTree = "<group>"; };
-		54CA02382426B2FC003A5E04 /* SecureHTTPAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecureHTTPAdapter.swift; sourceTree = "<group>"; };
 		54CA023A2426B2FC003A5E04 /* AdapterSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdapterSocket.swift; sourceTree = "<group>"; };
 		54CA023B2426B2FC003A5E04 /* DirectAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectAdapter.swift; sourceTree = "<group>"; };
-		54CA023C2426B2FC003A5E04 /* SOCKS5Adapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SOCKS5Adapter.swift; sourceTree = "<group>"; };
-		54CA023D2426B2FC003A5E04 /* RejectAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RejectAdapter.swift; sourceTree = "<group>"; };
-		54CA02412426B2FC003A5E04 /* AuthenticationServerAdapterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationServerAdapterFactory.swift; sourceTree = "<group>"; };
-		54CA02422426B2FC003A5E04 /* RejectAdapterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RejectAdapterFactory.swift; sourceTree = "<group>"; };
 		54CA02432426B2FD003A5E04 /* AdapterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdapterFactory.swift; sourceTree = "<group>"; };
-		54CA02442426B2FD003A5E04 /* SOCKS5AdapterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SOCKS5AdapterFactory.swift; sourceTree = "<group>"; };
-		54CA02452426B2FD003A5E04 /* SecureHTTPAdapterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecureHTTPAdapterFactory.swift; sourceTree = "<group>"; };
-		54CA02462426B2FD003A5E04 /* ServerAdapterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerAdapterFactory.swift; sourceTree = "<group>"; };
-		54CA02472426B2FD003A5E04 /* AdapterFactoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdapterFactoryManager.swift; sourceTree = "<group>"; };
-		54CA02482426B2FD003A5E04 /* HTTPAdapterFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAdapterFactory.swift; sourceTree = "<group>"; };
 		54CA024F2426B2FD003A5E04 /* HTTPProxySocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPProxySocket.swift; sourceTree = "<group>"; };
-		54CA02502426B2FD003A5E04 /* DirectProxySocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectProxySocket.swift; sourceTree = "<group>"; };
 		54CA02512426B2FD003A5E04 /* ProxySocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProxySocket.swift; sourceTree = "<group>"; };
-		54CA02522426B2FD003A5E04 /* SOCKS5ProxySocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SOCKS5ProxySocket.swift; sourceTree = "<group>"; };
 		54CA02532426B2FD003A5E04 /* SocketProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketProtocol.swift; sourceTree = "<group>"; };
 		54CA02BD2426D4F3003A5E04 /* DDLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DDLog.swift; sourceTree = "<group>"; };
 		54CA02BF2426DCCC003A5E04 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
@@ -685,7 +639,6 @@
 			isa = PBXGroup;
 			children = (
 				54CA01E12426B2FC003A5E04 /* Messages */,
-				54CA01E42426B2FC003A5E04 /* ResponseGeneratorFactory.swift */,
 				54CA01E52426B2FC003A5E04 /* ProxyServer */,
 				54CA01EE2426B2FC003A5E04 /* RawSocket */,
 				54CA01F72426B2FC003A5E04 /* Opt.swift */,
@@ -716,7 +669,6 @@
 			children = (
 				54CA01E62426B2FC003A5E04 /* ProxyServer.swift */,
 				54CA01E72426B2FC003A5E04 /* GCDProxyServer.swift */,
-				54CA01E82426B2FC003A5E04 /* GCDSOCKS5ProxyServer.swift */,
 				54CA01E92426B2FC003A5E04 /* GCDHTTPProxyServer.swift */,
 			);
 			path = ProxyServer;
@@ -757,15 +709,8 @@
 		54CA02092426B2FC003A5E04 /* Rule */ = {
 			isa = PBXGroup;
 			children = (
-				54CA020A2426B2FC003A5E04 /* DomainListRule.swift */,
 				54CA020C2426B2FC003A5E04 /* DNSSessionMatchType.swift */,
-				54CA020D2426B2FC003A5E04 /* DNSFailRule.swift */,
-				54CA020E2426B2FC003A5E04 /* AllRule.swift */,
 				54CA020F2426B2FC003A5E04 /* DNSSessionMatchResult.swift */,
-				54CA02102426B2FC003A5E04 /* Rule.swift */,
-				54CA02112426B2FC003A5E04 /* DirectRule.swift */,
-				54CA02122426B2FC003A5E04 /* RuleManager.swift */,
-				54CA02132426B2FC003A5E04 /* IPRangeListRule.swift */,
 			);
 			path = Rule;
 			sourceTree = "<group>";
@@ -828,7 +773,6 @@
 				54CA02302426B2FC003A5E04 /* EventType.swift */,
 				54CA02312426B2FC003A5E04 /* ProxySocketEvent.swift */,
 				54CA02322426B2FC003A5E04 /* TunnelEvent.swift */,
-				54CA02332426B2FC003A5E04 /* RuleMatchEvent.swift */,
 			);
 			path = Event;
 			sourceTree = "<group>";
@@ -846,12 +790,8 @@
 		54CA02362426B2FC003A5E04 /* AdapterSocket */ = {
 			isa = PBXGroup;
 			children = (
-				54CA02372426B2FC003A5E04 /* HTTPAdapter.swift */,
-				54CA02382426B2FC003A5E04 /* SecureHTTPAdapter.swift */,
 				54CA023A2426B2FC003A5E04 /* AdapterSocket.swift */,
 				54CA023B2426B2FC003A5E04 /* DirectAdapter.swift */,
-				54CA023C2426B2FC003A5E04 /* SOCKS5Adapter.swift */,
-				54CA023D2426B2FC003A5E04 /* RejectAdapter.swift */,
 				54CA023E2426B2FC003A5E04 /* Factory */,
 			);
 			path = AdapterSocket;
@@ -860,14 +800,7 @@
 		54CA023E2426B2FC003A5E04 /* Factory */ = {
 			isa = PBXGroup;
 			children = (
-				54CA02412426B2FC003A5E04 /* AuthenticationServerAdapterFactory.swift */,
-				54CA02422426B2FC003A5E04 /* RejectAdapterFactory.swift */,
 				54CA02432426B2FD003A5E04 /* AdapterFactory.swift */,
-				54CA02442426B2FD003A5E04 /* SOCKS5AdapterFactory.swift */,
-				54CA02452426B2FD003A5E04 /* SecureHTTPAdapterFactory.swift */,
-				54CA02462426B2FD003A5E04 /* ServerAdapterFactory.swift */,
-				54CA02472426B2FD003A5E04 /* AdapterFactoryManager.swift */,
-				54CA02482426B2FD003A5E04 /* HTTPAdapterFactory.swift */,
 			);
 			path = Factory;
 			sourceTree = "<group>";
@@ -876,9 +809,7 @@
 			isa = PBXGroup;
 			children = (
 				54CA024F2426B2FD003A5E04 /* HTTPProxySocket.swift */,
-				54CA02502426B2FD003A5E04 /* DirectProxySocket.swift */,
 				54CA02512426B2FD003A5E04 /* ProxySocket.swift */,
-				54CA02522426B2FD003A5E04 /* SOCKS5ProxySocket.swift */,
 			);
 			path = ProxySocket;
 			sourceTree = "<group>";
@@ -1118,7 +1049,6 @@
 				54CA027A2426B2FD003A5E04 /* HTTPURL.swift in Sources */,
 				54CA025D2426B2FD003A5E04 /* HTTPHeader.swift in Sources */,
 				54CA02832426B2FD003A5E04 /* DNSSessionMatchResult.swift in Sources */,
-				54CA02862426B2FD003A5E04 /* RuleManager.swift in Sources */,
 				54CA02B82426B2FD003A5E04 /* HTTPProxySocket.swift in Sources */,
 				54CA02C32426DCCD003A5E04 /* GCDAsyncSocket.m in Sources */,
 				54CA02752426B2FD003A5E04 /* IPRange.swift in Sources */,
@@ -1128,27 +1058,21 @@
 				5404AEEB24A90717003B2F54 /* PrefsShared.swift in Sources */,
 				54CA02C42426DCCD003A5E04 /* GCDAsyncUdpSocket.m in Sources */,
 				54CA02BA2426B2FD003A5E04 /* ProxySocket.swift in Sources */,
-				54CA025E2426B2FD003A5E04 /* ResponseGeneratorFactory.swift in Sources */,
 				54CA02892426B2FD003A5E04 /* Tunnel.swift in Sources */,
 				54CA029F2426B2FD003A5E04 /* ProxySocketEvent.swift in Sources */,
 				54CA027D2426B2FD003A5E04 /* GlobalIntializer.swift in Sources */,
 				54CA026F2426B2FD003A5E04 /* Port.swift in Sources */,
 				54CA028A2426B2FD003A5E04 /* ResponseGenerator.swift in Sources */,
 				54CA027C2426B2FD003A5E04 /* StreamScanner.swift in Sources */,
-				54CA02AF2426B2FD003A5E04 /* SOCKS5AdapterFactory.swift in Sources */,
 				54CA029E2426B2FD003A5E04 /* EventType.swift in Sources */,
 				54CA02912426B2FD003A5E04 /* DNSMessage.swift in Sources */,
 				54CA02712426B2FD003A5E04 /* UInt128.swift in Sources */,
 				54CA02882426B2FD003A5E04 /* QueueFactory.swift in Sources */,
-				54CA02A12426B2FD003A5E04 /* RuleMatchEvent.swift in Sources */,
 				54CA02BE2426D4F3003A5E04 /* DDLog.swift in Sources */,
 				54CA02962426B2FD003A5E04 /* PacketProtocolParser.swift in Sources */,
 				54CA02932426B2FD003A5E04 /* DNSServer.swift in Sources */,
-				54CA02B22426B2FD003A5E04 /* AdapterFactoryManager.swift in Sources */,
 				54CA02AE2426B2FD003A5E04 /* AdapterFactory.swift in Sources */,
-				54CA02A82426B2FD003A5E04 /* SOCKS5Adapter.swift in Sources */,
 				54CA02792426B2FD003A5E04 /* Checksum.swift in Sources */,
-				54CA02AD2426B2FD003A5E04 /* RejectAdapterFactory.swift in Sources */,
 				541075D224CDBA0000D6F1BF /* ThrottledBatchQueue.swift in Sources */,
 				54CA02672426B2FD003A5E04 /* RawTCPSocketProtocol.swift in Sources */,
 				54CA02602426B2FD003A5E04 /* GCDProxyServer.swift in Sources */,
@@ -1157,54 +1081,38 @@
 				54CA01D52426B252003A5E04 /* SafeDict.swift in Sources */,
 				54CA027B2426B2FD003A5E04 /* HTTPAuthentication.swift in Sources */,
 				54CA02762426B2FD003A5E04 /* IPAddress.swift in Sources */,
-				54CA02B02426B2FD003A5E04 /* SecureHTTPAdapterFactory.swift in Sources */,
 				54CA02A62426B2FD003A5E04 /* AdapterSocket.swift in Sources */,
 				54CA02742426B2FD003A5E04 /* IPMask.swift in Sources */,
 				541075CF24C9D43A00D6F1BF /* UNNotification.swift in Sources */,
-				54CA02BB2426B2FD003A5E04 /* SOCKS5ProxySocket.swift in Sources */,
 				54D8B97F2471B89100EB2414 /* DBCommon.swift in Sources */,
-				54CA02A42426B2FD003A5E04 /* SecureHTTPAdapter.swift in Sources */,
 				54CA02942426B2FD003A5E04 /* DNSResolver.swift in Sources */,
 				54CA025F2426B2FD003A5E04 /* ProxyServer.swift in Sources */,
-				54CA02842426B2FD003A5E04 /* Rule.swift in Sources */,
 				54CE8BC524B1ED2100CC1756 /* PushNotification.swift in Sources */,
-				54CA02B92426B2FD003A5E04 /* DirectProxySocket.swift in Sources */,
 				54751E522423955100168273 /* URL.swift in Sources */,
-				54CA02A92426B2FD003A5E04 /* RejectAdapter.swift in Sources */,
 				54CA02732426B2FD003A5E04 /* IPPool.swift in Sources */,
 				541075D624CE286200D6F1BF /* CachedConnectionAlert.swift in Sources */,
-				54CA027E2426B2FD003A5E04 /* DomainListRule.swift in Sources */,
 				54CA02782426B2FD003A5E04 /* BinaryDataScanner.swift in Sources */,
-				54CA02B12426B2FD003A5E04 /* ServerAdapterFactory.swift in Sources */,
 				54CA02952426B2FD003A5E04 /* DNSEnums.swift in Sources */,
 				54CA02802426B2FD003A5E04 /* DNSSessionMatchType.swift in Sources */,
 				54CA02A22426B2FD003A5E04 /* ObserverFactory.swift in Sources */,
-				54CA02612426B2FD003A5E04 /* GCDSOCKS5ProxyServer.swift in Sources */,
 				54CA029D2426B2FD003A5E04 /* ProxyServerEvent.swift in Sources */,
 				54CA02BC2426B2FD003A5E04 /* SocketProtocol.swift in Sources */,
 				54CA029C2426B2FD003A5E04 /* AdapterSocketEvent.swift in Sources */,
 				54CA02A72426B2FD003A5E04 /* DirectAdapter.swift in Sources */,
-				54CA02A32426B2FD003A5E04 /* HTTPAdapter.swift in Sources */,
 				54CA02622426B2FD003A5E04 /* GCDHTTPProxyServer.swift in Sources */,
-				54CA02822426B2FD003A5E04 /* AllRule.swift in Sources */,
 				543CDB2023EEE61900B7F323 /* PacketTunnelProvider.swift in Sources */,
 				54CA02662426B2FD003A5E04 /* NWUDPSocket.swift in Sources */,
 				54CA02682426B2FD003A5E04 /* NWTCPSocket.swift in Sources */,
-				54CA02852426B2FD003A5E04 /* DirectRule.swift in Sources */,
 				54CA01D32426B23D003A5E04 /* Resolver.swift in Sources */,
 				54CA028B2426B2FD003A5E04 /* Utils.swift in Sources */,
 				54CA02972426B2FD003A5E04 /* IPPacket.swift in Sources */,
 				54CA026A2426B2FD003A5E04 /* RawSocketFactory.swift in Sources */,
 				54CA02A02426B2FD003A5E04 /* TunnelEvent.swift in Sources */,
 				546063E523FEFAFE008F505A /* DBCore.swift in Sources */,
-				54CA02872426B2FD003A5E04 /* IPRangeListRule.swift in Sources */,
 				54CA02922426B2FD003A5E04 /* DNSSession.swift in Sources */,
 				54CA026D2426B2FD003A5E04 /* Opt.swift in Sources */,
-				54CA02B32426B2FD003A5E04 /* HTTPAdapterFactory.swift in Sources */,
 				54CA02702426B2FD003A5E04 /* HTTPStreamScanner.swift in Sources */,
-				54CA02812426B2FD003A5E04 /* DNSFailRule.swift in Sources */,
 				541075DA24CE2C7200D6F1BF /* GlassVPNHook.swift in Sources */,
-				54CA02AC2426B2FD003A5E04 /* AuthenticationServerAdapterFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

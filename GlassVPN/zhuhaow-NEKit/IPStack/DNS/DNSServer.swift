@@ -74,8 +74,6 @@ open class DNSServer: DNSResolverDelegate, IPStackProtocol {
             return
         }
 
-        RuleManager.currentManager.matchDNS(session, type: .domain)
-
         switch session.matchResult! {
         case .fake:
             guard setUpFakeIP(session) else {
@@ -247,10 +245,6 @@ open class DNSServer: DNSResolverDelegate, IPStackProtocol {
             session.realResponseMessage = message
 
             session.realIP = message.resolvedIPv4Address
-
-            if session.matchResult != .fake && session.matchResult != .real {
-                RuleManager.currentManager.matchDNS(session, type: .ip)
-            }
 
             switch session.matchResult! {
             case .fake:

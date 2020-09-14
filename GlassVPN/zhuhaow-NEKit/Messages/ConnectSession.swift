@@ -21,9 +21,6 @@ public final class ConnectSession {
     /// The requested port.
     public let port: Int
     
-    /// The rule to use to connect to remote.
-    public var matchedRule: Rule?
-    
     /// Whether If the `requestedHost` is an IP address.
     public let fakeIPEnabled: Bool
     
@@ -126,11 +123,6 @@ public final class ConnectSession {
         
         host = session.requestMessage.queries[0].name
         ipAddress = session.realIP?.presentation ?? ""
-        matchedRule = session.matchedRule
-        
-//        if session.countryCode != nil {
-//            country = session.countryCode!
-//        }
         return true
     }
     

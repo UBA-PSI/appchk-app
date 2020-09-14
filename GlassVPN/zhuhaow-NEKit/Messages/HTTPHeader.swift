@@ -17,7 +17,6 @@ open class HTTPHeader {
     // Chunk is not supported yet.
     open var contentLength: Int = 0
     open var headers: [(String, String)] = []
-    open var rawHeader: Data?
 
     public init(headerString: String) throws {
         let lines = headerString.components(separatedBy: "\r\n")
@@ -127,7 +126,6 @@ open class HTTPHeader {
         }
 
         try self.init(headerString: headerString)
-        rawHeader = headerData
     }
 
     open subscript(index: String) -> String? {

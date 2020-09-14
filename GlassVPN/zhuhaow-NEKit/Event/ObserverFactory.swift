@@ -20,8 +20,4 @@ open class ObserverFactory {
     open func getObserverForProxyServer(_ server: ProxyServer) -> Observer<ProxyServerEvent>? {
         return nil
     }
-
-    open func getObserverForRuleManager(_ manager: RuleManager) -> Observer<RuleMatchEvent>? {
-        return nil
-    }
 }

@@ -7,7 +7,6 @@ open class DNSSession {
     open var fakeIP: IPAddress?
     open var realResponseMessage: DNSMessage?
     var realResponseIPPacket: IPPacket?
-    open var matchedRule: Rule?
     open var matchResult: DNSSessionMatchResult?
     var indexToMatch = 0
     var expireAt: Date?
