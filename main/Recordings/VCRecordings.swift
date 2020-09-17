@@ -30,9 +30,9 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 				x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-recording-1"))
 				x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-recording-2"))
 				x.buttonTitleDone = "Got it"
-				x.present {
+				x.present(didClose: {
 					Prefs.DidShowTutorial.Recordings = true
-				}
+				})
 			}
 		}
 	}
@@ -55,9 +55,9 @@ class VCRecordings: UIViewController, UINavigationControllerDelegate {
 		let x = TutorialSheet()
 		x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-recording-howto"))
 		x.buttonTitleDone = "Close"
-		x.present() {
+		x.present(didClose: {
 			Prefs.DidShowTutorial.RecordingHowTo = true
-		}
+		})
 	}
 	
 	

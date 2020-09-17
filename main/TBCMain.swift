@@ -36,9 +36,9 @@ class TBCMain: UITabBarController {
 		let x = TutorialSheet()
 		x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-welcome-1"))
 		x.addSheet().addArrangedSubview(TinyMarkdown.load("tut-welcome-2"))
-		x.present {
+		x.present(didClose: {
 			Prefs.DidShowTutorial.Welcome = true
-		}
+		})
 	}
 }
 

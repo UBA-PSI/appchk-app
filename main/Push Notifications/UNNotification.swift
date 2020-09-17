@@ -9,6 +9,7 @@ enum NotificationRequestState {
 		case .authorized: self = .Authorized
 		case .provisional: self = .Provisional
 		case .notDetermined: fallthrough
+		case .ephemeral: fallthrough
 		@unknown default: self = .NotDetermined
 		}
 	}
