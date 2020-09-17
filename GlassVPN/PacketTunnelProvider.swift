@@ -17,19 +17,17 @@ class LDObserverFactory: ObserverFactory {
 		override func signal(_ event: ProxySocketEvent) {
 			switch event {
 			case .receivedRequest(let session, let socket):
-				if socket.isCancelled ||
-					(hook.forceDisconnectUnresolvable && session.ipAddress.isEmpty) {
+				var kill = !hook.isBackgroundRecording && hook.forceDisconnectUnresolvable && session.ipAddress.isEmpty
+				if kill || socket.isCancelled { // isCancelled is set by branch below
 					hook.silentlyPrevented(session.host)
-					socket.forceDisconnect()
-					return
+				} else {
+					kill = hook.processDNSRequest(session.host)
 				}
-				let kill = hook.processDNSRequest(session.host)
 				if kill { socket.forceDisconnect() }
 			case .readData(let data, on: let socket):
-				if hook.forceDisconnectSWCD,
-					data.starts(with: connectMessage),
-					data.range(of: swcdUserAgent) != nil {
-					socket.disconnect()
+				if !hook.isBackgroundRecording, hook.forceDisconnectSWCD,
+					data.starts(with: connectMessage), data.range(of: swcdUserAgent) != nil {
+					socket.disconnect() // sets isCancelled above
 				}
 			default:
 				break

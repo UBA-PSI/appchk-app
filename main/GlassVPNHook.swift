@@ -10,6 +10,7 @@ class GlassVPNHook {
 	private var cachedNotify: CachedConnectionAlert!
 	private var currentlyRecording: Bool = false
 	
+	public var isBackgroundRecording: Bool = false
 	public var forceDisconnectUnresolvable: Bool = false
 	public var forceDisconnectSWCD: Bool = false
 	
@@ -22,6 +23,7 @@ class GlassVPNHook {
 		setAutoDelete(PrefsShared.AutoDeleteLogsDays)
 		cachedNotify = CachedConnectionAlert()
 		currentlyRecording = PrefsShared.CurrentlyRecording != .Off
+		isBackgroundRecording = PrefsShared.CurrentlyRecording == .Background
 		forceDisconnectUnresolvable = PrefsShared.ForceDisconnectUnresolvableDNS
 		forceDisconnectSWCD = PrefsShared.ForceDisconnectSWCD
 	}
@@ -34,6 +36,7 @@ class GlassVPNHook {
 		autoDeleteTimer?.invalidate()
 		cachedNotify = nil
 		currentlyRecording = false
+		isBackgroundRecording = false
 		forceDisconnectUnresolvable = false
 		forceDisconnectSWCD = false
 	}
@@ -57,6 +60,7 @@ class GlassVPNHook {
 			case "recording-now":
 				let newState = CurrentRecordingState(rawValue: Int(value) ?? 0)
 				currentlyRecording = newState != .Off
+				isBackgroundRecording = newState == .Background
 				return
 			case "disconnect-unresolvable":
 				forceDisconnectUnresolvable = value == "1"
