@@ -19,11 +19,12 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 	private lazy var dataSource: [String : [Timestamp]] = RecordingsDB.detailCluster(self.record)
 	
 	private lazy var dataSourceKeyValue: [(key: String, value: String)] = [
+		("Notes",      " – "), // see delegate below, update reloadNotes() and cellForRowAt
 		("Date",       self.weekInYear),
 		("Rec-Length", "\(self.record.duration) sec"),
 		("App-Bundle", self.record.appId ?? " – "),
 		("App-Name",   self.record.title ?? " – "),
-		("Notes",      " – ") // see delegate below
+		("iOS",        UIDevice.current.systemVersion),
 	]
 	
 	private lazy var dataSourceLogs: [(domain: String, occurrences: String, enabled: Bool)] = self.dataSource.map {
@@ -42,7 +43,7 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 	private func reloadNotes() {
 		tableView.reloadRows(at: [
 			IndexPath(row: 0, section: 1), // edit field
-			IndexPath(row: 4, section: 2) // display field
+			IndexPath(row: 0, section: 2) // display field
 		], with: .automatic)
 	}
 	
@@ -152,7 +153,7 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 			cell = tableView.dequeueReusableCell(withIdentifier: "shareKeyValueCell")!
 			let src = dataSourceKeyValue[indexPath.row]
 			cell.textLabel?.text = src.key
-			let flag = indexPath.row == 4 && shareNotes && hasNotes
+			let flag = indexPath.row == 0 && shareNotes && hasNotes
 			cell.detailTextLabel?.text = flag ? editedNotes : src.value
 		case 3:
 			cell = tableView.dequeueReusableCell(withIdentifier: "shareLogCell")!
@@ -187,6 +188,7 @@ class TVCShareRecording : UITableViewController, UITextViewDelegate, VCEditTextD
 		let allowed = dataSourceLogs.filter{ $0.enabled }.map{ $0.domain }
 		let json = try? JSONSerialization.data(withJSONObject: [
 			"v" : 1,
+			"ios" : UIDevice.current.systemVersion,
 			"date" : weekInYear,
 			"duration" : record.duration,
 			"app-bundle" : record.appId ?? "",
