@@ -89,7 +89,7 @@ final class GlassVPNManager {
 	
 	private func createNewVPN(_ success: @escaping (_ manager: NETunnelProviderManager) -> Void) {
 		let mgr = NETunnelProviderManager()
-		mgr.localizedDescription = "AppCheck Monitor"
+		mgr.localizedDescription = "AppChk Monitor"
 		let proto = NETunnelProviderProtocol()
 		proto.providerBundleIdentifier = GlassVPNManager.bundleIdentifier
 		proto.serverAddress = "127.0.0.1"

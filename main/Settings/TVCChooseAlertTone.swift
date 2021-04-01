@@ -42,7 +42,7 @@ class TVCChooseAlertTone: UITableViewController {
 	}
 	
 	override func tableView(_: UITableView, titleForHeaderInSection section: Int) -> String? {
-		section == 1 ? "AppCheck" : nil
+		section == 1 ? "AppChk" : nil
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -70,7 +70,7 @@ fileprivate let AvailableSounds: [[(title: String, file: String)]] = [
 	[ // System sounds
 		("None", "#mute"),
 		("Default", "#default")
-	], [ // AppCheck sounds
+	], [ // AppChk sounds
 		("Clock", "clock"),
 		("Drum 1", "drum1"),
 		("Drum 2", "drum2"),

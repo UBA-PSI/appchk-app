@@ -218,7 +218,7 @@
 		5412FCC024C628F9000DE429 /* TVCChooseAlertTone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVCChooseAlertTone.swift; sourceTree = "<group>"; };
 		5412FCC124C628FA000DE429 /* TVCConnectionAlerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVCConnectionAlerts.swift; sourceTree = "<group>"; };
 		541A957523E602DF00C09C19 /* LaunchIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LaunchIcon.png; sourceTree = "<group>"; };
-		541AC5D42399498A00A769D7 /* AppCheck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		541AC5D42399498A00A769D7 /* AppChk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppChk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		541AC5D72399498A00A769D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		541AC5DC2399498A00A769D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		541AC5DE2399498B00A769D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -446,7 +446,7 @@
 		541AC5D52399498A00A769D7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				541AC5D42399498A00A769D7 /* AppCheck.app */,
+				541AC5D42399498A00A769D7 /* AppChk.app */,
 				543CDB1D23EEE61900B7F323 /* GlassVPN.appex */,
 			);
 			name = Products;
@@ -829,9 +829,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		541AC5D32399498A00A769D7 /* AppCheck */ = {
+		541AC5D32399498A00A769D7 /* AppChk */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 541AC5E62399498B00A769D7 /* Build configuration list for PBXNativeTarget "AppCheck" */;
+			buildConfigurationList = 541AC5E62399498B00A769D7 /* Build configuration list for PBXNativeTarget "AppChk" */;
 			buildPhases = (
 				541AC5D02399498A00A769D7 /* Sources */,
 				541AC5D12399498A00A769D7 /* Frameworks */,
@@ -843,11 +843,11 @@
 			dependencies = (
 				543CDB2423EEE61900B7F323 /* PBXTargetDependency */,
 			);
-			name = AppCheck;
+			name = AppChk;
 			packageProductDependencies = (
 			);
 			productName = PrivacyScore;
-			productReference = 541AC5D42399498A00A769D7 /* AppCheck.app */;
+			productReference = 541AC5D42399498A00A769D7 /* AppChk.app */;
 			productType = "com.apple.product-type.application";
 		};
 		543CDB1C23EEE61900B7F323 /* GlassVPN */ = {
@@ -876,7 +876,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1130;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = relikd;
 				TargetAttributes = {
 					541AC5D32399498A00A769D7 = {
@@ -894,7 +894,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 541AC5CF2399498A00A769D7 /* Build configuration list for PBXProject "AppCheck" */;
+			buildConfigurationList = 541AC5CF2399498A00A769D7 /* Build configuration list for PBXProject "AppChk" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -909,7 +909,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				541AC5D32399498A00A769D7 /* AppCheck */,
+				541AC5D32399498A00A769D7 /* AppChk */,
 				543CDB1C23EEE61900B7F323 /* GlassVPN */,
 			);
 		};
@@ -1307,7 +1307,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = main/main.entitlements;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 36;
 				INFOPLIST_FILE = main/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1315,7 +1315,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.uni-bamberg.psi.AppCheck";
-				PRODUCT_NAME = AppCheck;
+				PRODUCT_NAME = AppChk;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -1326,7 +1326,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = main/main.entitlements;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 36;
 				INFOPLIST_FILE = main/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1334,7 +1334,7 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.uni-bamberg.psi.AppCheck";
-				PRODUCT_NAME = AppCheck;
+				PRODUCT_NAME = AppChk;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -1345,7 +1345,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = GlassVPN/GlassVPN.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 36;
 				INFOPLIST_FILE = GlassVPN/Info.plist;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.uni-bamberg.psi.AppCheck.VPN";
@@ -1363,7 +1363,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = GlassVPN/GlassVPN.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 36;
 				INFOPLIST_FILE = GlassVPN/Info.plist;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.uni-bamberg.psi.AppCheck.VPN";
@@ -1377,7 +1377,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		541AC5CF2399498A00A769D7 /* Build configuration list for PBXProject "AppCheck" */ = {
+		541AC5CF2399498A00A769D7 /* Build configuration list for PBXProject "AppChk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				541AC5E42399498B00A769D7 /* Debug */,
@@ -1386,7 +1386,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		541AC5E62399498B00A769D7 /* Build configuration list for PBXNativeTarget "AppCheck" */ = {
+		541AC5E62399498B00A769D7 /* Build configuration list for PBXNativeTarget "AppChk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				541AC5E72399498B00A769D7 /* Debug */,

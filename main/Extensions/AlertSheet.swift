@@ -40,7 +40,7 @@ func AskAlert(title: String?, text: String?, buttonText: String = "Continue", ca
 /// Show alert hinting the user to go to system settings and re-enable notifications.
 func NotificationsDisabledAlert(presentIn viewController: UIViewController) {
 	AskAlert(title: "Notifications Disabled",
-			 text: "Go to System Settings > Notifications > AppCheck to re-enable notifications.",
+			 text: "Go to System Settings > Notifications > AppChk to re-enable notifications.",
 			 buttonText: "Open settings") { _ in
 		URL(string: UIApplication.openSettingsURLString)?.open()
 	}.presentIn(viewController)

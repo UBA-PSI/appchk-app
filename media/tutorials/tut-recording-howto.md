@@ -8,7 +8,7 @@ During the recording all logging filters are paused. This means, blocked domains
 
 ## App recording
 
-Before you begin, make sure that you quit all running applications and wait a few seconds. Tap on the 'App' recording button and switch to the application you would like to inspect. Use the app as you would normally. Try to get to all corners and functionality the app provides. When you feel that you have captured enough content, come back to _AppCheck_ and stop the recording.
+Before you begin, make sure that you quit all running applications and wait a few seconds. Tap on the 'App' recording button and switch to the application you would like to inspect. Use the app as you would normally. Try to get to all corners and functionality the app provides. When you feel that you have captured enough content, come back to _AppChk_ and stop the recording.
 
 ## Background recording
 

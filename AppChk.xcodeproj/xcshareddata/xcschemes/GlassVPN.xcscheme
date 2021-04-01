@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1200"
+   LastUpgradeVersion = "1240"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -18,7 +18,7 @@
                BlueprintIdentifier = "543CDB1C23EEE61900B7F323"
                BuildableName = "GlassVPN.appex"
                BlueprintName = "GlassVPN"
-               ReferencedContainer = "container:AppCheck.xcodeproj">
+               ReferencedContainer = "container:AppChk.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -30,9 +30,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "541AC5D32399498A00A769D7"
-               BuildableName = "AppCheck.app"
-               BlueprintName = "AppCheck"
-               ReferencedContainer = "container:AppCheck.xcodeproj">
+               BuildableName = "AppChk.app"
+               BlueprintName = "AppChk"
+               ReferencedContainer = "container:AppChk.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "541AC5D32399498A00A769D7"
-            BuildableName = "AppCheck.app"
-            BlueprintName = "AppCheck"
-            ReferencedContainer = "container:AppCheck.xcodeproj">
+            BuildableName = "AppChk.app"
+            BlueprintName = "AppChk"
+            ReferencedContainer = "container:AppChk.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -80,9 +80,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "541AC5D32399498A00A769D7"
-            BuildableName = "AppCheck.app"
-            BlueprintName = "AppCheck"
-            ReferencedContainer = "container:AppCheck.xcodeproj">
+            BuildableName = "AppChk.app"
+            BlueprintName = "AppChk"
+            ReferencedContainer = "container:AppChk.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

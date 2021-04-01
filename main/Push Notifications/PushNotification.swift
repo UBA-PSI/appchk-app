@@ -99,8 +99,8 @@ extension PushNotification {
 		guard #available(iOS 10, *), PrefsShared.RestartReminder.WithText else { return }
 		
 		schedule(.CantStopMeNowReminder,
-				 content: .make("AppCheck disabled",
-								body: "AppCheck can't monitor network traffic because VPN has stopped.",
+				 content: .make("AppChk disabled",
+								body: "AppChk can't monitor network traffic because VPN has stopped.",
 								sound: .from(string: PrefsShared.RestartReminder.Sound)),
 				 trigger: .make(Date(timeIntervalSinceNow: 5 * 60)),
 				 waitUntilDone: true)
