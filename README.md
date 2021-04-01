@@ -1,4 +1,4 @@
-AppCheck – Privacy Monitor
+AppChk – Privacy Monitor
 ==========================
 
 A pocket DNS monitor and network filter.
@@ -8,30 +8,30 @@ A pocket DNS monitor and network filter.
 
 ## What is it?
 
-AppCheck helps you identify applications that communicate with other parties.
+AppChk helps you identify applications that communicate with other parties.
 
 Join the [Testflight beta][testflight] or look at the evaluation results [appchk.de].
 
 
 ### How does it work?
 
-AppCheck creates a local VPN proxy to intercept all network connections.
-For each connection, AppCheck looks into the DNS headers only, namely the domain names.
+AppChk creates a local VPN proxy to intercept all network connections.
+For each connection, AppChk looks into the DNS headers only, namely the domain names.
 These domain names are logged in the background while the VPN is running.
-AppCheck does not need to be active all the time.
+AppChk does not need to be active all the time.
 
 
 ### What about privacy?
 
 Your data belongs to you.
 Therefore, monitoring takes place on your device only.
-AppCheck learns only the destination addresses, not the actual data that is exchanged.
+AppChk learns only the destination addresses, not the actual data that is exchanged.
 The app does not share any data with us or any other third-party – unless you choose to.
 
 
 ### How can I contribute?
 
-AppCheck allows you to record app-specific activity.
+AppChk allows you to record app-specific activity.
 You can share these recordings with the community; it can help you and others avoid phony applications, even before you install an app.
 
 Join the [Testflight beta][testflight]
@@ -65,7 +65,7 @@ The goal is to make privacy more accessible to the general public.
 And thus create incentives for app developers to respect users' privacy.
 
 We want to offer users, activists, data protection authorities, and data protection officers an easily accessible and flexible tool to assess the privacy measures of iOS applications.
-AppCheck allows users to:
+AppChk allows users to:
 
 - get a visual overview of an apps communication signature
 - assess how an app ranks within its peer group or category
