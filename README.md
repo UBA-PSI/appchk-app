@@ -71,7 +71,7 @@ AppChk allows users to:
 - assess how an app ranks within its peer group or category
 - influence the ranking according to their preferences
 
-The evaluation results page is at [appchk.de].
+The evaluation results page is at [appchk.de] and the research paper at [arxiv](https://arxiv.org/abs/2104.06167).
 
 
 [testflight]: https://testflight.apple.com/join/9jjaFeHO
